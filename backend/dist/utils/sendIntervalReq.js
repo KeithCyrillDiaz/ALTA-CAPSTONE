@@ -6,11 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendRequestEvery15minutes = void 0;
 const axios_1 = __importDefault(require("axios"));
 const logger_1 = require("./logger");
+const dotenv_1 = require("config/dotenv");
 const sendRequestEvery15minutes = () => {
     setInterval(async () => {
         try {
             logger_1.logger.event("Sending Dummy Request");
-            await axios_1.default.get('http://localhost:3000');
+            await axios_1.default.get(dotenv_1.configuration.backend_URL);
             logger_1.logger.success("Dummy Request Sent");
         }
         catch (error) {

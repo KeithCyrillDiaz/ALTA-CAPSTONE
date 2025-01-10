@@ -9,6 +9,7 @@ dotenv_1.default.config();
 exports.configuration = {
     MongoDB_URL_Local: process.env.MONGODB_URI_LOCAL,
     MongoDB_URL_Atlas: process.env.MONGODB_URI_ATLAS,
+    backend_URL: process.env.BACKEND_URL,
     port: process.env.PORT || 3000,
     jwt_secret_user: process.env.JWT_SECRET_USER,
     jwt_secret_admin: process.env.JWT_SECRET_ADMIN,

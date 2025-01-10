@@ -26,7 +26,7 @@ const server = http_1.default.createServer(app);
 app.get("/", (req, res) => { res.json("Alta Celestia Backend"); });
 const port = dotenv_1.configuration.port;
 server.listen(port, () => {
-    console.log("Ready - ".green + "Server Running on http://localhost:3000");
+    console.log("Ready - ".green + `Server Running on http://localhost:${port}`);
 });
 (0, connectToDatabase_1.connectToDatabase)();
 //sending req to prevent render to sleep every 15m of inactivity
