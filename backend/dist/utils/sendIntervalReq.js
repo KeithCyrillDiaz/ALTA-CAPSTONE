@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendRequestEvery15minutes = void 0;
 const axios_1 = __importDefault(require("axios"));
 const logger_1 = require("./logger");
-const dotenv_1 = require("config/dotenv");
+const dotenv_1 = require("../config/dotenv");
 const sendRequestEvery15minutes = () => {
     setInterval(async () => {
         try {
