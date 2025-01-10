@@ -34,6 +34,8 @@ server.listen(3000,() => {
 });
 
 connectToDatabase();
+
+//sending req to prevent render to sleep every 15m of inactivity
 sendRequestEvery15minutes();
 
 
