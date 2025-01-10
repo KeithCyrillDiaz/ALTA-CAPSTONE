@@ -9,6 +9,8 @@ import compression from 'compression';
 
 import colors from 'colors'
 import { connectToDatabase } from './config/connectToDatabase';
+import { sendRequestEvery15minutes } from './utils/sendIntervalReq';
+
 colors.enable();
 
 
@@ -24,7 +26,7 @@ app.use(cookieParser())
 
 const server = http.createServer(app)
 
-app.get ("/", (req, res) => {res.json("Alta Celestia Backend")})
+app.get ("/", (req, res) => {res.json("Alta Celestia Backend")});
 
 
 server.listen(3000,() => {
@@ -32,6 +34,7 @@ server.listen(3000,() => {
 });
 
 connectToDatabase();
+sendRequestEvery15minutes();
 
 
 // app.use('/kalinga', router());
