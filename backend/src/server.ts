@@ -10,6 +10,7 @@ import compression from 'compression';
 import colors from 'colors'
 import { connectToDatabase } from './config/connectToDatabase';
 import { sendRequestEvery15minutes } from './utils/sendIntervalReq';
+import { configuration } from './config/dotenv';
 
 colors.enable();
 
@@ -28,8 +29,9 @@ const server = http.createServer(app)
 
 app.get ("/", (req, res) => {res.json("Alta Celestia Backend")});
 
+const port = configuration.port;
 
-server.listen(3000,() => {
+server.listen(port,() => {
     console.log("Ready - ".green + "Server Running on http://localhost:3000")
 });
 

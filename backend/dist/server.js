@@ -13,6 +13,7 @@ const compression_1 = __importDefault(require("compression"));
 const colors_1 = __importDefault(require("colors"));
 const connectToDatabase_1 = require("./config/connectToDatabase");
 const sendIntervalReq_1 = require("./utils/sendIntervalReq");
+const dotenv_1 = require("./config/dotenv");
 colors_1.default.enable();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
@@ -23,7 +24,8 @@ app.use(body_parser_1.default.json());
 app.use((0, cookie_parser_1.default)());
 const server = http_1.default.createServer(app);
 app.get("/", (req, res) => { res.json("Alta Celestia Backend"); });
-server.listen(3000, () => {
+const port = dotenv_1.configuration.port;
+server.listen(port, () => {
     console.log("Ready - ".green + "Server Running on http://localhost:3000");
 });
 (0, connectToDatabase_1.connectToDatabase)();
