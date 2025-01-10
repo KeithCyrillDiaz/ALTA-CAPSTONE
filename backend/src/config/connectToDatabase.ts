@@ -1,18 +1,18 @@
 import mongoose from 'mongoose';
 import { configuration } from './dotenv';
-import { logger } from 'utils/logger';
+import { logger } from '../utils/logger';
 
 export const connectToDatabase = async () => {
+
+    // Retrieve the MongoDB Atlas connection URL from env through configuration variable
+    const MongDB_URL = configuration.MongoDB_URL_Atlas;
+
+    // If the MongoDB URL is not provided, exit the function
+    if (!MongDB_URL) {
+            throw new Error("MongoDB URL is not defined");
+    }
+    
     try {
-        // Retrieve the MongoDB Atlas connection URL from env through configuration variable
-        const MongDB_URL = configuration.MongoDB_URL_Atlas;
-
-        // If the MongoDB URL is not provided, exit the function
-        if (!MongDB_URL) {
-            logger.error("MongoDB URL is not set");
-            return;
-        }
-
         // Set mongoose to use native JavaScript promises
         mongoose.Promise = Promise;
 
