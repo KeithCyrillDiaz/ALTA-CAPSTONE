@@ -10,5 +10,5 @@ export const logger = {
         }
     },
     ready: (message: string) => console.log("Ready - ".green + message),
-    success: (message: string) => console.log("Event - ".yellow + message),
+    success: (message: string) => console.log("Success - ".yellow + message),
 }

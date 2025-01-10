@@ -10,6 +10,6 @@ exports.logger = {
         }
     },
     ready: (message) => console.log("Ready - ".green + message),
-    success: (message) => console.log("Event - ".yellow + message),
+    success: (message) => console.log("Success - ".yellow + message),
 };
 //# sourceMappingURL=logger.js.map
