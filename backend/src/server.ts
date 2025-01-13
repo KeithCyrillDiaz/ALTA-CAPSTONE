@@ -5,12 +5,13 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import compression from 'compression';
-// import router from './router';
+import router from './routes';
 
 import colors from 'colors'
 import { connectToDatabase } from './config/connectToDatabase';
 import { sendRequestEvery15minutes } from './utils/sendIntervalReq';
 import { configuration } from './config/dotenv';
+import errorHandler from './utils/errorHandler';
 
 colors.enable();
 
@@ -32,7 +33,7 @@ app.get ("/", (req, res) => {res.json("Alta Celestia Backend")});
 const port = configuration.port;
 
 server.listen(port,() => {
-    console.log("Ready - ".green + "Server Running on http://localhost:3000")
+    console.log("Ready - ".green + `Server Running on http://localhost:${port}`)
 });
 
 connectToDatabase();
@@ -41,7 +42,9 @@ connectToDatabase();
 sendRequestEvery15minutes();
 
 
-// app.use('/kalinga', router());
+app.use('/kalinga', router());
+
+app.use(errorHandler);
 
 
 export default app;
