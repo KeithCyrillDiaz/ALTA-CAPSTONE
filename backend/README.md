@@ -34,4 +34,4 @@ For a tutorial on how to integrate Gemini AI, check out this [YouTube Video](htt
 
 ### 4. Generate JWT Secret Key
 
-[Generate JWT KEY]https://jwtsecret.com/generate
+[Generate JWT KEY](https://jwtsecret.com/generate)
