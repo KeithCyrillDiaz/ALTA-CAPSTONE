@@ -6,7 +6,7 @@
 
 These packages are used to streamline the development process and are not included in the production build. Install them with the following command:
 
-npm i -D typescript ts-node nodemon @types/express @types/cors @types/cookie-parser @types/compression @types/body-parser @types/jsonwebtoken
+npm i -D typescript ts-node nodemon @types/express @types/cors @types/cookie-parser @types/compression @types/body-parser @types/jsonwebtoken @types/multer
 
 ### 2. Dependencies (for Production)
 
