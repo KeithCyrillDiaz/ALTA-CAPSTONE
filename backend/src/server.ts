@@ -12,7 +12,6 @@ import { connectToDatabase } from './config/connectToDatabase';
 import { sendRequestEvery15minutes } from './utils/sendIntervalReq';
 import { configuration } from './config/dotenv';
 import errorHandler from './utils/errorHandler';
-import { getDateToday } from './helper/date';
 
 colors.enable();
 
