@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { logger } from "../utils/logger";
-import { configuration } from "../config/dotenv";
+import { logger } from "../../utils/logger";
+import { configuration } from "../../config/dotenv";
 import jwt from 'jsonwebtoken'
 
 export const adminLogIn = async (req: Request, res: Response, next: NextFunction) => {
@@ -61,3 +61,4 @@ export const adminLogIn = async (req: Request, res: Response, next: NextFunction
         next(error);
     }
 }
+

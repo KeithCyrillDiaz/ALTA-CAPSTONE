@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authentication } from "../middleware/authentication";
-import { adminLogIn } from "../controllers/admin";
+import { adminLogIn } from "../controllers/admin/admin";
 
 export default (router: Router) => {
 
