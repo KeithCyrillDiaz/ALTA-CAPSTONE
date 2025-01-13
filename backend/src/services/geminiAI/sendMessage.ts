@@ -9,7 +9,7 @@ export const sendPromptToGemini = async (prompt: string) => {
 
         if(!apiKey || modelName) {
             logger.error("gemini API_KEY and Model Name is not set in env");
-            return;
+            throw new Error("gemini API_KEY and Model Name is not set in env");
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
