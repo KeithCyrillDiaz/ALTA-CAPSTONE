@@ -23,7 +23,7 @@ const applicationSchema = new mongoose.Schema ({
 
     //others
     employmentStatus: {type: String, default: "Pending"},
-    resumeAccuracy: {type: Number}, //percentage result based on accuracy of resume in Job Decription from AI
+    resumeAccuracy: {type: Number, required: true}, //percentage result based on accuracy of resume in Job Decription from AI
 
     //TimeStamp for filter
     month: {type: String, required: true},
