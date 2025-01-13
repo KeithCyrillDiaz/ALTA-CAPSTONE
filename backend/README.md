@@ -12,7 +12,7 @@ npm i -D typescript ts-node nodemon @types/express @types/cors @types/cookie-par
 
 These packages are used to streamline the development process and are not included in the production build. Install them with the following command:
 
-npm i body-parser colors compression cookie-parser cors dotenv express mongoose axios jsonwebtoken @google/generative-ai
+npm i body-parser colors compression cookie-parser cors dotenv express mongoose axios jsonwebtoken @google/generative-ai googleapis
 
 ### 3. Gemini API
 
