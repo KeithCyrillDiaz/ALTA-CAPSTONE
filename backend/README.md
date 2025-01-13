@@ -31,3 +31,7 @@ To obtain your Gemini API key, visit the following link:
 #### Source
 
 For a tutorial on how to integrate Gemini AI, check out this [YouTube Video](https://www.youtube.com/watch?v=0yboGn8errU&t=648s).
+
+### 4. Generate JWT Secret Key
+
+[Generate JWT KEY]https://jwtsecret.com/generate
