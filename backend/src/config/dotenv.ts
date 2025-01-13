@@ -11,6 +11,10 @@ export const configuration = {
     access_secret_key: process.env.ACCESS_TOKEN_KEY,
     admin_pass: process.env.ADMIN_PASS,
     admin_user: process.env.ADMIN_USER,
-    localOrigin: process.env.LOCAL_ORIGIN,
-    globalOrigin: process.env.GLOBAL_ORIGIN
 }
+
+export const geminiConfig= {
+    apiKey: process.env.GEMINI_API_KEY,
+    modelName: process.env.GEMINI_MODEL_NAME
+}
+
