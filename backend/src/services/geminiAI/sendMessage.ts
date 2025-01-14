@@ -7,9 +7,9 @@ export const sendPromptToGemini = async (prompt: string) => {
         const modelName = geminiConfig.modelName;
         const apiKey = geminiConfig.apiKey;
 
-        if(!apiKey || modelName) {
-            logger.error("gemini API_KEY and Model Name is not set in env");
-            throw new Error("gemini API_KEY and Model Name is not set in env");
+        if(!apiKey || !modelName) {
+            logger.error("gemini API_KEY or Model Name is not set in env");
+            throw new Error("gemini API_KEY or Model Name is not set in env");
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
@@ -50,9 +50,18 @@ export const sendPromptToGemini = async (prompt: string) => {
         const result = await chat.sendMessage(prompt);
         const response = result.response;
 
-        // console.log("response: ", response.text());
+        return response.text();
 
     } catch (error) {
         logger.error("Error sending prompt to Gemini:", error);
     }
 }
+
+
+// export const sendResumeAccuracyPrompt = async () => {
+//     try {
+//         const prompt = 
+//     } catch (error) {
+//         logger.error("Error sending prompt to Gemini:", error);
+//     }
+// }

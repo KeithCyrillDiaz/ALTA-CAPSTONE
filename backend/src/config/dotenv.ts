@@ -17,4 +17,3 @@ export const geminiConfig= {
     apiKey: process.env.GEMINI_API_KEY,
     modelName: process.env.GEMINI_MODEL_NAME
 }
-
