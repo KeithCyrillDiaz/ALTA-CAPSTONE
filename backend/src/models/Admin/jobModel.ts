@@ -7,9 +7,9 @@ import mongoose from "mongoose";
 
 const jobDescriptionSchema = new mongoose.Schema({
     title: {type: String, required: true},
-    paragraph: {type: String, required: true},
+    paragraph: {type: String},
     isBullet: {type: Boolean, required: true},
-    bulletData: [{type: String, required: true}],
+    bulletData: [{type: String}],
 })
 
 const jobSchema = new mongoose.Schema ({
@@ -31,4 +31,4 @@ const jobSchema = new mongoose.Schema ({
 
 
 
-export const JobModel = mongoose.model('Applicaiton', jobSchema);
+export const JobModel = mongoose.model('jobs', jobSchema);

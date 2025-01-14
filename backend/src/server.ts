@@ -41,10 +41,7 @@ connectToDatabase();
 //sending req to prevent render to sleep every 15m of inactivity
 sendRequestEvery15minutes();
 
-
-app.use('/kalinga', router());
-
+app.use('/altaCelestia', router());
 app.use(errorHandler);
-
 
 export default app;

@@ -6,13 +6,13 @@
 
 These packages are used to streamline the development process and are not included in the production build. Install them with the following command:
 
-npm i -D typescript ts-node nodemon @types/express @types/cors @types/cookie-parser @types/compression @types/body-parser
+npm i -D typescript ts-node nodemon @types/express @types/cors @types/cookie-parser @types/compression @types/body-parser @types/jsonwebtoken @types/multer
 
 ### 2. Dependencies (for Production)
 
 These packages are used to streamline the development process and are not included in the production build. Install them with the following command:
 
-npm i body-parser colors compression cookie-parser cors dotenv express mongoose axios
+npm i body-parser colors compression cookie-parser cors dotenv express mongoose axios jsonwebtoken @google/generative-ai googleapis
 
 ### 3. Gemini API
 
@@ -31,3 +31,7 @@ To obtain your Gemini API key, visit the following link:
 #### Source
 
 For a tutorial on how to integrate Gemini AI, check out this [YouTube Video](https://www.youtube.com/watch?v=0yboGn8errU&t=648s).
+
+### 4. Generate JWT Secret Key
+
+[Generate JWT KEY](https://jwtsecret.com/generate)

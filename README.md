@@ -29,6 +29,6 @@ This project is the official website for **Alta Celestia**, a startup focused on
 - **Frontend**: React, Node.js, Express
 - **Backend**: MongoDB, Express.js
 - **AI Integration**: Gemini AI (Learn more: [Gemini API Key Documentation](https://aistudio.google.com/apikey?_gl=1*ce2ebw*_ga*MTQ3MTc3NzYxNS4xNzM2MTYwNTc1*_ga_P1DBVKWT6V*MTczNjE2MDU3NS4xLjEuMTczNjE2MDY3OC4xNy4wLjIwMjg3NTE0NDk))
-- **Authentication**: JWT for secure login and access control
+- **Authentication**: JWT for secure login and access control [Generate JWT SECRET KEY](https://jwtsecret.com/generate)
 
 ---

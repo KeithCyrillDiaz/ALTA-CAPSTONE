@@ -7,7 +7,7 @@ const applicationSchema = new mongoose.Schema ({
     // Personal Information
     givenName: {type: String, required: true},
     lastName: {type: String, required: true},
-    birhtDay: {type: Date, required: true},
+    birthday: {type: Date, required: true},
     gender: {type: String, required: true},
     email: {type: String, required: true},
     phoneNumber: {type: Number, required: true},
@@ -15,6 +15,10 @@ const applicationSchema = new mongoose.Schema ({
     expectedSalary: {type: Number, required: true},
     coverLetterURL: {type: String, required: true},
     resumeURL: {type: String, required: true},
+
+    //FOR GEMINI PROMPTING
+    resumeString: {type: String, required: true},
+    jobId: {type: mongoose.Schema.Types.ObjectId, required: true},
     
     // Previous Company Details
     jobTitle: {type: String, required: true},
@@ -22,14 +26,18 @@ const applicationSchema = new mongoose.Schema ({
     workOnsite: {type: Boolean, required: true},
 
     //others
-    employmentStatus: {type: String, required: true},
-    resumeAccuracy: {type: Number, required: true}, //percentage result based on accuracy of resume in Job Decription from AI
+    employmentStatus: {type: String, default: "Pending"},
 
+    //GEMINI CONTENTS
+    resumeAccuracy: {type: Number, required: true}, //percentage result based on accuracy of resume in Job Decription from AI
+    geminiResponseId: {type: mongoose.Schema.Types.ObjectId, required: true},
+  
     //TimeStamp for filter
     month: {type: String, required: true},
     year: {type: Number, required: true},
 
+    
 }, {timestamps: true})
 
 
-export const ApplicationModel = mongoose.model('Applicaiton', applicationSchema);
+export const ApplicationModel = mongoose.model('Application', applicationSchema);
