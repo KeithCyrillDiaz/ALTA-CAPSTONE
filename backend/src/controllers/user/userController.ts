@@ -50,22 +50,23 @@ export const createApplication = async (req: Request, res: Response, next: NextF
         //ONLY ADD GEMINI PROMPT RESPONSE IN DATABASE IF IT IS SUCCESSFUL
         if(response) {
 
-            console.log("response: ", response);
+            console.log("gemini response: ", response);
             
             //CLEAN THE JSON STRING RESPONSE TO PREVENT ERROR ON PARSING
             const cleanedJsonString = removeTrailingCommas(response);
             
             //CONVERTS THE JSON STRING TO JSON USING PARSE AND ADD RESUME PROMPT TYPES TO MATCH THE PROMPT FORMAT TO GEMINI RESUME MODEL
             const parsedResponse: ResumePromptTypes = JSON.parse(cleanedJsonString);
-            console.log("json: ", parsedResponse)
+            console.log("parsed Gemini Response: ", parsedResponse)
+            
             //EXTRACT THE DATA
-            const {rating, shortExplanation, fullExplanation} = parsedResponse;
+            const {rating, shortExplanation, "Full Explanation": fullExplanation} = parsedResponse;
 
             const newPrompt = new GeminiResumeModel({
                 applicationId,
                 rating: rating,
                 shortExplanation: shortExplanation,
-                fullExplanation: fullExplanation,
+                "Full Explanation": fullExplanation,
             });
 
             //SAVE THE RESPONSE TO MONGODB DATABASE
