@@ -27,14 +27,14 @@ export const adminLogIn = async (req: Request, res: Response, next: NextFunction
             return;
         }
         const refreshToken = jwt.sign(
-            { username: "admin" },  // Payload as an object
+            { tokenName: "refresh" },  // Payload as an object
             refresh_secret_key, 
             { expiresIn: '1w' } // Expires in 1 week
         );
                 
         // Create access token
         const accessToken = jwt.sign(
-            { username: "admin" },  // Payload as an object
+            { tokenName: "access" },  // Payload as an object
             access_secret_key, 
             { expiresIn: '1h' } // Expires in 1 hour
         );

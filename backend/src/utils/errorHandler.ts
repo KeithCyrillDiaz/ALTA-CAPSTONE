@@ -8,16 +8,22 @@ interface CustomError extends Error {
 const errorHandler: ErrorRequestHandler = (err: CustomError, req: Request, res: Response, next: NextFunction) => {
   const ERROR_MESSAGE = {
     code: "ERR_001",
-    status: err.status || 500,
+    status: err.name === "JsonWebTokenError" ? 401 : err.status || 500,
     message: err.message,
   };
 
-  if (err.name === "TokenExpiredError") {
+  if (err.name === "JsonWebTokenError") {
+
+    logger.error("Token Expired", {
+      ERROR_MESSAGE,
+      stack: err.stack,
+    });
+
     res.status(401).json({
       code: "AUTH_002",
-      message: "Token has expired",
+      message: err.message,
     });
-    return 
+    return;
   }
 
   logger.error("Unhandled Error", {
