@@ -9,7 +9,7 @@ const geminiResumeSchema = new mongoose.Schema({
     skillsMatch: {
       score: { type: Number, required: true },
       details: {
-        strengths: { type: String, required: true },
+        strengths: { type: [String], required: true },
         missedSkills: { type: [String], required: true }
       }
     },
@@ -44,5 +44,7 @@ const geminiResumeSchema = new mongoose.Schema({
   }
 })
 
+//CREATE INDEX FOR EFFICIENT AND MUCH FASTER QUERYING
+geminiResumeSchema.index({ applicationId: 1 }); //1 FOR ASCENDING ORDER -1 FOR DESCENDING
 
 export const GeminiResumeModel = mongoose.model("Gemini_Resume_Prompt", geminiResumeSchema);
