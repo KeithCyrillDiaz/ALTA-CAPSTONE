@@ -6,12 +6,13 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import compression from 'compression';
 import router from './routes';
-
 import colors from 'colors'
 import { connectToDatabase } from './config/connectToDatabase';
 import { sendRequestEvery15minutes } from './utils/sendIntervalReq';
 import { configuration } from './config/dotenv';
 import errorHandler from './utils/errorHandler';
+import { deleteFilesInGdrive } from './services/gdrive/gdrive';
+
 
 colors.enable();
 
