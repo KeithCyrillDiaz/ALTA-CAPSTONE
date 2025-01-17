@@ -6,13 +6,13 @@
 
 These packages are used to streamline the development process and are not included in the production build. Install them with the following command:
 
-npm i -D typescript ts-node nodemon @types/express @types/cors @types/cookie-parser @types/compression @types/body-parser @types/jsonwebtoken @types/multer
+npm i -D typescript ts-node nodemon @types/express @types/cors @types/cookie-parser @types/compression @types/body-parser @types/jsonwebtoken @types/multer @types/nodemailer
 
 ### 2. Dependencies (for Production)
 
 These packages are used to streamline the development process and are not included in the production build. Install them with the following command:
 
-npm i body-parser colors compression cookie-parser cors dotenv express mongoose axios jsonwebtoken @google/generative-ai googleapis
+npm i body-parser colors compression cookie-parser cors dotenv express mongoose axios jsonwebtoken @google/generative-ai googleapis nodemailer
 
 ### 3. Gemini API
 
