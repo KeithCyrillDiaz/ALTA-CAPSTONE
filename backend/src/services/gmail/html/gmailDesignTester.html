@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Update</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: white;
+      border: 1px solid #E2E6EA;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .content {
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .content h2 {
+      color: #1C3F60;
+      margin-bottom: 16px;
+    }
+    .content p {
+      margin-bottom: 16px;
+    }
+    .content a {
+      color: #1C3F60;
+      text-decoration: none;
+    }
+    .content a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Content Section -->
+    <div class="content">
+      <h2>Application Update</h2>
+      <p>Dear ${applicantName},</p>
+      <p>
+        Thank you very much for your interest in the <strong>${jobPosition}</strong> position at <strong>Alta Celestia</strong> and for taking the time to submit your application.
+      </p>
+      <p>
+        After careful consideration, we regret to inform you that we will not be proceeding with your application at this time. The decision was a difficult one due to the high caliber of applicants we received.
+      </p>
+      <p>
+        We appreciate your efforts and are genuinely impressed with your background and experience. We encourage you to stay connected with us and consider applying for future opportunities that may better match your qualifications.
+      </p>
+      <p>
+        In the meantime, should you have any questions or require feedback, feel free to reach out to us at 
+        <a href="mailto:${gmailCredentials.contactEmail}">${gmailCredentials.contactEmail}</a>.
+      </p>
+      <p>Thank you once again for your interest in Alta Celestia, and we wish you the best of luck in your future career endeavors.</p>
+      <p>Warm regards,</p>
+      <p><strong>The Alta Celestia Team</strong></p>
+    </div>
+  </div>
+</body>
+</html>

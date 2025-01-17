@@ -24,3 +24,9 @@ export const gdriveCredentials = {
     clientEmail: process.env.GDRIVE_CLIENT_EMAIL,
     clientKey: process.env.GDRIVE_CLIENT_PRIVATE_KEY,
 }
+
+export const gmailCredentials = {
+    clientEmail: process.env.GMAIL_EMAIL,
+    clientAppPassword: process.env.GMAIL_APP_PASSWORD,
+    contactEmail: process.env.GMAIL_CONTACT_EMAIL
+}
