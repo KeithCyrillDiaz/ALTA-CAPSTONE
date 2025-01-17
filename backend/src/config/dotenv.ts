@@ -17,3 +17,10 @@ export const geminiConfig= {
     apiKey: process.env.GEMINI_API_KEY,
     modelName: process.env.GEMINI_MODEL_NAME
 }
+
+export const gdriveCredentials = {
+    resumeFolderId: process.env.GDRIVE_RESUME_FOLDER_ID,
+    coverLetterFolderId: process.env.GDRIVE_COVER_LETTER_FOLDER_ID,
+    clientEmail: process.env.GDRIVE_CLIENT_EMAIL,
+    clientKey: process.env.GDRIVE_CLIENT_PRIVATE_KEY,
+}
