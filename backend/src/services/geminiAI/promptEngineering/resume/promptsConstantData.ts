@@ -2,7 +2,7 @@
 export interface ResumePromptTypes {
     rating: number;
     shortExplanation: string;
-    fullExplanation: {
+    "Full Explanation": {
       skillsMatch: {
         score: number;
         details: {
@@ -10,28 +10,28 @@ export interface ResumePromptTypes {
           missedSkills: string[];
         };
       };
-      experience: {
+      "Experience": {
         score: number;
         details: {
           internshipExperience: string;
           technologiesUsed: string[];
         };
       };
-      education: {
+      "Education": {
         score: number;
         details: {
           degree: string;
           additionalAchievement: string;
         };
       };
-      certificationsAndProjects: {
+      "Certifications & Projects": {
         score: number;
         details: {
           certifications: string;
           projectRelevance: string;
         };
       };
-      jobRoleCompatibility: {
+      "Job Role Compatibility": {
         score: number;
         details: {
           internshipRoleCompatibility: string;
@@ -41,6 +41,7 @@ export interface ResumePromptTypes {
     };
   }
   
+  
 
 
 export const promptFormat = `
@@ -48,7 +49,7 @@ export const promptFormat = `
      {
         "rating": "Number",
         "shortExplanation": "String",
-        "fullExplanation": {
+        "Full Explanation": {
             "skillsMatch": {
                 "score": "Number",
                 "details": {
@@ -56,28 +57,28 @@ export const promptFormat = `
                     "missedSkills": ["String"]
                 }
             },
-            "experience": {
+            "Experience": {
                 "score": "Number",
                 "details": {
                     "internshipExperience": "String",
                     "technologiesUsed": ["String"]
                 }
             },
-            "education": {
+            "Education": {
                 "score": "Number",
                 "details": {
                     "degree": "String",
                     "additionalAchievement": "String"
                 }
             },
-            "certificationsAndProjects": {
+            "Certifications & Projects": {
                 "score": "Number",
                 "details": {
                     "certifications": "String",
                     "projectRelevance": "String"
                 }
             },
-            "jobRoleCompatibility": {
+            "Job Role Compatibility": {
                 "score": "Number",
                 "details": {
                     "internshipRoleCompatibility": "String",
@@ -95,7 +96,7 @@ export const samplePrompt = `
     {
         "rating": 85,
         "shortExplanation": "The resume meets most of the requirements of the Front-end Developer position but lacks certain specific skills.",
-        "fullExplanation": {
+        "Full Explanation": {
             "skillsMatch": {
                 "score": 80,
                 "details": {
@@ -109,7 +110,7 @@ export const samplePrompt = `
                     ]
                 }
             },
-            "experience": {
+            "Experience": {
                 "score": 75,
                 "details": {
                     "internshipExperience": "The candidate has relevant internship experience in web development, utilizing React, TypeScript, and backend services.",
@@ -122,21 +123,21 @@ export const samplePrompt = `
                     ]
                 }
             },
-            "education": {
+            "Education": {
                 "score": 100,
                 "details": {
                     "degree": "Bachelor of Science in Information System",
                     "additionalAchievement": "Graduated with a GPA of 1.567, Cum Laude, and President List academic reward."
                 }
             },
-            "certificationsAndProjects": {
+            "Certifications & Projects": {
                 "score": 70,
                 "details": {
                     "certifications": "Certificate of Academic Excellence, DevFest Cloud, AI Powered Virtual Professionals Seminar",
                     "projectRelevance": "The candidate's capstone project, 'Kalinga App,' demonstrates their ability to develop a MERN stack application for breast milk donation management."
                 }
             },
-            "jobRoleCompatibility": {
+            "Job Role Compatibility": {
                 "score": 85,
                 "details": {
                     "internshipRoleCompatibility": "The candidate's internship responsibilities align well with the job requirements, including developing web applications using React and TypeScript, and collaborating with team members.",

@@ -13,7 +13,7 @@ export const resumePrompt = (resume: string, jobData: any) => {
       Please provide an objective score (1-100) on the accuracy of this resume with respect to the provided job description.
       here's the sample prompt for your reference: ${samplePrompt}
 
-      Format the response in JSON as follows:
+      Strictly follow this Format just like the sample Format:
       format:${promptFormat} 
         
       RESUME: ${resume}
