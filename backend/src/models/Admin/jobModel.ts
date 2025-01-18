@@ -23,6 +23,8 @@
         employmentType: string;
         shift: string;
         schedule: string;
+
+        status: string;
         month: string;
         year: number;
         createdAt: Date;
@@ -52,10 +54,11 @@
         shift: {type: String, required: true},
         schedule: {type: String, required: true},
         
+        status: {type: String, default: 'Open'},
         month: {type: String, required: true},
         year: {type: Number, required: true},
     }, {timestamps: true});
 
-
+    jobSchema.index({status: 1});
 
     export const JobModel = mongoose.model<JobDocument>('jobs', jobSchema);
