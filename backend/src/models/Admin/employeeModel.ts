@@ -7,7 +7,7 @@ const applicationSchema = new mongoose.Schema ({
     // Personal Information
     givenName: {type: String, required: true},
     lastName: {type: String, required: true},
-    birhtDay: {type: Date, required: true},
+    birthday: {type: Date, required: true},
     gender: {type: String, required: true},
     email: {type: String, required: true},
     phoneNumber: {type: String, required: true},
@@ -24,4 +24,4 @@ const applicationSchema = new mongoose.Schema ({
 }, {timestamps: true})
 
 
-export const ApplicationModel = mongoose.model('Applicaiton', applicationSchema);
+export const EmployeeModel = mongoose.model('Employee', applicationSchema);

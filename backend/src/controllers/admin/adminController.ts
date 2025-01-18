@@ -62,3 +62,22 @@ export const adminLogIn = async (req: Request, res: Response, next: NextFunction
     }
 }
 
+export const adminLogOut = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        logger.event("Admin User is Logging Out");
+
+        res.clearCookie('refreshToken', {
+            httpOnly: true, // ENSURE THE COOKIE IS ONLY ACCESSIBLE BY THE SERVER 
+            secure: true, 
+            sameSite: 'strict', 
+        });
+    
+        res.status(200).json({
+            code: 'ALO_000',
+            message: 'Successfully logged out',
+        });
+
+    } catch (error) {
+        next(error);
+    }
+}

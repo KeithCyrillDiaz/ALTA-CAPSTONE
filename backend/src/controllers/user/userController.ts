@@ -220,67 +220,28 @@ export const createApplication = async (req: Request, res: Response, next: NextF
 }
 
 
-export const deleteUserApplication = async (req: Request, res: Response, next: NextFunction) => {
+export const getOpenJobApplications = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        logger.event("Deleting User Application");
+        logger.event("Fetching Job Applications");
 
-        const {id} = req.params;
+        const result = await JobModel.find({status: 'Open'});
 
-        if(!id) {
-            logger.error("ID in params is not Found");
-            res.status(400).json({
-                code: 'DUA_001',
-                message: "ID in params is not Found"
-            });
-            return;
-        }
-        
-
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            logger.error("Invalid ID format");
-            res.status(400).json({
-                code: 'DUA_002',
-                message: "Invalid ID format"
+        if(result.length === 0) {
+            logger.error("No Open Job Application Found");
+            res.status(404).json({
+                code: 'GJA_001',
+                message: "No Open Job Application Found",
+                data: result
             });
             return;
         }
 
-        //GET THE APPLICATION DATA BASED ON THE OBJECT ID
-        const existingApplication = await ApplicationModel.findById(id);
+        logger.success("Successfully Fetched Open Job Applications");
 
-        //CHECK IF THE APPLICATION IS EXISTING IN DATABASE
-        if(!existingApplication) {
-            logger.error("Application Not Found");
-            res.status(400).json({
-                code: 'DUA_003',
-                message: "Application Not Found"
-            });
-            return;
-        }
-
-        logger.event("Deleting the resume and cover letter in Gdrive");
-        //DELETE RESUME AND COVER LETTER IN GDRIVE
-        const {resumeGdriveID, coverLetterGdriveID} = existingApplication;
-
-        await Promise.all([
-            deleteFilesInGdrive(resumeGdriveID),
-            deleteFilesInGdrive(coverLetterGdriveID)
-        ]);
-        
-        logger.event("Deleting the Gemini Prompt in Database");
-        //DELETE THE GEMINI PROMPT IN MONGODB 
-        await GeminiResumeModel.findOneAndDelete({applicationId: id});
-
-        logger.success("Successfully Deleted Gemini Resume Response");
-
-        //DELETE THE APPLICATION
-        await ApplicationModel.findByIdAndDelete(id);
-
-        logger.success("Successfully Deleted the Application");
-        
         res.status(200).json({
-            code: 'DUA_000',
-            message: "Successfully Deleted the Application"
+            code: 'GJA_000',
+            message: "Successfully Fetched Open Job Applications",
+            data: result
         });
 
     } catch (error) {

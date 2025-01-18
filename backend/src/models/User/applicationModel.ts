@@ -18,7 +18,7 @@ const applicationSchema = new mongoose.Schema ({
 
     //FOR GEMINI PROMPTING
     resumeString: {type: String, required: true},
-    jobId: {type: mongoose.Schema.Types.ObjectId, required: true},
+    jobId: {type: mongoose.Schema.Types.ObjectId, ref: 'jobs', required: true},
     
     // Previous Company Details
     jobTitle: {type: String, required: true},
