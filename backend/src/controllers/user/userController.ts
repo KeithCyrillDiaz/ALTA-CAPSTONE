@@ -219,3 +219,32 @@ export const createApplication = async (req: Request, res: Response, next: NextF
     }
 }
 
+
+export const getOpenJobApplications = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        logger.event("Fetching Job Applications");
+
+        const result = await JobModel.find({status: 'Open'});
+
+        if(result.length === 0) {
+            logger.error("No Open Job Application Found");
+            res.status(404).json({
+                code: 'GJA_001',
+                message: "No Open Job Application Found",
+                data: result
+            });
+            return;
+        }
+
+        logger.success("Successfully Fetched Open Job Applications");
+
+        res.status(200).json({
+            code: 'GJA_000',
+            message: "Successfully Fetched Open Job Applications",
+            data: result
+        });
+
+    } catch (error) {
+        next(error);
+    }
+}

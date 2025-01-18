@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authentication } from "../middleware/authentication";
-import { createApplication } from "../controllers/user/userController";
+import { createApplication, getOpenJobApplications } from "../controllers/user/userController";
 import { upload } from "../helper/multer";
 
 const uploadFileFields = upload.fields([
@@ -10,8 +10,7 @@ const uploadFileFields = upload.fields([
 
 export default (router: Router) => {
 
-    router.post('/applyJob', uploadFileFields, createApplication);
-    
-    router.use('/user', authentication);
+    router.post('/job/apply', uploadFileFields, createApplication);
+    router.get('/job/getOpenJobs', getOpenJobApplications);
     
 }
