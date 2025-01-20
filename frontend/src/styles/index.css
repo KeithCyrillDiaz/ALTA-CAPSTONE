@@ -1,0 +1,12 @@
+
+
+/* COMPONENTS CSS */
+@import url('./components/search.css');
+@import url('./components/JobCard.css');
+@import url('./components/loader.css');
+
+
+
+/* LAYOUT CSS */
+@import url('./layouts/main/mainLayout.css');
+

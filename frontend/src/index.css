@@ -1,68 +1,210 @@
+@import url('./styles/index.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Root Variables */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+    /* PRIMARY FONT: USE FOR HEADINGS (H1, H2, H3, ETC.) */
+    --font-primary: 'Lora', serif;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    /* SECONDARY FONT: USE FOR SUBTITLES, SMALLER TEXT, OR DESCRIPTIONS */
+    --font-secondary: 'Open Sans', sans-serif;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    /* EMPHASIS FONT: USE FOR SPECIAL TEXT LIKE CALL-TO-ACTIONS OR HIGHLIGHTS */
+    --font-emphasis: 'Oswald', sans-serif;
+
+    /* BODY FONT: USE FOR REGULAR TEXT, PARAGRAPHS, AND UI ELEMENTS */
+    --font-body: 'Roboto', sans-serif;
+
+    /* THEME COLORS */
+    --color-primary: #1C3F60; /* PRIMARY COLOR: USE FOR HEADINGS OR MAIN ELEMENTS */
+    --color-text: #000000; /* BLACK FOR STANDARD TEXT */
+    --color-bg: #FFFFFF; /* WHITE FOR BACKGROUND */
+    --color-page-bg: #F5F5F5; /* WHITE FOR BACKGROUND */
+    --color-highlight: #E2E6EA; /* HIGHLIGHT COLOR FOR EMPHASIS */
+    --color-positive: #28A745; /* POSITIVE BUTTONS OR STATES */
+    --color-negative: #DC3545; /* NEGATIVE BUTTONS OR STATES */
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* GLOBAL STYLES */
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    font-family: var(--font-body); /* USING BODY FONT */
+    line-height: 1.6;
+    color: var(--color-text); /* TEXT COLOR */
+    background-color: var( --color-page-bg); /* BACKGROUND COLOR */
+    margin: 0;
+    padding: 0;
+}
+
+/* HEADINGS (H1 TO H6) */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-primary); /* USING PRIMARY FONT */
+    color: var(--color-text); /* PRIMARY COLOR */
+    line-height: 1.4;
+    margin: 1rem 0;
 }
 
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+    font-size: 2.5rem;
+    font-weight: 700;
 }
 
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.75rem;
+    font-weight: 500;
+}
+
+/* BODY TEXT */
+p {
+    font-family: var(--font-body); /* USING BODY FONT */
+    font-size: 1rem;
+    margin: 0;
+    color: var(--color-text); /* TEXT COLOR */
+}
+
+/* SECONDARY TEXT OR SUBTITLES */
+.secondary-text {
+    font-family: var(--font-secondary); /* USING SECONDARY FONT */
+    font-size: 0.875rem;
+    color: var(--color-text); /* HIGHLIGHT COLOR */
+}
+
+/* EMPHASIS OR CALLOUTS */
+.emphasis {
+    font-family: var(--font-emphasis); /* USING EMPHASIS FONT */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-primary); /* PRIMARY COLOR */
+    background-color: var(--color-highlight); /* HIGHLIGHT BACKGROUND */
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+/* BUTTONS AND UI ELEMENTS */
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+    font-family: var(--font-body); /* USING BODY FONT */
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.2rem 1.3rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: transparent;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:hover {
+    box-shadow: inset 7px 7px 7px rgba(0, 0, 0, 0.2); /* Inner shadow */
+}
+/* PRIMARY BUTTON (POSITIVE ACTIONS) */
+button.primary {
+    background-color: var(--color-primary); /* PRIMARY COLOR */
+    color: var(--color-bg); /* WHITE TEXT */
+}
+
+/* SECONDARY BUTTON (NEGATIVE OR ALTERNATIVE ACTIONS) */
+button.secondary {
+    background-color: var(--color-highlight); /* SECONDARY COLOR */
+    color: var(--color-primary); /* WHITE TEXT */
+}
+
+/* POSITIVE BUTTON (POSITIVE ACTIONS) */
+button.positive {
+    background-color: var(--color-positive); /* POSITIVE COLOR */
+    color: var(--color-bg); /* WHITE TEXT */
+}
+
+/*NEGATIVE BUTTON (NEGATIVE OR ALTERNATIVE ACTIONS) */
+button.negative {
+    background-color: var(--color-negative); /* NEGATIVE COLOR */
+    color: var(--color-bg); /* WHITE TEXT */
+}
+
+/* HIGHLIGHTED ELEMENTS */
+.highlight {
+    background-color: var(--color-highlight); /* HIGHLIGHT BACKGROUND */
+    color: var(--color-text); /* PRIMARY COLOR TEXT */
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.container {
+    max-width: 1100px;
+    padding: 0 10px;
+}
+
+input {
+    background-color: white;
+    color: var(--color-text);
+    border: none;
+    outline: none;
+    font-family: var(--font-secondary);
+    width: 90%;
+}
+
+
+/* MEDIA QUERY FOR MOBILE DEVICES */
+@media only screen and (max-width: 768px) {
+    /* ADJUST SIZES FOR MOBILE*/
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    .secondary-text {
+        font-size: 0.95rem;
+    }
+
+    p {
+        font-size: 0.8rem;
+    }
+    
+    button {
+        font-size: 0.875rem;
+    }
+}
+
+
+/* MEDIA QUERY FOR ANDROID EXPANDED OR TABLET */
+@media only screen and (min-width: 769px) and (max-width: 1280px) {
+    /* ADJUST SIZES FOR TABLET AND EXPANDED SCREENS */
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+    }
+
+    p {
+        font-size: 1rem;  /* Adjusted to make it more readable */
+    }
+
+    .secondary-text {
+        font-size: 0.875rem;  /* Slight increase for readability */
+    }
+
+    button {
+        font-size: 1rem;  /* Increased for better accessibility */
+    }
 }
