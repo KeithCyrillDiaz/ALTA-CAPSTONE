@@ -1,0 +1,21 @@
+
+
+
+.search {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+    max-width: 300px;   
+    padding: 0 10px;
+}
+
+.search .inputContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    box-shadow: 0 7px 7px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+

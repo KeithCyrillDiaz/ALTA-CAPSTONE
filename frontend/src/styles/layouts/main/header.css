@@ -1,0 +1,60 @@
+
+
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 12px;
+}
+
+
+/* Menu Container */
+.main-header-menuContainer {
+    position: fixed;
+    left: -75%; /* Initially off-screen */
+    top: 0;
+    background-color: var(--color-highlight);
+    width: 70%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    align-items: start;
+    padding: 40px 0 12px 12px;
+    transition: transform 0.3s ease-in-out; /* Apply transition for sliding effect */
+}
+
+/* Add a class when the menu is open */
+.main-header-menuContainer.open {
+    transform: translateX(0%) /* Slide the menu in */
+}
+
+
+/* TABS */
+.main-tabsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 44rem;
+}
+.main-tabsContainer .tabs {
+    display: flex;
+    align-items: center;
+    gap: 20px
+}
+
+.main-header-menuContainer.open {
+    transform: translateX(100%); /* Slide the menu in */
+}
+
+@media only screen and (min-width: 768px) {
+    .main-header-menuContainer.open {
+        transform: translateX(105%); /* Slide the menu in */
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .main-header {
+        margin: 0 40px;
+    }
+}
