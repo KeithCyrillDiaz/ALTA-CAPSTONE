@@ -13,7 +13,7 @@ export const fetchJobs = async (): Promise<JobDataTypes[] | null> => {
       const response = await axiosInstance.get(apiURL);
       //EXTRACT DATA FROM JSON DATA OF RESPONSE
       const {data} = response.data;
-      console.log("data: ", JSON.stringify(response.data, null, 2));
+      // console.log("data: ", JSON.stringify(response.data, null, 2));
       return data; 
     } catch (error) {
 
