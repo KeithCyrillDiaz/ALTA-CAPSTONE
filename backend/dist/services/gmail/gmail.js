@@ -1,0 +1,38 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sendEmail = void 0;
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const logger_1 = require("../../utils/logger");
+const dotenv_1 = require("../../config/dotenv");
+const sendEmail = async (recipientEmail, subject, htmlContent) => {
+    try {
+        logger_1.logger.event("Sending Email");
+        //SET UP EMAIL TRANSPORTER
+        const { clientAppPassword, clientEmail } = dotenv_1.gmailCredentials;
+        const transporter = nodemailer_1.default.createTransport({
+            service: 'gmail',
+            auth: {
+                user: clientEmail, // EMAIL ADDRESS OF GMAIL
+                pass: clientAppPassword, // GENERATED APP PASSWORD
+            },
+        });
+        //EMAIL OPTIONS
+        const mailOptions = {
+            from: clientEmail, // SENDER'S EMAIL ADDRESS
+            to: recipientEmail, // RECIPIENT EMAIL
+            subject, // SUBJECT EMAIL
+            html: htmlContent, // BODY OF THE EMAIL
+        };
+        //SEND EMAIL
+        await transporter.sendMail(mailOptions);
+        logger_1.logger.success(`Email sent successfully to ${recipientEmail}`);
+    }
+    catch (error) {
+        logger_1.logger.error("Failed to Send email", error);
+    }
+};
+exports.sendEmail = sendEmail;
+//# sourceMappingURL=gmail.js.map

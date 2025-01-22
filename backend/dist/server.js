@@ -9,14 +9,16 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const compression_1 = __importDefault(require("compression"));
-// import router from './router';
+const routes_1 = __importDefault(require("./routes"));
 const colors_1 = __importDefault(require("colors"));
 const connectToDatabase_1 = require("./config/connectToDatabase");
 const sendIntervalReq_1 = require("./utils/sendIntervalReq");
 const dotenv_1 = require("./config/dotenv");
+const errorHandler_1 = __importDefault(require("./utils/errorHandler"));
 colors_1.default.enable();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
+    origin: ['http://localhost:5173', 'http://localhost:4173'],
     credentials: true,
 }));
 app.use((0, compression_1.default)());
@@ -31,6 +33,7 @@ server.listen(port, () => {
 (0, connectToDatabase_1.connectToDatabase)();
 //sending req to prevent render to sleep every 15m of inactivity
 (0, sendIntervalReq_1.sendRequestEvery15minutes)();
-// app.use('/kalinga', router());
+app.use('/altaCelestia', (0, routes_1.default)());
+app.use(errorHandler_1.default);
 exports.default = app;
 //# sourceMappingURL=server.js.map
