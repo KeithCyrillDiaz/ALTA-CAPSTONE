@@ -9,7 +9,7 @@ import router from './routes';
 import colors from 'colors'
 import { connectToDatabase } from './config/connectToDatabase';
 import { sendRequestEvery15minutes } from './utils/sendIntervalReq';
-import { configuration } from './config/dotenv';
+import { configuration, corsCredentials } from './config/dotenv';
 import errorHandler from './utils/errorHandler';
 
 colors.enable();
@@ -17,7 +17,7 @@ colors.enable();
 const app = express();
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:4173'],
+    origin: corsCredentials.corsOrigin,
     credentials: true,
 }));
 

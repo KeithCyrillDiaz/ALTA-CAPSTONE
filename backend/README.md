@@ -35,3 +35,18 @@ For a tutorial on how to integrate Gemini AI, check out this [YouTube Video](htt
 ### 4. Generate JWT Secret Key
 
 [Generate JWT KEY](https://jwtsecret.com/generate)
+
+### 4. Cors Origin trick
+
+```env
+CORS_ORIGINS=http://localhost:5173,http://localhost:4173
+```
+
+#### Sample used below
+
+const allowedOrigins = process.env.CORS_ORIGINS.split(',');
+
+app.use(cors({
+origin: allowedOrigins, // This becomes an array: ['http://localhost:5173', 'http://localhost:4173']
+credentials: true,
+}));
