@@ -16,6 +16,12 @@
     background-color: white;
     box-shadow: 0 7px 7px rgba(0,0,0,0.2);
     border-radius: 4px;
-    padding: 8px 12px;
+    padding: 5px 12px;
+}
+
+@media only screen and (max-width: 375px) {
+    .search {
+        width: 200px;
+    }
 }
 

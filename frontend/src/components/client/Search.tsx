@@ -15,11 +15,12 @@ export const Search: React.FC<SearchProps> = ({
         <div className="search">
             <div className="inputContainer">
                 <input 
+                placeholder="Search"
                 onChange={(e) => onChangeText(e.target.value)}/>
-                <SearchIcon/>
+                <div onClick={onClick}>
+                    <SearchIcon/>
+                </div>
             </div>
-   
-            <button onClick={onClick} className="primary">Search</button>
         </div>
     )
 }

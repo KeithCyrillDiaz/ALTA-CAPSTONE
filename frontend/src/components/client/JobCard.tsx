@@ -1,4 +1,5 @@
-import { useDeviceType} from "../../hooks/useDeviceType";
+import React from "react";
+import { useDeviceType } from "../../hooks";
 
 interface JobCardDataType {
     _id: string;

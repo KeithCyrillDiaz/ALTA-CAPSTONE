@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useNavigate } from 'react-router-dom';
 import { BurgerIcon } from "../components";
-import { useDeviceType } from "../hooks/useDeviceType";
+import { useDeviceType } from "../hooks";
 
 
 const buttons = [
@@ -17,8 +17,8 @@ const Tabs: React.FC = () => {
     const navigate = useNavigate();
     return (
         <div className="main-tabsContainer">
-            <div className="container tabs">
-                    {buttons.map((button) => {
+            <div className="tabs">
+                {buttons.map((button) => {
                 const { id, label, path } = button;
                 return (
                     <button 
@@ -30,8 +30,10 @@ const Tabs: React.FC = () => {
                 );
             })}
             </div>
-           
-            <button className="primary" onClick={() => navigate('/')}>Join us</button>
+
+            <div className="buttonContainer">
+                <button className="primary" onClick={() => navigate('/')}>Join us</button>
+            </div>
         </div>
     );
 };
@@ -43,7 +45,12 @@ const Menu: React.FC = () => {
 
     return (
         <>
-            <div className={`main-header-menuContainer ${showMenu ? "open" : ""}`}>
+        {/* TURN THE BG TO TRANSPARENT BLACK AND CLOSE THE MENU WHEN CLICKED */}
+        {showMenu && (
+            <div className="w-full h-full z-50 fixed top-0 left-0 text-transparent bg-black opacity-70" 
+            onClick={() => setShowMenu(!showMenu)}/>
+        )}
+        <div className={`main-header-menuContainer ${showMenu ? "open" : ""}`}>
             {buttons.map((button) => {
                 const { id, label, path } = button;
                 return (
@@ -57,7 +64,8 @@ const Menu: React.FC = () => {
             })}
             <button className="primary" onClick={() => navigate('/')}>Join us</button>
         </div>
-
+        {/* overlay */}
+        
         <div onClick={() => setShowMenu(!showMenu)}>
             <BurgerIcon/>
         </div>
@@ -90,13 +98,17 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({
     children,
 }) => {
+    
+    const {isMobile} = useDeviceType()
     return (
-        <div>
+        <>
             <Header/>
-            <div className="container">
-                {children}
+            <div className={`${!isMobile ? "flex flex-col items-center justify-center" : ""}`}>
+                <div className={`container ${!isMobile ? "flex flex-col items-end" : ""}`}>
+                    {children}
+                </div>
             </div>
-        </div>
+        </>
     )
 }
 

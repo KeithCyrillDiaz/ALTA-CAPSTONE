@@ -1,0 +1,29 @@
+
+
+
+.modalLayoutContainer {
+    position: fixed;
+    background: rgba(0,0,0,0.2);
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalLayoutContainer .modal {
+    background-color: white;
+    width: 90%;
+    max-height: 200px;
+    border-radius: 3px;
+}
+
+/* PREVENT SCROLLING WHEN THE MODAL IS OPEN*/
+body.disable-scroll {
+    overflow: hidden;
+  }
+  
