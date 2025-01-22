@@ -53,7 +53,7 @@ export default tseslint.config({
 
 ### Dependencies
 
-npm install react-router-dom @types/react-router-dom @reduxjs/toolkit react-redux @types/react-redux
+npm install react-router-dom @types/react-router-dom @reduxjs/toolkit react-redux @types/react-redux axios
 
 ### Dev Dependecies
 

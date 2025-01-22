@@ -2,11 +2,12 @@
 
 /* COMPONENTS CSS */
 @import url('./components/search.css');
-@import url('./components/JobCard.css');
+@import url('./components/jobCard.css');
 @import url('./components/loader.css');
-
+@import url('./components/dropDown.css');
+@import url('./components/filterJob.css');
 
 
 /* LAYOUT CSS */
 @import url('./layouts/main/mainLayout.css');
-
+@import url('./layouts/modal.css');

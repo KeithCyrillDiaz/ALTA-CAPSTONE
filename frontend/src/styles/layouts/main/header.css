@@ -11,11 +11,12 @@
 /* Menu Container */
 .main-header-menuContainer {
     position: fixed;
-    left: -75%; /* Initially off-screen */
+    left: -70%;
     top: 0;
     background-color: var(--color-highlight);
-    width: 70%;
     height: 100vh;
+    z-index: 1000;
+    width: 70%;
     display: flex;
     flex-direction: column;
     gap: 7px;
@@ -35,26 +36,44 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 44rem;
+    gap: 50px
 }
 .main-tabsContainer .tabs {
     display: flex;
     align-items: center;
-    gap: 20px
+    gap: 20px;
+   
+}
+
+.main-tabsContainer .buttonContainer {
+    width: 100px;
+    display: flex;
+    justify-content: center;
 }
 
 .main-header-menuContainer.open {
     transform: translateX(100%); /* Slide the menu in */
 }
 
+/* TABLET */
 @media only screen and (min-width: 768px) {
     .main-header-menuContainer.open {
         transform: translateX(105%); /* Slide the menu in */
     }
+
+    .main-header-menuContainer {
+        left: -31%; /* Initially off-screen */
+        width: 30%;
+        z-index: 100;
+    }
 }
 
+/* DESKTOP */
 @media only screen and (min-width: 1024px) {
     .main-header {
         margin: 0 40px;
+  
+        
     }
+
 }
