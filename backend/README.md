@@ -44,9 +44,15 @@ CORS_ORIGINS=http://localhost:5173,http://localhost:4173
 
 #### Sample used below
 
-const allowedOrigins = process.env.CORS_ORIGINS.split(',');
+Below is an example of how to use the `CORS_ORIGINS` environment variable in your application:
 
-app.use(cors({
-origin: allowedOrigins, // This becomes an array: ['http://localhost:5173', 'http://localhost:4173']
-credentials: true,
-}));
+```ts
+const allowedOrigins = process.env.CORS_ORIGINS.split(",");
+
+app.use(
+  cors({
+    origin: allowedOrigins, // This becomes an array: ['http://localhost:5173', 'http://localhost:4173']
+    credentials: true,
+  })
+);
+```
