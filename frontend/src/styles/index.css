@@ -2,12 +2,21 @@
 
 /* COMPONENTS CSS */
 @import url('./components/search.css');
-@import url('./components/jobCard.css');
 @import url('./components/loader.css');
 @import url('./components/dropDown.css');
-@import url('./components/filterJob.css');
+@import url('./components/bulletCard.css');
+
+
+/* JOB COMPONENTS CSS*/
+@import url('./components/job/filterJob.css');
+@import url('./components/job/jobCard.css');
+@import url('./components/job/jobFeed.css');
+@import url('./components/job/renderJobDescription.css');
+@import url('./components/job/renderJobs.css');
+
 
 
 /* LAYOUT CSS */
 @import url('./layouts/main/mainLayout.css');
 @import url('./layouts/modal.css');
+

@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useNavigate } from 'react-router-dom';
-import { BurgerIcon } from "../components";
 import { useDeviceType } from "../hooks";
+import { BurgerIcon } from "../components/icons/BurgerIcon";
 
 
 const buttons = [

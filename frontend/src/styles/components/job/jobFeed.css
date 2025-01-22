@@ -1,0 +1,9 @@
+
+
+
+.jobFeedContainer {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0px;
+    gap: 12px;
+}

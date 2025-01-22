@@ -3,15 +3,10 @@
 .jobCardContainer {
     position: relative;
     background-color: white;
-    box-shadow: 0 7px 7px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 3px rgba(0,0,0,0.2);
     padding: 8px 16px;
     border-radius: 7px;
     max-width: 500px;
-    transition: 0.3s ease-in-out;
-}
-
-.jobCardContainer:hover {
-    transform: translateY(-3px);
 }
 
 .jobCardContainer .skillsContainer {
@@ -23,6 +18,8 @@
 .jobCardContainer .skills {
     display: flex;
     align-items: center;
+    max-width: 250px;
+    overflow: hidden;
 }
 
 .jobCardContainer .buttonsContainer {

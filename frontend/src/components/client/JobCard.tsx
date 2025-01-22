@@ -1,5 +1,6 @@
 import React from "react";
 import { useDeviceType } from "../../hooks";
+import { useNavigate } from "react-router-dom";
 
 interface JobCardDataType {
     _id: string;
@@ -25,11 +26,17 @@ export const JobCard: React.FC<JobCardProps> = ({
      const {_id, jobTitle, maxSalary, minSalary, shift, employmentType, skills, isSalaryRange, salaryType} = details;
 
     const salaryTypeLabel = salaryType === 'Monthly' ? "a month" : "per Week";
+    const {isDesktop} = useDeviceType();
+    const navigate = useNavigate();
 
-    const {isTablet} = useDeviceType();
+    const handleMobileClick = () => {
+        //IF DIV IS CLICKED IN DESKTOP VIEW DO NOTHING AND EXIT
+        if(isDesktop) return; //EXIT
+        navigate('/job', {state: details});
+    }
 
     return(
-        <div className="jobCardContainer">
+        <div onClick={handleMobileClick} className="jobCardContainer">
             <p className="secondary-text"><strong>{jobTitle}</strong></p>
             {isSalaryRange ? (
                 <p>PHP <strong>{minSalary} - {maxSalary}</strong> {salaryTypeLabel}</p>
@@ -51,7 +58,7 @@ export const JobCard: React.FC<JobCardProps> = ({
                 </div>
             </div>
             {/* SHOW THE BUTTONS IN DESKTOP AND TABLET MODE */}
-            {isTablet && (
+            {isDesktop && (
                 <div className="buttonsContainer">
                     <button onClick={() => onClickView(_id)} className="secondary">View</button>
                     <button className="primary">Apply</button>

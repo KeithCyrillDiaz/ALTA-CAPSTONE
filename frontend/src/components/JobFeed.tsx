@@ -6,9 +6,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { fetchJobs } from "../api/apiCalls";
 import Loader from "./Loader";
-import { SkillCard } from "./SkillCard";
+import { RenderJobDescription } from "./RenderJobDescription";
+import { useDeviceType } from "../hooks";
 
-interface JobDescription {
+
+export interface JobDescription {
     title: string;
     paragraph: string;
     isBullet: boolean;
@@ -36,32 +38,30 @@ export interface JobDataTypes {
     updatedAt: Date;
   }
 
-
-
-  interface RenderJobDescriptionProps {
-    jobDescriptionData: JobDataTypes, 
-}
-  const RenderJobDescription:React.FC<RenderJobDescriptionProps> = ({
-    jobDescriptionData,
-}) => {
-
-    const {jobTitle, jobDescription, skills, education, isSalaryRange, minSalary, maxSalary, salaryType, employmentType, shift, schedule, status} = jobDescriptionData;
-    return(
-        <div>
-            <h1>{jobTitle}</h1>
-            {skills.map((skill:string, index: number) => (
-                <SkillCard key={index} label={skill}/>
-            ))}
-        </div>
-    )
-  }
-  
   const RenderJobs: React.FC<{data: JobDataTypes[], onClick: (id: string) => void}> = ({
     data,
     onClick
   }) => {
+    const [loading, setLoading] = useState<boolean>(true);
+
+    //MOCK LOADING WHENEVER IT RERENDERS FOR BETTER USER EXPERIENCE
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);
+        },400)
+        setLoading(true);
+    },[])
+
+    if(loading) {
+      return (
+        <div className="renderJobDescriptionContainer">
+          <Loader/>
+        </div>
+      )
+    }
+    
     return (
-      <div className='my-4 flex flex-col gap-4'>
+      <div className='renderJob'>
         {data.map((job) => {
           return (
                 <JobCard onClickView={onClick} key={job._id} details={job}/>
@@ -80,6 +80,8 @@ export const JobFeed: React.FC= () => {
 
   //REACT HOOKS
   const [loading, setLoading] = useState<boolean>(true);
+  //CUSTOME HOOKS
+  const {isMobile, isTablet} = useDeviceType();
 
   const handleChooseJob = (id: string) => {
     dispatch(findJob(id));
@@ -89,23 +91,29 @@ export const JobFeed: React.FC= () => {
     const fetchData = async () => {
       setLoading(true);
       const data = await fetchJobs();
-      if(data)dispatch(setJobs(data));
-   
-      setLoading(false)
+      if(data) {
+        dispatch(setJobs(data));
+      }
+     
+      setLoading(false);
     };
     fetchData();
 
  },[dispatch])
 
   if(loading) {
-    return <Loader/>
+    return (
+      <div className="container">
+        <Loader/>
+      </div>
+    )
   }
 
     return (
-        <div className="container">
+        <div className="jobFeedContainer">
             {jobs ? (
               <>
-                {chosenJob && <RenderJobDescription jobDescriptionData={chosenJob}/>}
+                {chosenJob && (!isMobile || isTablet) && <RenderJobDescription jobDescriptionData={chosenJob}/>}
                 <RenderJobs data={jobs} onClick={handleChooseJob}/>
               </>
             ) : (

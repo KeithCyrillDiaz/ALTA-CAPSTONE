@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-primary); /* USING PRIMARY FONT */
     color: var(--color-text); /* PRIMARY COLOR */
     line-height: 1.4;
-    margin: 1rem 0;
+    padding: 0;
 }
 
 h1 {
@@ -58,7 +58,7 @@ h2 {
 }
 
 h3 {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
     font-weight: 500;
 }
 
@@ -68,6 +68,7 @@ p {
     font-size: 1rem;
     margin: 0;
     color: var(--color-text); /* TEXT COLOR */
+    padding: 0;
 }
 
 /* SECONDARY TEXT OR SUBTITLES */
@@ -98,12 +99,12 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: 0.3s ease;
     background-color: transparent;
 }
 
 button:hover {
-    box-shadow: inset 7px 7px 7px rgba(0, 0, 0, 0.2); /* Inner shadow */
+    opacity: 70%; /* Inner shadow */
 }
 /* PRIMARY BUTTON (POSITIVE ACTIONS) */
 button.primary {
@@ -133,8 +134,6 @@ button.negative {
 .highlight {
     background-color: var(--color-highlight); /* HIGHLIGHT BACKGROUND */
     color: var(--color-text); /* PRIMARY COLOR TEXT */
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
 }
 
 .container {
@@ -151,6 +150,13 @@ input {
     width: 90%;
 }
 
+.grid-col-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Create 3 equal columns */
+    gap: 16px; /* Adjust the gap between the items */
+}
+
+
 
 /* MEDIA QUERY FOR MOBILE DEVICES */
 @media only screen and (max-width: 768px) {
@@ -164,7 +170,7 @@ input {
     }
 
     h3 {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
     }
 
     .secondary-text {

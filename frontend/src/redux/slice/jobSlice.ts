@@ -42,6 +42,10 @@ const jobSlice = createSlice({
                     return map;
             },{});
 
+            //SET CHOSEN JOB TO FIRST INDEX OF THE FILTERED JOB DATA ARRAY
+            const jobArray = state.filteredJob;
+            state.chosenJob = jobArray[0];
+
             //SET UP ALL SKILLS
             const allSkills = jobDataArray.map((item) => item.skills).flat();
             //USE NEW SET TO REMOVE DUPLICATES
