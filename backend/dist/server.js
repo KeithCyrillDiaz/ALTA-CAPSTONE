@@ -18,7 +18,7 @@ const errorHandler_1 = __importDefault(require("./utils/errorHandler"));
 colors_1.default.enable();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)({
-    origin: ['http://localhost:5173', 'http://localhost:4173'],
+    origin: dotenv_1.corsCredentials.corsOrigin,
     credentials: true,
 }));
 app.use((0, compression_1.default)());
