@@ -1,0 +1,187 @@
+import React, { useEffect, useState } from "react";
+import { JobDataTypes, JobDescription } from "./JobFeed";
+import { SkillsIcon } from "./icons/SkillsIcon";
+import EducationIcon from "./icons/EducationIcon";
+import { EmploymentTypeIcon, SalaryIcon, SalaryTypeIcon, ScheduleIcon, ShiftIcon } from "./icons/JobDetailsIcons";
+import { useDeviceType } from "../hooks";
+import { BulletCard } from "./BulletCard";
+import Loader from "./Loader";
+
+
+
+const IconWithLabel: React.FC<{ label: string; element: React.ReactNode }> = ({
+    label,
+    element,
+  }) => {
+    return (
+      <div className="flex gap-2 items-center">
+        {element}
+        <p>
+          <strong>{label}</strong>
+        </p>
+      </div>
+    );
+  };
+
+const JobDescriptionCard: React.FC<{data: JobDescription}> = ({data}) => {
+    const {title, paragraph, isBullet, bulletData} = data;
+    return (
+        <>
+            {isBullet ? (
+                <>
+                    <p>
+                        <strong>{title}</strong>
+                    </p>
+                    <div className="ml-4 flex flex-col gap-2">
+                        {bulletData.map((item, index) => (
+                            <BulletCard key={index} label={item}/>
+                        ))}
+                    </div>
+                   
+                </>
+            ) : (
+                //DISPLAY AS PARAGRAPH IF ITS NOT BULLET
+                <>
+                    <p>
+                        <strong>{title}</strong>
+                    </p>
+                    <div className="">
+                        <p>{paragraph}</p>
+                    </div>
+                </>
+            )}
+        </>
+    )
+}
+interface RenderJobDescriptionProps {
+jobDescriptionData: JobDataTypes, 
+}
+ export const RenderJobDescription: React.FC<RenderJobDescriptionProps> = ({
+    jobDescriptionData,
+}) => {
+    // CUSTOM HOOK
+    const {isMobile} = useDeviceType();
+    const [loading, setLoading] = useState<boolean>(true);
+
+    const {jobTitle, jobDescription, skills, education, isSalaryRange, minSalary, maxSalary, salaryType, employmentType, shift, schedule} = jobDescriptionData;
+    
+    const jobDetailsRenderFormat = [
+        {
+            label: 'Salary',
+            element: <SalaryIcon/>,
+            data: isSalaryRange ? `PHP ${minSalary} - ${maxSalary}` : `PHP ${minSalary}`
+        },
+        {
+            label: 'Salary Type',
+            element: <SalaryTypeIcon/>,
+            data: salaryType
+        },
+        {
+            label: 'Employment Type',
+            element: <EmploymentTypeIcon/>,
+            data: employmentType
+        },
+        {
+            label: 'Schedule',
+            element: <ScheduleIcon/>,
+            data: schedule
+        },
+        {
+            label: 'Shift',
+            element: <ShiftIcon/>,
+            data: shift
+        },
+
+    ]
+
+    //MOCK LOADING EFFECT WHENEVER JOB DESCRIPTION DATA CHANGES FOR BETTER UI EXPERIENCE AND TO RESET THE SCROLL BAR
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);
+        },400);
+         //THIS WILL GET TRIGGER FIRST
+        setLoading(true)
+    },[jobDescriptionData])
+    
+    if(loading) {
+        return (
+            <div className="renderJobDescriptionContainer">
+                 <Loader/>
+            </div>
+        )
+    }
+    return(
+        <div className="renderJobDescriptionContainer">
+            <h3><strong>{jobTitle}</strong></h3>
+
+            {/* SKILLS */}
+            <IconWithLabel
+            label="Skills"
+            element={<SkillsIcon/>}
+            />
+            <div className="bulletContainer">
+                {skills.map((skill:string, index: number) => (
+                    <BulletCard key={index} label={skill}/>
+                ))}
+            </div>
+
+            {/* EDUCATION */}
+            <IconWithLabel
+            label="Education"
+            element={<EducationIcon/>}
+            />
+            <div className="bulletContainer">
+                {education.map((skill:string, index: number) => (
+                    <BulletCard key={index} label={skill}/>
+                ))}
+            </div>
+
+            {/* JOB DETAILS */}
+            <p>
+                <strong>Job Details</strong>
+            </p>
+            {isMobile ? (
+                <>
+                {jobDetailsRenderFormat.map((item, index) => {
+                    const {label, data, element} = item;
+                    return (
+                        <div key={index} className="flex items-center gap-4">
+                            <IconWithLabel
+                            label={label}
+                            element={element}
+                            />
+                            <p>{data}</p>
+                        </div>
+                    )
+                })}
+                </>
+            ) : (
+            // IF THE DEVICE IS DESKTOP OR TABLET
+                <div className="grid-col-2 ml-4">
+                    {jobDetailsRenderFormat.map((item, index) => {
+                        const {label, data, element} = item;
+                        return (
+                        <div key={index}>
+                            <IconWithLabel
+                                label={label}
+                                element={element}
+                                />
+                            <p className="ml-8">{data}</p>
+                        </div>
+                        )
+                    })}
+                </div>
+            )}
+
+            <p><strong>Job Description</strong></p>
+            {/* JOB DESCRIPTION */}
+            <div className="jobDescriptionContainer">
+                {jobDescription.map((item, index) => (
+                    <JobDescriptionCard key={index} data={item}/>
+                ))}
+            </div>
+            
+            
+        </div>
+    )
+  }

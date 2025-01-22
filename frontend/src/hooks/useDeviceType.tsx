@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 
 const useDeviceType = () => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [isTablet, setIsTablet] = useState(window.innerWidth >= 768);
     const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 

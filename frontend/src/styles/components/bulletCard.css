@@ -1,0 +1,25 @@
+
+
+
+.bulletCardContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: space-between;
+}
+
+.bulletCardContainer .labelContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.bulletCardContainer .close {
+    transition: 0.2s ease-in-out;
+}
+
+.bulletCardContainer .close:hover {
+    transform: scale(1.5);
+    cursor: pointer;
+}
