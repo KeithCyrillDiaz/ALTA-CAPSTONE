@@ -3,7 +3,6 @@ import axios from "axios";
 import envConfig from "../config/env";
 import { endpointAdmin} from "./endpoint";
 
-console.log("envConfig.apiBaseUrl: ", envConfig.apiBaseUrl);
 const axiosInstance = axios.create({
     baseURL: envConfig.apiBaseUrl,
     headers: {
