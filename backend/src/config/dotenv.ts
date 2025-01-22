@@ -30,3 +30,7 @@ export const gmailCredentials = {
     clientAppPassword: process.env.GMAIL_APP_PASSWORD,
     contactEmail: process.env.GMAIL_CONTACT_EMAIL
 }
+
+export const corsCredentials = {
+    corsOrigin: process.env.CORS_ORIGINS.split(',')
+}
