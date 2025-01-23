@@ -62,7 +62,7 @@ export interface JobDataTypes {
 
     if(loading) {
       return (
-        <div className="renderJobDescriptionContainer">
+        <div className="feedContentContainer">
           <Loader/>
         </div>
       )
