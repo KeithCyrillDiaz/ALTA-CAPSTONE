@@ -8,6 +8,7 @@ import { fetchJobs } from "../api/apiCalls";
 import Loader from "./Loader";
 import { RenderJobDescription } from "./RenderJobDescription";
 import { useDeviceType } from "../hooks";
+import { useNavigate } from "react-router-dom";
 
 
 export interface JobDescription {
@@ -38,9 +39,16 @@ export interface JobDataTypes {
     updatedAt: Date;
   }
 
-  const RenderJobs: React.FC<{data: JobDataTypes[], onClick: (id: string) => void}> = ({
+  interface RenderJobsProps {
+    data: JobDataTypes[], 
+    onClickView: (id: string) => void;
+    onClickApply: (id: string) => void;
+  }
+
+  const RenderJobs: React.FC<RenderJobsProps> = ({
     data,
-    onClick
+    onClickView,
+    onClickApply
   }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -64,7 +72,7 @@ export interface JobDataTypes {
       <div className='renderJob'>
         {data.map((job) => {
           return (
-                <JobCard onClickView={onClick} key={job._id} details={job}/>
+                <JobCard onClickApply={onClickApply} onClickView={onClickView} key={job._id} details={job}/>
           )
         })}
       </div>
@@ -80,8 +88,10 @@ export const JobFeed: React.FC= () => {
 
   //REACT HOOKS
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
+
   //CUSTOME HOOKS
-  const {isMobile, isTablet} = useDeviceType();
+  const {isTablet, isDesktop} = useDeviceType();
 
   const handleChooseJob = (id: string) => {
     dispatch(findJob(id));
@@ -110,11 +120,11 @@ export const JobFeed: React.FC= () => {
   }
 
     return (
-        <div className="jobFeedContainer">
+        <div className="feedContainer">
             {jobs ? (
               <>
-                {chosenJob && (!isMobile || isTablet) && <RenderJobDescription jobDescriptionData={chosenJob}/>}
-                <RenderJobs data={jobs} onClick={handleChooseJob}/>
+                {chosenJob && ( isTablet || isDesktop)  && <RenderJobDescription jobDescriptionData={chosenJob}/>}
+                <RenderJobs data={jobs} onClickView={handleChooseJob} onClickApply={() => {navigate('/job/apply')}}/>
               </>
             ) : (
               <h1>No open job at the Moment</h1>

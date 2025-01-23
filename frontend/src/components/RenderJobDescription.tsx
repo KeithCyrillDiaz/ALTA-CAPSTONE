@@ -111,7 +111,7 @@ jobDescriptionData: JobDataTypes,
         )
     }
     return(
-        <div className="renderJobDescriptionContainer">
+        <div className="renderJobDescriptionContainer feedContentContainer">
             <h3><strong>{jobTitle}</strong></h3>
 
             {/* SKILLS */}

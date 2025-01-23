@@ -17,22 +17,26 @@ interface JobCardDataType {
 interface JobCardProps {
     details: JobCardDataType;
     onClickView: (id: string) => void;
+    onClickApply: (id: string) => void;
 }
 
 export const JobCard: React.FC<JobCardProps> = ({
     details,
     onClickView,
+    onClickApply
 }) => {
      const {_id, jobTitle, maxSalary, minSalary, shift, employmentType, skills, isSalaryRange, salaryType} = details;
 
     const salaryTypeLabel = salaryType === 'Monthly' ? "a month" : "per Week";
-    const {isDesktop} = useDeviceType();
+    const {isDesktop, isTablet} = useDeviceType();
     const navigate = useNavigate();
 
     const handleMobileClick = () => {
-        //IF DIV IS CLICKED IN DESKTOP VIEW DO NOTHING AND EXIT
-        if(isDesktop) return; //EXIT
-        navigate('/job', {state: details});
+        
+        //IF DIV IS CLICKED IN DESKTOP OR IN TABLET MODE DO NOTHING AND EXIT
+        if(isDesktop || isTablet) return; //EXIT
+
+        navigate('/job/view', {state: details});
     }
 
     return(
@@ -57,14 +61,14 @@ export const JobCard: React.FC<JobCardProps> = ({
                     })}
                 </div>
             </div>
-            {/* SHOW THE BUTTONS IN DESKTOP AND TABLET MODE */}
-            {isDesktop && (
+            {/* SHOW THE BUTTONS IN TABLE MODE SIZE AND ABOVE*/}
+            {isTablet && (
                 <div className="buttonsContainer">
                     <button onClick={() => onClickView(_id)} className="secondary">View</button>
-                    <button className="primary">Apply</button>
+                    <button onClick={() => onClickApply(_id)} className="primary">Apply</button>
                 </div>
             )}
-            
+
         </div>
     )
 }

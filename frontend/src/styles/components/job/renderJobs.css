@@ -13,9 +13,18 @@
     padding-bottom: 16px;
 }
 
+/* TABLET MODE */
 @media only screen and (max-width: 768px) {
     .renderJob {
+        height: 425px;
         max-height: unset;
-        height: 80vh;
+    }
+}
+
+/* SMALL LAPTOP */
+@media only screen and (max-width: 1024px) {
+    .renderJob {
+        height: 75vh;
+        max-height: unset;
     }
 }
