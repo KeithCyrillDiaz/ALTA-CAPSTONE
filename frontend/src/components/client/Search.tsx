@@ -13,7 +13,7 @@ export const Search: React.FC<SearchProps> = ({
 }) => {
     return(
         <div className="search">
-            <div className="inputContainer">
+            <div className="searchContainer">
                 <input 
                 placeholder="Search"
                 onChange={(e) => onChangeText(e.target.value)}/>

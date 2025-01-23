@@ -105,13 +105,13 @@ jobDescriptionData: JobDataTypes,
     
     if(loading) {
         return (
-            <div className="renderJobDescriptionContainer">
+            <div className="feedContentContainer">
                  <Loader/>
             </div>
         )
     }
     return(
-        <div className="renderJobDescriptionContainer">
+        <div className="renderJobDescriptionContainer feedContentContainer">
             <h3><strong>{jobTitle}</strong></h3>
 
             {/* SKILLS */}

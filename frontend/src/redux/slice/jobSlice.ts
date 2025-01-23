@@ -66,7 +66,6 @@ const jobSlice = createSlice({
             const id = action.payload;
             // THIS IS WERE THE HASH MAP BECOMES HANDY, IT DOES NOT NEED ITERATION TO LOOK FOR THE DESIRED JOB DATA
             state.chosenJob = state.jobMap[id] || null;
-            state.isJobDataFiltered = true;
         },
 
         filterJob: (state, action: PayloadAction<{skill: string, employmentType:string}>) => {

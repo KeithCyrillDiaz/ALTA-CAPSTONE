@@ -32,3 +32,10 @@
     width: 100px;
 }
 
+@media only screen and (max-width: 768px) {
+    .jobCardContainer .buttonsContainer {
+        right: 0;
+        gap: 8px;
+    }
+    
+}

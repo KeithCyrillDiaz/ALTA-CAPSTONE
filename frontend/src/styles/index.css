@@ -5,14 +5,15 @@
 @import url('./components/loader.css');
 @import url('./components/dropDown.css');
 @import url('./components/bulletCard.css');
+@import url('./components/input.css');
 
 
 /* JOB COMPONENTS CSS*/
 @import url('./components/job/filterJob.css');
 @import url('./components/job/jobCard.css');
-@import url('./components/job/jobFeed.css');
 @import url('./components/job/renderJobDescription.css');
 @import url('./components/job/renderJobs.css');
+@import url('./components/job/jobForm.css');
 
 
 

@@ -1,23 +1,5 @@
 
 
-
-.renderJobDescriptionContainer {
-    max-width: 500px;
-    width: 500px;
-    height: 500px;
-    max-height: 500px;
-    border-radius: 7px;
-    box-shadow: 0px 3px 7px rgba(0,0,0,0.2);
-    padding: 8px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    padding-top: 12px;
-    background-color: white;
-}
-
 .renderJobDescriptionContainer .bulletContainer {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Create 2 equal columns */
@@ -33,17 +15,10 @@
 }
 
 /* MOBILE PHONE */
-@media only screen and (max-width: 768px) {
-    .renderJobDescriptionContainer { 
-        height: unset;
-        max-height: unset;
-        max-width: unset;
-        width: 100%;
-    }
+@media only screen and (max-width: 760px) {
 
     .renderJobDescriptionContainer .bulletContainer {
         padding: 0 ;
         padding-left: 24px;
     }
-    
 }
