@@ -34,3 +34,7 @@ export const gmailCredentials = {
 export const corsCredentials = {
     corsOrigin: process.env.CORS_ORIGINS.split(',')
 }
+
+export const frontEndCredentials = {
+    clientToken: process.env.FRONTEND_TOKEN
+}

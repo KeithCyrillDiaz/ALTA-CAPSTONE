@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { authentication } from "../middleware/authentication";
-import { createApplication, getOpenJobApplications } from "../controllers/user/userController";
+import { createApplication, getJobInformation, getOpenJobApplications } from "../controllers/user/userController";
 import { upload } from "../helper/multer";
+import { clientAuthentication } from "../middleware/authentication";
 
 const uploadFileFields = upload.fields([
     { name: 'resume', maxCount: 1 },
@@ -9,8 +9,11 @@ const uploadFileFields = upload.fields([
 ]);
 
 export default (router: Router) => {
+    router.use("/client", clientAuthentication);
 
-    router.post('/job/apply', uploadFileFields, createApplication);
-    router.get('/job/getOpenJobs', getOpenJobApplications);
+    //PROTECTED ROUTES
+    router.post('/client/job/apply', uploadFileFields, createApplication);
+    router.get('/client/job/getOpenJobs', getOpenJobApplications);
+    router.get('/client/job/getChosenJob/:id', getJobInformation)
     
 }

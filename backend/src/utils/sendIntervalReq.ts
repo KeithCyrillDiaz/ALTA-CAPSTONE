@@ -13,6 +13,6 @@ export const sendRequestEvery15minutes = () => {
         } catch (error) {
             logger.error("error sending request");
         }
-    }, 900000); // 900000 ms = 15 minutes
+    }, 840000); // 840,000 ms = 14 minutes
 
 }

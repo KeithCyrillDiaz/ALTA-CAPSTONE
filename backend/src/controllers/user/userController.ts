@@ -248,3 +248,33 @@ export const getOpenJobApplications = async (req: Request, res: Response, next: 
         next(error);
     }
 }
+
+
+export const getJobInformation = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        logger.event("Fetching Job Infomration By ID");
+
+        const {id} = req.params;
+
+        const result = await JobModel.findById(id);
+
+        if(!result) {
+            logger.error("Job Information Not Found");
+            res.status(404).json({
+                code: "GJI_001",
+                message: "Job Information Not Found"
+            });
+            return;
+        }
+
+        logger.success("Successfully Fetched Job Information");
+        res.status(200).json({
+            code: "GJI_000",
+            message: "Successfully Fetched Job Information",
+            data: result
+        })
+
+    } catch (error) {
+        next(error);
+    }
+}
