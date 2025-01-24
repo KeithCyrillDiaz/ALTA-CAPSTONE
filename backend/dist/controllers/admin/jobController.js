@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateJobInformation = exports.updateJobStatus = exports.getJobApplications = exports.createJob = void 0;
 const logger_1 = require("../../utils/logger");
-const jobModel_1 = require("../../models/admin/jobModel");
 const date_1 = require("../../helper/date");
 const resultHandler_1 = require("../../utils/resultHandler");
 const mongoose_1 = __importDefault(require("mongoose"));
+const jobModel_1 = require("../../models/admin/jobModel");
 const createJob = async (req, res, next) => {
     try {
         logger_1.logger.event("Creating Job");
