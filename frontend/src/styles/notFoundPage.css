@@ -1,0 +1,40 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    background-color: var(--color-bg);
+  }
+  
+  .not-found-title {
+    font-family: var(--font-primary);
+    font-size: 6rem;
+    color: var(--color-primary);
+    margin: 0;
+  }
+  
+  .not-found-message {
+    font-family: var(--font-secondary);
+    font-size: 1.25rem;
+    color: var(--color-text);
+    margin: 20px 0;
+  }
+  
+  .not-found-link {
+    font-family: var(--font-emphasis);
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    text-decoration: none;
+    border: 1px solid var(--color-primary);
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .not-found-link:hover {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+  }
+  
