@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { logger } from "../../utils/logger";
-import { JobModel } from "../../models/admin/jobModel";
+
 import { getDateToday } from "../../helper/date";
 import { createResultHandler } from "../../utils/resultHandler";
 import mongoose from "mongoose";
+import { JobModel } from "../../models/admin/jobModel";
 
 export const createJob = async (req: Request, res: Response, next: NextFunction) => {
     try {
