@@ -124,7 +124,7 @@ export const JobForm: React.FC = () => {
 
     const location = useLocation();
     const {id} = location.state;
-    
+
     const chosenJob = useSelector((state: RootState) => state.job.chosenJob);
 
     const [jobData, setJobData] = useState<JobDataTypes | null>(chosenJob)
@@ -135,7 +135,7 @@ export const JobForm: React.FC = () => {
         }
 
         const fetchData = async () => {
-
+            
         }
     },[jobData])
 

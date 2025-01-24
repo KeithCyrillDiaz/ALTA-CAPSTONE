@@ -33,3 +33,5 @@ export const fetchJobs = async (): Promise<JobDataTypes[] | null> => {
     }
     }
   };
+
+  export const 
