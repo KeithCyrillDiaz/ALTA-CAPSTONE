@@ -1,7 +1,8 @@
 import React from "react";
 import { useDeviceType } from "../../hooks";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { findJob } from "../../redux/slice/jobSlice";
 
 interface JobCardDataType {
     _id: string;
@@ -29,13 +30,18 @@ export const JobCard: React.FC<JobCardProps> = ({
     const salaryTypeLabel = salaryType === 'Monthly' ? "a month" : "per Week";
     const {isDesktop, isTablet} = useDeviceType();
     const navigate = useNavigate();
-
+    const dispatch = useDispatch();
     const handleMobileClick = () => {
         
         //IF DIV IS CLICKED IN DESKTOP OR IN TABLET MODE DO NOTHING AND EXIT
         if(isDesktop || isTablet) return; //EXIT
 
         navigate('/job/view', {state: details});
+    }
+
+    const handleApplyClick = () => {
+        dispatch(findJob(_id));
+        navigate(`/job/apply/${_id}`);
     }
 
     return(
@@ -64,9 +70,7 @@ export const JobCard: React.FC<JobCardProps> = ({
             {isTablet && (
                 <div className="buttonsContainer">
                     <button onClick={() => onClickView(_id)} className="secondary">View</button>
-                    <button className="primary">
-                        <Link to={{ pathname: `/job/apply/${_id}`}}>Apply</Link>
-                    </button>
+                    <button onClick={handleApplyClick} className="primary">Apply</button>
                 </div>
             )}
 
