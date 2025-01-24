@@ -6,7 +6,9 @@ import { useDeviceType } from "../hooks";
 import { Input } from "./Input";
 import { DropDown, DropDownDataType } from "./DropDown";
 import { JobDataTypes } from "./JobFeed";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { fetchChosenJob } from "../api/apiCalls";
+import Loader from "./Loader";
 
 export interface JobApplicationFormTypes {
     givenName: string;
@@ -122,28 +124,51 @@ const Form: React.FC = () => {
 
 export const JobForm: React.FC = () => {
 
-    const location = useLocation();
-    const {id} = location.state;
+    const { id } = useParams<{ id: string }>();
 
     const chosenJob = useSelector((state: RootState) => state.job.chosenJob);
 
-    const [jobData, setJobData] = useState<JobDataTypes | null>(chosenJob)
+    const [jobData, setJobData] = useState<JobDataTypes | null>(chosenJob);
+    const [loading, setLoading] = useState<boolean>(false);
 
+
+    //THIS FUNCTION IS FOR FETCHING THE CHOSEN JOB DATA INCASE THE USER REFRESH THE PAGE
+    // THIS IS NEEDED SINCE REDUX STORAGE WILL RESET OR CLEARED AND THE JOB DATA WILL BE NULL AFTER THE PAGE IS REFRESHED
     useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            //CHECK IF ID IS INCLUDED IN PARAMS ROUTE
+            if(!id) {
+                // IF NOT, RETURN OR EXIT THE FUNCTION
+                console.log("id Is Undefiend in Params");
+                return;
+            }
+            const data = await fetchChosenJob(id);
+            setJobData(data);
+            setLoading(false);
+        }
+    
         if(!jobData) {
-            
+            console.log("jobData is null");
+            fetchData();
         }
 
-        const fetchData = async () => {
-            
-        }
-    },[jobData])
+    },[jobData, setLoading, id])
 
     //CUSTOM HOOKS
     const {isDesktop, isTablet} = useDeviceType();
+
+    if(loading) {
+        return (
+            <div className="container">
+                <Loader/>
+            </div>
+        )
+    }
+
     return (
         <div className="feedContainer">
-            {chosenJob && (isDesktop || isTablet) && <RenderJobDescription jobDescriptionData={chosenJob}/>}
+            {jobData && (isDesktop || isTablet) && <RenderJobDescription jobDescriptionData={jobData}/>}
             <Form/>
         </div>
     )

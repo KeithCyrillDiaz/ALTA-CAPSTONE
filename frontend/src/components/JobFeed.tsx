@@ -8,7 +8,6 @@ import { fetchJobs } from "../api/apiCalls";
 import Loader from "./Loader";
 import { RenderJobDescription } from "./RenderJobDescription";
 import { useDeviceType } from "../hooks";
-import { useNavigate } from "react-router-dom";
 
 
 export interface JobDescription {
@@ -42,13 +41,11 @@ export interface JobDataTypes {
   interface RenderJobsProps {
     data: JobDataTypes[], 
     onClickView: (id: string) => void;
-    onClickApply: (id: string) => void;
   }
 
   const RenderJobs: React.FC<RenderJobsProps> = ({
     data,
     onClickView,
-    onClickApply
   }) => {
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -72,7 +69,7 @@ export interface JobDataTypes {
       <div className='renderJob'>
         {data.map((job) => {
           return (
-                <JobCard onClickApply={onClickApply} onClickView={onClickView} key={job._id} details={job}/>
+                <JobCard onClickView={onClickView} key={job._id} details={job}/>
           )
         })}
       </div>
@@ -88,7 +85,6 @@ export const JobFeed: React.FC= () => {
 
   //REACT HOOKS
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
 
   //CUSTOME HOOKS
   const {isTablet, isDesktop} = useDeviceType();
@@ -124,7 +120,7 @@ export const JobFeed: React.FC= () => {
             {jobs ? (
               <>
                 {chosenJob && ( isTablet || isDesktop)  && <RenderJobDescription jobDescriptionData={chosenJob}/>}
-                <RenderJobs data={jobs} onClickView={handleChooseJob} onClickApply={() => {navigate('/job/apply')}}/>
+                <RenderJobs data={jobs} onClickView={handleChooseJob}/>
               </>
             ) : (
               <h1>No open job at the Moment</h1>

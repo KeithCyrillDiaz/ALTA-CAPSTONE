@@ -21,3 +21,6 @@
 @import url('./layouts/main/mainLayout.css');
 @import url('./layouts/modal.css');
 
+
+/* NOT FOUND PAGE */
+@import url('./notFoundPage.css');

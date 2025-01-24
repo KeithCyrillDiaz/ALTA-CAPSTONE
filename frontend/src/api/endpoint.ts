@@ -5,6 +5,7 @@ export const endpointClient = {
     jobURL: {
         APPLY_JOB: '/client/job/apply',
         FETCH_JOBS: '/client/job/getOpenJobs',
+        FETCH_CHOSEN_JOB: '/client/job/getChosenJob'
     }
 }
 
