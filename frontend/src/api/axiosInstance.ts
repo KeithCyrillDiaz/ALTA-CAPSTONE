@@ -14,11 +14,27 @@ const axiosInstance = axios.create({
 // ADD REQUEST INTERCEPTOR TO ATTACH TOKEN TO REQUEST
 axiosInstance.interceptors.request.use(
   (config) => {
-    //ACCESS THE TOKEN IN STORAGE
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+    //INITIALIZE AUTHTOKEN VARIABLE TO STORE THE AUTHORIZATION TOKEN
+    let authToken;
+
+    //CHECK IF THE REQ IS FROM ADMIN OR USER
+    const isAdminRequest = config.url?.includes("/admin");
+
+    if(isAdminRequest) {
+      //IF THE REQ IS FROM ADMIN THEN ACCESS THE TOKEN IN STORAGE
+      authToken = localStorage.getItem('authToken');
+    } else {
+      //IF NOT THEN GET THE TOKEN FROM ENV
+      authToken = envConfig.clientToken;
     }
+
+    //IF TOKEN IS STORED STORED IT IN AUTHORIZATION IN HEADERS
+    if (authToken) {
+      config.headers['Authorization'] = `Bearer ${authToken}`;
+    } else {
+      console.warn("No token found for request:", config.url); // LOGGING FOR DEBUGGING
+    }
+
     return config;
   },
   (error) => {
@@ -34,6 +50,19 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     // HANDLE UNAUTHORIZED ERROR (AUTH TOKEN EXPIRED)
+
+    // CHECK IF THE REQUEST IS FROM CLIENT 
+    const requestUrl = error.config?.url;
+    const isClientRequest = requestUrl.includes("/client");
+
+    if(isClientRequest && !envConfig.clientToken) {
+      // IF ITS CLIENT REQUEST AND NO TOKEN FOUND, REJECT THE REQUEST TO BACKEND
+      console.error("Client request without a valid token.");
+      return Promise.reject(error);
+    }
+
+    
+    //IF REQUEST IS FROM ADMIN
     if (error.response?.status === 401) {
       //  FETCH THE REFRESH TOKEN AND CHECK IF EXIST
       const refreshToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('refreshToken='));
@@ -57,11 +86,19 @@ axiosInstance.interceptors.response.use(
         } catch {
           // HANDLE REFRESH TOKEN FAILURE, REDIRECT TO LOGIN PAGE
           localStorage.clear(); // CLEARS THE LOCAL STORAGE INCLUDING THE TOKENS
-          window.location.href = '/login'; //REDIRECT TO LOGIN PAGE
+          
+          //CHECK IF THE REQUEST IS NOT FROM CLIENT
+          if(!isClientRequest) {
+            window.location.href = '/login'; //REDIRECT TO ADMIN LOGIN PAGE
+          }
         }
       } else {
         // IF NO REFRESH TOKEN EXISTS, REDIRECT TO LOGIN
-        window.location.href = '/login'; //REDIRECT TO LOGIN PAGE
+
+        //CHECK IF THE REQUEST IS NOT FROM CLIENT
+        if(!isClientRequest) {
+          window.location.href = '/login'; //REDIRECT TO ADMIN LOGIN PAGE
+        }
       }
     }
     return Promise.reject(error);
