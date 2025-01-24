@@ -3,8 +3,8 @@
 
 export const endpointClient = {
     jobURL: {
-        APPLY_JOB: '/job/apply',
-        FETCH_JOBS: '/job/getOpenJobs',
+        APPLY_JOB: '/client/job/apply',
+        FETCH_JOBS: '/client/job/getOpenJobs',
     }
 }
 

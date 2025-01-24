@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RenderJobDescription } from "./RenderJobDescription";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useDeviceType } from "../hooks";
 import { Input } from "./Input";
 import { DropDown, DropDownDataType } from "./DropDown";
+import { JobDataTypes } from "./JobFeed";
+import { useLocation } from "react-router-dom";
 
 export interface JobApplicationFormTypes {
     givenName: string;
@@ -120,7 +122,22 @@ const Form: React.FC = () => {
 
 export const JobForm: React.FC = () => {
 
+    const location = useLocation();
+    const {id} = location.state;
+
     const chosenJob = useSelector((state: RootState) => state.job.chosenJob);
+
+    const [jobData, setJobData] = useState<JobDataTypes | null>(chosenJob)
+
+    useEffect(() => {
+        if(!jobData) {
+            
+        }
+
+        const fetchData = async () => {
+            
+        }
+    },[jobData])
 
     //CUSTOM HOOKS
     const {isDesktop, isTablet} = useDeviceType();
