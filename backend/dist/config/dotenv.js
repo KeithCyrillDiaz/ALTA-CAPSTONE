@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.corsCredentials = exports.gmailCredentials = exports.gdriveCredentials = exports.geminiConfig = exports.configuration = void 0;
+exports.frontEndCredentials = exports.corsCredentials = exports.gmailCredentials = exports.gdriveCredentials = exports.geminiConfig = exports.configuration = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 exports.configuration = {
@@ -33,5 +33,8 @@ exports.gmailCredentials = {
 };
 exports.corsCredentials = {
     corsOrigin: process.env.CORS_ORIGINS.split(',')
+};
+exports.frontEndCredentials = {
+    clientToken: process.env.FRONTEND_TOKEN
 };
 //# sourceMappingURL=dotenv.js.map

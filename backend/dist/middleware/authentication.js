@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authentication = void 0;
+exports.clientAuthentication = exports.authentication = void 0;
 const logger_1 = require("../utils/logger");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = require("../config/dotenv");
 const authentication = async (req, res, next) => {
     try {
-        logger_1.logger.event("Checking if the user is authenticated");
+        logger_1.logger.event("Checking if the Admin User is authenticated");
         const { authorization } = req.headers;
         if (!authorization || !authorization.startsWith("Bearer ")) {
             logger_1.logger.error("Access Token is Missing");
@@ -24,7 +24,7 @@ const authentication = async (req, res, next) => {
         if (!token) {
             logger_1.logger.error("Access Token is Missing");
             res.status(401).json({
-                code: 'AUTH_001',
+                code: 'AUTH_002',
                 message: "Access Token is Missing"
             });
             return;
@@ -40,4 +40,44 @@ const authentication = async (req, res, next) => {
     }
 };
 exports.authentication = authentication;
+const clientAuthentication = async (req, res, next) => {
+    try {
+        logger_1.logger.event("Checking if Client Request is Authenticated");
+        const { authorization } = req.headers;
+        if (!authorization || !authorization.startsWith("Bearer ")) {
+            logger_1.logger.error("Access Token is Missing");
+            res.status(401).json({
+                code: 'CAUTH_001',
+                message: "Access Token is Missing"
+            });
+            return;
+        }
+        //EXTRACT THE TOKEN
+        const token = authorization.split(" ")[1];
+        if (!token) {
+            logger_1.logger.error("Access Token is Missing");
+            res.status(401).json({
+                code: 'CAUTH_002',
+                message: "Access Token is Missing"
+            });
+            return;
+        }
+        //GET THE CLIENT TOKEN IN ENV AND COMPARE IT TO THE AUTH TOKEN IN REQ
+        const CLIENT_TOKEN = dotenv_1.frontEndCredentials.clientToken;
+        if (CLIENT_TOKEN !== token) {
+            logger_1.logger.error("Invalid Token");
+            res.status(401).json({
+                code: 'CAUTH_003',
+                message: "Invalid Token"
+            });
+            return;
+        }
+        logger_1.logger.ready("Client Request is Authorized");
+        next();
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.clientAuthentication = clientAuthentication;
 //# sourceMappingURL=authentication.js.map

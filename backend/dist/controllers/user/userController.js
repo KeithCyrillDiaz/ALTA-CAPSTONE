@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOpenJobApplications = exports.createApplication = void 0;
+exports.getJobInformation = exports.getOpenJobApplications = exports.createApplication = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const fs_1 = __importDefault(require("fs"));
 const logger_1 = require("../../utils/logger");
@@ -194,4 +194,29 @@ const getOpenJobApplications = async (req, res, next) => {
     }
 };
 exports.getOpenJobApplications = getOpenJobApplications;
+const getJobInformation = async (req, res, next) => {
+    try {
+        logger_1.logger.event("Fetching Job Infomration By ID");
+        const { id } = req.params;
+        const result = await jobModel_1.JobModel.findById(id);
+        if (!result) {
+            logger_1.logger.error("Job Information Not Found");
+            res.status(404).json({
+                code: "GJI_001",
+                message: "Job Information Not Found"
+            });
+            return;
+        }
+        logger_1.logger.success("Successfully Fetched Job Information");
+        res.status(200).json({
+            code: "GJI_000",
+            message: "Successfully Fetched Job Information",
+            data: result
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+};
+exports.getJobInformation = getJobInformation;
 //# sourceMappingURL=userController.js.map
