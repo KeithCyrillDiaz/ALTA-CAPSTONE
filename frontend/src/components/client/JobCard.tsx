@@ -1,6 +1,7 @@
 import React from "react";
 import { useDeviceType } from "../../hooks";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface JobCardDataType {
     _id: string;
@@ -17,13 +18,11 @@ interface JobCardDataType {
 interface JobCardProps {
     details: JobCardDataType;
     onClickView: (id: string) => void;
-    onClickApply: (id: string) => void;
 }
 
 export const JobCard: React.FC<JobCardProps> = ({
     details,
     onClickView,
-    onClickApply
 }) => {
      const {_id, jobTitle, maxSalary, minSalary, shift, employmentType, skills, isSalaryRange, salaryType} = details;
 
@@ -65,7 +64,9 @@ export const JobCard: React.FC<JobCardProps> = ({
             {isTablet && (
                 <div className="buttonsContainer">
                     <button onClick={() => onClickView(_id)} className="secondary">View</button>
-                    <button onClick={() => onClickApply(_id)} className="primary">Apply</button>
+                    <button className="primary">
+                        <Link to={{ pathname: `/job/apply/${_id}`}}>Apply</Link>
+                    </button>
                 </div>
             )}
 
