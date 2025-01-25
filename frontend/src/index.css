@@ -65,7 +65,7 @@ h3 {
 /* BODY TEXT */
 p {
     font-family: var(--font-body); /* USING BODY FONT */
-    font-size: 1rem;
+    font-size: .9rem;
     margin: 0;
     color: var(--color-text); /* TEXT COLOR */
     padding: 0;
@@ -93,7 +93,7 @@ p {
 /* BUTTONS AND UI ELEMENTS */
 button {
     font-family: var(--font-body); /* USING BODY FONT */
-    font-size: 1rem;
+    font-size: .9rem;
     font-weight: 500;
     padding: 5px 12px;
     border: none;
@@ -147,7 +147,9 @@ input {
     border: none;
     outline: none;
     font-family: var(--font-secondary);
-    width: 90%;
+    font-size: .8rem;
+    width: 100%;
+    max-width: 250px;   
 }
 
 .grid-col-2 {
@@ -195,15 +197,20 @@ input {
     }
 
     h3 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
 
     .secondary-text {
-        font-size: 0.95rem;
+        font-size: 0.8rem;
     }
 
     p {
         font-size: 0.8rem;
+
+    }
+
+    input {
+        font-size: .7rem;
     }
     
     button {
@@ -215,6 +222,7 @@ input {
         height: 425px;
         max-height: unset;
     }
+
 }
 
 
@@ -264,3 +272,14 @@ input {
     }
 } */
 
+
+/* TRUNCATE ON SMALL PHONES */
+@media only screen and (max-width: 400px) {
+    .mobile-truncate {
+        max-width: 70px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+}

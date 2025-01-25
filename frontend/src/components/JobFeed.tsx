@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { findJob, setJobs } from "../redux/slice/jobSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { fetchJobs } from "../api/apiCalls";
+import { fetchJobs } from "../api/client/apiCalls";
 import Loader from "./Loader";
 import { RenderJobDescription } from "./RenderJobDescription";
 import { useDeviceType } from "../hooks";
@@ -94,6 +94,12 @@ export const JobFeed: React.FC= () => {
   }
 
  useEffect(() => {
+    //CHECK IF CHOSEN JOB IS SET FROM OTHER PAGE
+    if(chosenJob) {
+      //IF YES THEN DONT FETCH
+      setLoading(false);
+      return;
+    }
     const fetchData = async () => {
       setLoading(true);
       const data = await fetchJobs();
@@ -105,7 +111,7 @@ export const JobFeed: React.FC= () => {
     };
     fetchData();
 
- },[dispatch])
+ },[dispatch, chosenJob, jobs])
 
   if(loading) {
     return (

@@ -1,8 +1,8 @@
 // Functions to make specific API calls
 import { AxiosError } from "axios";
-import { JobDataTypes } from "../components/JobFeed";
-import axiosInstance from "./axiosInstance";
-import {endpointClient } from "./endpoint";
+import { JobDataTypes } from "../../components/JobFeed";
+import axiosInstance from "../axiosInstance";
+import {endpointClient } from "../endpoint";
 
 const errorHandler = (error: unknown) => {
     // CHECK IF THE ERROR IS AN INSTANCE OF AXIOS ERROR
@@ -47,5 +47,46 @@ export const fetchChosenJob = async (id: string): Promise<JobDataTypes | null> =
     return data; 
   } catch (error) {
     return errorHandler(error)
+  }
+}
+
+export interface FormDataTypes {
+  resume: File,
+  coverLetter: File | null,
+  data: string // JSON STRINGIFIED "JobApplicationFormTypes" E.G. JSON.stringify(data)
+}
+
+export const submitApplicationForm = async (formData: FormDataTypes) => {
+  try {
+      console.log("Submitting Application Form");
+  console.log("form: ", JSON.stringify(formData))
+    // PREPARE FORM DATA FOR THE REQUEST
+    const formPayload = new FormData();
+    formPayload.append("resume", formData.resume);
+    formPayload.append("data", formData.data); // JobApplicationFormTypes OBJECT STRINGIFIED
+    // APPEND COVER LETTER IF EXISTING
+    if(formData.coverLetter) {
+      formPayload.append("coverLetter", formData.coverLetter);
+    }
+   
+  
+ 
+
+    //PREPARE THE REQUEST URL
+    const apiURL = endpointClient.jobURL.APPLY_JOB
+
+    //SEND THE REQUEST
+    const response = await axiosInstance.post(apiURL, formPayload,
+      {headers: {
+        "Content-Type": "multipart/form-data", // OPTIONAL, SINCE AXIOS SETS THIS AUTOMATICALLY, BUT I STILL INCLUDE IT FOR DOCUMENTATION
+      }}
+    );
+
+    //HANDLE RESPONSE
+    const {data} = response.data;
+    console.log("data: ", JSON.stringify(response.data, null, 2));
+    return data; 
+  } catch (error) {
+    return errorHandler(error);
   }
 }

@@ -32,7 +32,6 @@ export const JobCard: React.FC<JobCardProps> = ({
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleMobileClick = () => {
-        
         //IF DIV IS CLICKED IN DESKTOP OR IN TABLET MODE DO NOTHING AND EXIT
         if(isDesktop || isTablet) return; //EXIT
 

@@ -10,8 +10,10 @@ const App: React.FC = () => {
     <Provider store={store}>
       <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/job/view" element={<ViewJob/>}/>
         <Route path="/job/apply/:id" element={<ApplyJob/>}/>
+
+        {/* FOR MOBILE */}
+        <Route path="/job/view" element={<ViewJob/>}/>
 
         {/* Catch-all 404 route */}
       <Route path="*" element={<NotFoundPage/>} />

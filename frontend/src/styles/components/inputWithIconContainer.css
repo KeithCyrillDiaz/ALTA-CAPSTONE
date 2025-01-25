@@ -1,0 +1,16 @@
+
+
+.inputWithIconContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 3px;
+    padding: 5px 10px;
+    box-shadow: 0 3px 3px rgba(0,0,0,0.2);
+    max-width: 220px;   
+    min-width: 115px;
+    justify-content: space-between;
+    gap: 12px;
+}
+

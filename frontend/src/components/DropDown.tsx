@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { DownArrowIcon } from "./icons/DownArrowIcon";
+import { Search } from "./client/Search";
 
 
 export interface DropDownDataType {
@@ -15,10 +16,11 @@ interface OptionCardProps {
 const OptionCard: React.FC<OptionCardProps> = ({
     onClick,
     value,
-    label
+    label,
+
 }) => {
     return (
-        <div className="optionCard" onClick={() => onClick(value)}>{label}</div>
+             <div className="optionCard" onClick={() => onClick(value)}>{label}</div>
     )
 }
 
@@ -27,26 +29,59 @@ interface DropDownProps {
     onChange: (value: string) => void;
     data: DropDownDataType[],
     placeHolder: string;
+    search?: boolean;
 }
 
 export const DropDown: React.FC<DropDownProps> = ({
     value = null,
     onChange,
     data,
-    placeHolder
+    placeHolder,
+    search
 }) => {
 
     const [showOptions, setShowOptions] = useState<boolean>(false)
     const [dropdownValue, setDropDownValue] = useState<string | null>(value);
+
+    const [dropdownData, setDropdownData] = useState<DropDownDataType[]>(data);
+    const handleSearch = (text: string) => {
+        //CHECK IF TEXT IS AN EMPTY STRING
+        if(text === ""){
+            //RESET THE DROP DOWN DATA IF SEARCH FIELD IS CLEARED OR EMPTY
+            setDropdownData(data);
+            return; //EXIT
+        }
+        //FILTER THE DATE BASED ON THE TEXT INPUT
+        const filteredData = dropdownData.filter((item) => item.label.toLowerCase().includes(text.toLowerCase()));
+        //ONLY UPDATE THE STATE WHEN THERE IS A VALUE
+        if(filteredData.length !== 0) {
+            setDropdownData(filteredData)
+        }
+        
+    }
+
+    const handleDropDownIconClick = () => {
+        //RESET THE DROP DOWN DATA WHENEVER THE USER REOPENS THE DROPDOWN 
+        setDropdownData(data)
+        setShowOptions(!showOptions)
+    }
+
     return (
-        <div className="dropdown">
-            <p>{!dropdownValue || dropdownValue === '' ?  placeHolder : dropdownValue}</p>
-            <div className="dropdownButton" onClick={() => setShowOptions(!showOptions)}>
+        <div className="inputWithIconContainer">
+            <p className="text-[.8rem] mobile-truncate">{!dropdownValue || dropdownValue === '' ?  placeHolder : dropdownValue}</p>
+            <div className="dropdownButton" onClick={handleDropDownIconClick}>
                 <DownArrowIcon/>
             </div>
-            {showOptions && (
+            {showOptions && dropdownData.length !== 0 && (
                 <div className="dropdownOption">
-                    {data.map((item, index) => {
+                    {search && (
+                        <Search
+                        hideIcon
+                        onChangeText={(text) => handleSearch(text)}
+                        onClick={() => {}}
+                        />
+                    )}
+                    {dropdownData.map((item, index) => {
                         const {value, label} = item;
                         return(
                             <OptionCard
