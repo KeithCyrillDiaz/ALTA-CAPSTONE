@@ -81,6 +81,24 @@ const jobSlice = createSlice({
             state.isJobDataFiltered = true;
         },
 
+        searchJob: (state, action: PayloadAction<string>) => {
+            //ASSIGNED VARIABLES FOR BETTER READABLITY
+            const jobArray = state.filteredJob;
+            const input = action.payload;
+
+            //CHECK IF INPUT IS EMPTY
+            if(input === "") {
+                state.filteredJob = state.jobData
+                return;
+            }
+
+            //FILTER THE DATA BY CHECKING IF THE INPUT IS PRESENT IN JOB TITLE
+            const filteredData = jobArray.filter((item) => item.jobTitle.toLocaleLowerCase().includes(input.toLowerCase()));
+            console.log("data: ", filteredData)
+            //ASSIGN THE FILTERED DATA IF ITS NOT NULL
+            state.filteredJob = filteredData;
+        },
+
         clearJobFilter: (state) => {
             state.filteredJob = state.jobData
             state.isJobDataFiltered = false;
@@ -119,6 +137,7 @@ export const {
     clearJobFilter,
     deleteSkill, 
     getSkills,
+    searchJob
  
 } = jobSlice.actions;
 

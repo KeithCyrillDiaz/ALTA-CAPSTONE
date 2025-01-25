@@ -55,11 +55,13 @@ export const FilterJob:React.FC = () => {
                         data={skills || []} 
                         placeHolder="Skill" 
                         onChange={(value) => setChosenSkill(value)}
+                        value={chosenSkill}
                     />
                     <DropDown 
                         data={employmentTypes || []} 
                         placeHolder="Employment Type" 
                         onChange={(value) => setChosenEmploymentType(value)}
+                        value={chosenEmploymentType}
                     />
                     {isJobDataFiltered ? (
                         <button onClick={handleClearFilter} className="primary">Clear Filter</button>
