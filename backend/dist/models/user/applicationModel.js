@@ -16,7 +16,7 @@ const applicationSchema = new mongoose_1.default.Schema({
     phoneNumber: { type: Number, required: true },
     currentCity: { type: String, required: true },
     expectedSalary: { type: Number, required: true },
-    coverLetterGdriveID: { type: String, required: true },
+    coverLetterGdriveID: { type: String },
     resumeGdriveID: { type: String, required: true },
     //FOR GEMINI PROMPTING
     resumeString: { type: String, required: true },
