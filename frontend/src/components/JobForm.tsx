@@ -6,17 +6,16 @@ import { useDeviceType } from "../hooks";
 import { Input, InputKeyboardTypes } from "./Input";
 import { DropDown, DropDownDataType } from "./DropDown";
 import { JobDataTypes } from "./JobFeed";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchChosenJob, FormDataTypes, submitApplicationForm } from "../api/client/apiCalls";
 import Loader from "./Loader";
 import { BirthdayField } from "./BirthdayField";
 import { FileHandler } from "./FileHandler";
 import { extractTextFromPdf } from "../utils/extractTextFromPdf";
 import { CheckBoxContainer } from "./CheckBox";
-import { validateEmail, validatePhoneNumber } from "../utils/validation";
+import { checkForm, validateEmail, validatePhoneNumber } from "../utils/validation";
 import { CustomModal } from "./modal/CustomModal";
 import { getCityData } from "../constant/json";
-
 
 export type FormValue = string | number | boolean | Date | null
 export interface JobApplicationFormTypes {
@@ -52,9 +51,19 @@ interface FilesFieldFormat {
     
 }
 
+interface ModalPropsType {
+    title: string; 
+    message: string; 
+    showModal: boolean;
+    type?: 'confirmation' | null,
+    showLoadingModal: boolean
+    navigate?: string;
+}
+
 const Form: React.FC<{jobId: string;}> = ({jobId}) => {
 
-    
+
+    const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false)
     const [form, setForm] = useState<JobApplicationFormTypes>({
         givenName: "",
@@ -79,10 +88,12 @@ const Form: React.FC<{jobId: string;}> = ({jobId}) => {
 
     //VALIDATIONS
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
-    const [modalDetails, setModalDetails] = useState<{title: string; message: string; showModal: boolean}>({
+    const [modalDetails, setModalDetails] = useState<ModalPropsType>({
         title: "",
         message: "",
-        showModal: false
+        showModal: false,
+        showLoadingModal: false,
+        type: null
     })
 
     const givenNameANdLastName: formFormatTypes[] = [
@@ -203,7 +214,8 @@ const Form: React.FC<{jobId: string;}> = ({jobId}) => {
                 setModalDetails({
                     title: "",
                     message: "",
-                    showModal: false
+                    showModal: false,
+                    showLoadingModal: false,
                 })
             }
         }
@@ -243,34 +255,24 @@ const Form: React.FC<{jobId: string;}> = ({jobId}) => {
         
     }
 
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-        //CHECK IF FORM IS INVALID
-        if(!isFormValid) {
-            //IF INVALID SHOW DETAILS
-            console.log("Form Not Valid")
-            setModalDetails((prev) => ({
-                ...prev,
-                showModal: true
-            }))
-            return 
-        }
-        //CHECK IF THE THE RESUME IS UPLOADED
+    const handleSubmit = async () => {
+    
+       try {
+         //CHECK IF THE THE RESUME IS UPLOADED
         if (!uploadedResume || !uploadedResume.name || uploadedResume.size === 0) {
             //IF MISSING SHOW MODAL AND EXIT THE FUNCTION
             
             setModalDetails({
                 title: "Oops! Resume Missing",
                 message: "Please upload your resume to proceed with the application.",
+                showLoadingModal: false,
                 showModal: true
             });
             return;
         }
-    
-       try {
-         //SET LOADING TO TRUE FOR BETTER UI EXPERIENCE
-         setLoading(true);
 
+         //SET LOADING TO TRUE AND SHOW THE  LOADING MODAL FOR BETTER UI EXPERIENCE AND PREPARE THE SUCCESSFULL MESSAGE
+         setLoading(true);
          //PREPARE FORM DATA
          const formData: FormDataTypes = {
              resume: uploadedResume,
@@ -282,11 +284,66 @@ const Form: React.FC<{jobId: string;}> = ({jobId}) => {
          console.log("Form Submitted");
          console.log("form: ", JSON.stringify(form, null, 2));
 
+         setModalDetails({
+            title: "Submission Confirmation",
+            message: "Your application has been successfully submitted! We will review your details and get back to you shortly. Thank you for applying!",
+            showModal: true, //HIDE THE CUSTOM MODAL
+            showLoadingModal: false, //SHOW THE LOADING MODAL
+            navigate: "/"
+        });
+
+
        } catch (error) {
             console.log("Error Submitting Form", error);
+
+            //IF ERROR PREPARE THE ERROR MESSAGE
+            setModalDetails({
+                title: "Application Submission Failed",
+                message: "We encountered an issue while processing your application. Our team is already working to resolve it. Please try again later.",
+                showModal: true, // Show the error modal
+                showLoadingModal: false, // Hide the loading modal if error occurs
+            });
        } finally {
-        setLoading(false)
+        setLoading(false);
        }
+    }
+
+    const handleSubmitConfirmation = (e: FormEvent) => {
+        e.preventDefault();
+        // VALIDATE THE FORM FIRST
+
+          //CHECK IF FORM IS INVALID
+          if(!isFormValid) {
+            //IF INVALID SHOW DETAILS
+            console.log("Form Not Valid")
+            setModalDetails((prev) => ({
+                ...prev,
+                showModal: true
+            }))
+            return ;
+        };
+
+        //CHECK IF ALL FIELDS ARE FILLED
+        const isComplete = checkForm(form);
+
+        if(!isComplete) {
+            // IF NOT SHOW THE MODAL
+            setModalDetails({
+                title: "Form Incomplete",
+                message: "Please make sure all required fields are filled before submitting your application. Double-check your information to ensure everything is correct and complete.",
+                showLoadingModal: false,
+                showModal: true
+            });
+            return;//EXIT
+        }
+
+        setModalDetails({
+            type: "confirmation",
+            title: "Confirm Submission",
+            message: "Are you sure you want to submit the form? Please review all fields before proceeding.",
+            showLoadingModal: false,
+            showModal: true
+        });
     }
 
     //INITIALIZED CONSTANT REQUIRED VARIABLE FOR EASY CHANGES
@@ -304,7 +361,7 @@ const Form: React.FC<{jobId: string;}> = ({jobId}) => {
         <div className="feedContentContainer">
             <h3><strong>Personal Information</strong></h3>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmitConfirmation}>
                    {/* GIVEN NAME AND LAST NAME FIELDS */}
             <div className="form-row">
                 {givenNameANdLastName.map((item, index) => {
@@ -458,13 +515,26 @@ const Form: React.FC<{jobId: string;}> = ({jobId}) => {
             
             {/* Modal */}
             <CustomModal
+            type={modalDetails.type}
+            confirmLabel="Confirm"
+            cancelLabel="Cancel"
+            onClickConfirm={() => handleSubmit()}
             visible={modalDetails.showModal}
             title={modalDetails.title}
             message={modalDetails.message}
-            onClose={() => setModalDetails((prev) => ({
-                ...prev,
-                showModal: false
-            }))}
+            onClose={() => {
+                //UPDATE THE STATE TO FALSE TO HIDE THE MODAL
+                setModalDetails((prev) => ({
+                    ...prev,
+                    showModal: false
+                }))
+                //AUTO NAVIGATE AFTER CLICKING CLOSE WHEN NAVIGATE IS NOT NULL OR UNDEFINED
+                if(modalDetails.navigate) {
+                    navigate(modalDetails.navigate)
+                    return;
+                }
+          
+            }}
             />
     
         </div>

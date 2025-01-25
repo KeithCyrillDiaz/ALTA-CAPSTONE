@@ -18,9 +18,9 @@
 .modalLayoutContainer .modal {
     background-color: white;
     width: 90%;
-    max-height: 210px;
+    max-height: 300px;
     border-radius: 7px;
-    max-width: 300px;
+    max-width: 400px;
 }
 
 /* PREVENT SCROLLING WHEN THE MODAL IS OPEN*/

@@ -68,7 +68,7 @@ export const DropDown: React.FC<DropDownProps> = ({
 
     return (
         <div className="inputWithIconContainer">
-            <p className="text-[.8rem] mobile-truncate">{!dropdownValue || dropdownValue === '' ?  placeHolder : dropdownValue}</p>
+            <p className={`text-[.8rem] mobile-truncate ${!dropdownValue || dropdownValue === "" ? "text-gray-400" : ""}`}>{!dropdownValue || dropdownValue === '' ?  placeHolder : dropdownValue}</p>
             <div className="dropdownButton" onClick={handleDropDownIconClick}>
                 <DownArrowIcon/>
             </div>
