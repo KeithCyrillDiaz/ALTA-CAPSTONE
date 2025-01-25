@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { DownArrowIcon } from "./icons/DownArrowIcon";
 import { Search } from "./client/Search";
 
@@ -65,6 +65,10 @@ export const DropDown: React.FC<DropDownProps> = ({
         setDropdownData(data)
         setShowOptions(!showOptions)
     }
+    //THIS WILL GET TRIGGER WHEN VALUE CHANGES
+    useEffect(() => {
+        setDropDownValue(value);
+    },[value, setDropDownValue])
 
     return (
         <div className="inputWithIconContainer">
