@@ -5,11 +5,13 @@ import { SearchIcon } from "../icons/SearchIcon";
 interface SearchProps {
     onChangeText: (value: string) => void;
     onClick: () => void;
+    hideIcon?: boolean
 }
 
 export const Search: React.FC<SearchProps> = ({
     onChangeText,
-    onClick
+    onClick,
+    hideIcon = false
 }) => {
     return(
         <div className="search">
@@ -17,9 +19,11 @@ export const Search: React.FC<SearchProps> = ({
                 <input 
                 placeholder="Search"
                 onChange={(e) => onChangeText(e.target.value)}/>
-                <div onClick={onClick}>
+                {!hideIcon && (
+                    <div onClick={onClick}>
                     <SearchIcon/>
                 </div>
+                )}
             </div>
         </div>
     )

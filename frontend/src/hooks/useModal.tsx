@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 const useModal = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-    //ADD THE .DISBALE-SCROLL CSS TO BODY WHEN MODAL IS OPEN TO DISABLE SCOLL
+    //ADD THE .DISBALE-SCROLL CSS TO BODY WHEN MODAL IS OPEN TO DISABLE SCOLL INSHORT
     useEffect(() => {
         if (isModalOpen) {
           document.body.classList.add("disable-scroll");
