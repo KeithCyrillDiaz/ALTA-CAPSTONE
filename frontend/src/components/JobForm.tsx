@@ -29,6 +29,7 @@ export interface JobApplicationFormTypes {
     currentCity: string;
     expectedSalary: number | "";
     resumeString: string;
+    jobId: string;
     jobTitle: string;
     company: string;
     workOnsite: boolean;
@@ -51,7 +52,7 @@ interface FilesFieldFormat {
     
 }
 
-const Form: React.FC = () => {
+const Form: React.FC<{jobId: string;}> = ({jobId}) => {
 
     
     const [loading, setLoading] = useState<boolean>(false)
@@ -65,25 +66,16 @@ const Form: React.FC = () => {
         currentCity: "",
         expectedSalary: "",
         resumeString: "",
+        jobId: jobId, //ADDED THE ID OF THE CHOSEN JOB FOR FUTURE RETRIEVE
         jobTitle: "",
         company: "",
         workOnsite: false
     });
 
-    interface FileObjectTypes {
-        name: string; 
-        file: File | null
-    }
 
     //INITIALZED FILES OBJECT FOR DISPLAY AND UPLOADING THE FILE IN BACKEND
-    const [uploadedCoverLetter, setUploadedCoverLetter] = useState<FileObjectTypes>({
-        name: "",
-        file: null
-    });
-    const [uploadedResume, setUploadedResume] = useState<FileObjectTypes>({
-        name: "",
-        file: null
-    });
+    const [uploadedCoverLetter, setUploadedCoverLetter] = useState<File | null>();
+    const [uploadedResume, setUploadedResume] = useState<File | null>();
 
     //VALIDATIONS
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
@@ -149,13 +141,13 @@ const Form: React.FC = () => {
             field: "coverLetter",
             title: "Cover Letter",
             placeholder: "Upload PDF",
-            value: uploadedCoverLetter.name,
+            value: uploadedCoverLetter?.name || '',
         },
         {
             field: "resume",
             title: "Resume",
             placeholder: "Upload PDF",
-            value: uploadedResume.name,
+            value:  uploadedResume?.name || '',
         },
     ]
 
@@ -227,14 +219,13 @@ const Form: React.FC = () => {
         if(fileType === "coverLetter") {
             console.log("cover: ", JSON.stringify(file, null, 2));
             //UPDATE THE NAME OF THE STATE
-            setUploadedCoverLetter({
-                name: file.name,
-                file: file
-            })
+            setUploadedCoverLetter(file)
             return;
         }
 
         //IF THE FILE IS RESUME
+        setUploadedResume(file);
+        
         const fileURL = URL.createObjectURL(file);//GENERATE A TEMPORARY URL TO POINT THE UPLOADED FILE 
         //EXTRACT THE RESUME AS TEXT FOR PROMPTING TO GEMINI IN BACKEND
         const resumeText = await extractTextFromPdf(fileURL) //PASS THE URL TO EXTRACT THE TEXT FROM THE PDF
@@ -246,12 +237,8 @@ const Form: React.FC = () => {
                 ...prev, //SPREAD THE PREVIOUS VALUES TO RETAIN THE UNCHANGE VARIABLES
                 resumeString: resumeText
             }))
-            console.log("file: ", file)
-            setUploadedResume({
-                name: file.name,
-                file: file
-            })
-       
+           
+        
         }
         
     }
@@ -268,11 +255,10 @@ const Form: React.FC = () => {
             }))
             return 
         }
-        console.log("uploaded resume", JSON.stringify(uploadedResume, null, 2))
-
         //CHECK IF THE THE RESUME IS UPLOADED
-        if(!uploadedResume.file || Object.keys(uploadedResume.file).length === 0) {
+        if (!uploadedResume || !uploadedResume.name || uploadedResume.size === 0) {
             //IF MISSING SHOW MODAL AND EXIT THE FUNCTION
+            
             setModalDetails({
                 title: "Oops! Resume Missing",
                 message: "Please upload your resume to proceed with the application.",
@@ -280,15 +266,15 @@ const Form: React.FC = () => {
             });
             return;
         }
-        console.log("uploaded resume", JSON.stringify(uploadedResume, null, 2))
+    
        try {
          //SET LOADING TO TRUE FOR BETTER UI EXPERIENCE
          setLoading(true);
 
          //PREPARE FORM DATA
          const formData: FormDataTypes = {
-             resume: uploadedResume.file,
-             coverLetter: uploadedCoverLetter.file,
+             resume: uploadedResume,
+             coverLetter: uploadedCoverLetter || null,
              data: JSON.stringify(form)
          }
  
@@ -535,7 +521,7 @@ export const JobForm: React.FC = () => {
     return (
         <div className="feedContainer">
             {jobData && (isDesktop || isTablet) && <RenderJobDescription jobDescriptionData={jobData}/>}
-            <Form/>
+            {id && (<Form jobId={id}/>)}
         </div>
     )
 }
