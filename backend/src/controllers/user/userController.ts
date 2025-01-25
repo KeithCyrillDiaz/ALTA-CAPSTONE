@@ -53,20 +53,21 @@ export const createApplication = async (req: Request, res: Response, next: NextF
         if (!givenName || !lastName || !birthday || !gender || !email || !phoneNumber || !currentCity || !expectedSalary || !resumeString || !jobId || !jobTitle || !company || workOnsite === undefined) {
             res.status(400).json({
                 code: "CAP_002",
-                message: "All fields are required: givenName, LastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, jobTitle, company, workOnsite"
+                message: "All fields are required: givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, jobId, jobTitle, company, workOnsite"
             });
             return;
 
         }
 
-        if(!files) {
+        //CHECK IF RESUME IS EXISTING, IF NOT CANCEL THE REQUEST
+        if(!resumeFile) {
             res.status(400).json({
                 code: "CAP_003",
-                message: "Invalid Cover Letter or Resume File"
+                message: "Invalid Resume File"
             });
             return;
         }
-
+        
         const {month, year} = getDateToday();
 
         logger.event("Sending Resume Accuarcy Prompt to Gemini");
@@ -130,19 +131,26 @@ export const createApplication = async (req: Request, res: Response, next: NextF
         
         logger.event("Uploading files to Gdrive");
 
-        //UPLOAD THE FILES TO GDRIVE
-        const [uploadedResumeDetails, uploadedCoverLetterDetails] = await Promise.all([
-            uploadResumeInGdrive(resumeFile, next),
-            uploadCoverLetterInGdrive(coverLetterFile, next)
-        ]);
+        //PREPARE THE PROMISES ARRAY
+        const uploadPromises = [
+            uploadResumeInGdrive(resumeFile, next), // THIS WILL ALWAYS UPLOAD THE RESUME IN GRIVE
+          ];
+        
+        //CONDITIONALLY ADD THE COVER LETTER IF THE FILE IS EXISTING
+        if (coverLetterFile) {
+            uploadPromises.push(uploadCoverLetterInGdrive(coverLetterFile, next));
+          }
+
+        //WAIT FOR BOTH UPLOADS TO COMPLETE
+        const [uploadedResumeDetails, uploadedCoverLetterDetails] = await Promise.all(uploadPromises);
         
 
         //EXTRACT THE FILE ID'S FROM GDRIVE API
         const resumeFileID = uploadedResumeDetails.id;
-        const coverFileID = uploadedCoverLetterDetails.id;
-     
-      
 
+        //CHECK IF THE COVER LETTER EXIST BEFORE EXTRACTING
+        const coverFileID = uploadedCoverLetterDetails ? uploadedCoverLetterDetails.id : null;
+     
         //CREATE A NEW APPLICATION DOCUMENT
         const newApplication = new ApplicationModel({
             _id: applicationId, // MANUALLY ASSIGN A VALUE FOR _id
@@ -208,7 +216,8 @@ export const createApplication = async (req: Request, res: Response, next: NextF
                 logger.success("Local file successfully deleted in Backend Server Files");
             }
         });
-        
+        //DELETE THE COVER LETTER IF TIS EXISTING
+      if(coverLetterFile) {
         fs.unlink(coverLetterFile.path, (err) => {
             if (err) {
                 logger.error(`Cover Letter File is already deleted in Backend Server Files`);
@@ -216,6 +225,7 @@ export const createApplication = async (req: Request, res: Response, next: NextF
                 logger.success("Local file successfully deleted in Backend Server Files");
             }
         });
+      }
     }
 }
 
