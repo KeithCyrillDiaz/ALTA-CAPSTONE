@@ -274,3 +274,10 @@ input {
         white-space: nowrap;
     }
 }
+
+/* SET THE feedContentContainer HEIGHT IN MOBILE PHONES */
+@media only screen and (max-width: 426px) {
+    .feedContentContainer{
+        height: 90%;
+    }
+}

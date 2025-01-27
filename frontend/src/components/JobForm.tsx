@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useDeviceType } from "../hooks";
 
-import { JobDataTypes } from "./JobFeed";
+import { JobDataTypes } from "./client/JobFeed";
 import { useParams } from "react-router-dom";
 import { fetchChosenJob, } from "../api/client/apiCalls";
 import Loader from "./Loader";

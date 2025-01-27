@@ -5,14 +5,11 @@ import { Search } from "./client/Search";
 
 //JOB
 import { FilterJob } from "./client/FilterJob";
-import { JobFeed } from "./JobFeed";
+import { JobFeed } from "./client/JobFeed";
 import { JobForm } from "./JobForm";
 
 //MODAL
 import { FilterJobModal } from "./modal/FilterJobModal";
-
-
-
 
 export {
     Loader,

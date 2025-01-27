@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { JobCard } from "./client/JobCard";
+import { JobCard } from "./JobCard";
 import { useDispatch } from "react-redux";
-import { findJob, setJobs } from "../redux/slice/jobSlice";
+import { findJob, setJobs } from "../../redux/slice/jobSlice";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { fetchJobs } from "../api/client/apiCalls";
-import Loader from "./Loader";
-import { RenderJobDescription } from "./RenderJobDescription";
-import { useDeviceType } from "../hooks";
+import { RootState } from "../../redux/store";
+import { fetchJobs } from "../../api/client/apiCalls";
+import Loader from "../Loader";
+import { RenderJobDescription } from "../RenderJobDescription";
+import { useDeviceType } from "../../hooks";
 
 
 export interface JobDescription {

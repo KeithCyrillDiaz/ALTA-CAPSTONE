@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { JobDataTypes, JobDescription } from "./JobFeed";
+import { JobDataTypes, JobDescription } from "./client/JobFeed";
 import { SkillsIcon } from "./icons/SkillsIcon";
 import EducationIcon from "./icons/EducationIcon";
 import { EmploymentTypeIcon, SalaryIcon, SalaryTypeIcon, ScheduleIcon, ShiftIcon } from "./icons/JobDetailsIcons";
@@ -125,7 +125,7 @@ hideApplyButton?: boolean;
         )
     }
     return(
-        <div className="renderJobDescriptionContainer feedContentContainer">
+        <div className="feedContentContainer renderJobDescriptionContainer ">
             <h3><strong>{jobTitle}</strong></h3>
 
             {/* SKILLS */}
