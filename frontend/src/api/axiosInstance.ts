@@ -70,13 +70,10 @@ axiosInstance.interceptors.response.use(
     //IF REQUEST IS FROM ADMIN
     if (error.response?.status === 401) {
       // FETCH THE REFRESH TOKEN AND CHECK IF EXIST
-      const refreshToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('refreshToken='));
-      if (refreshToken) {
-        //IF REFRESH TOKEN IS EXISTING
         try {
           // REQUEST TO REFRESH THE ACCESS TOKEN USING THE REFRESH TOKEN
           const apiURL = endpointAdmin.token.GET_ACCESS_TOKEN;
-          const refreshResponse = await axiosInstance.post(apiURL, {}, {
+          const refreshResponse = await axiosInstance.get(apiURL, {
             withCredentials: true // ENSURE REFRESH TOKEN IS SENT WITH THE REQUEST
           });   
           const newAccessToken = refreshResponse.data.token;
@@ -89,14 +86,15 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         } catch {
           // HANDLE REFRESH TOKEN FAILURE, REDIRECT TO LOGIN PAGE
-          localStorage.clear(); // CLEARS THE LOCAL STORAGE INCLUDING THE TOKENS
+          // localStorage.clear(); // CLEARS THE LOCAL STORAGE INCLUDING THE TOKENS
           
           // CHECK IF THE REQUEST IS NOT FROM CLIENT
           if(!isClientRequest) {
-            window.location.href = '/admin/login'; //REDIRECT TO ADMIN LOGIN PAGE
+            return Promise.reject(error);
+            return "refreshTokenExpired"
+            // window.location.href = '/admin/login'; //REDIRECT TO ADMIN LOGIN PAGE
           }
         }
-      } 
     }
     return Promise.reject(error);
   }

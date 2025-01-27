@@ -11,8 +11,11 @@ export const endpointClient = {
 
 
 export const endpointAdmin = {
+    ADMIN_LOGIN: '/login',
+    ADMIN_LOGOUT: '/logout',
     token: {
         GET_ACCESS_TOKEN: '/getAccessToken',
     },
-    ADMIN_LOGIN: '/login',
+    ADMIN_TOTAL: '/admin/dashboard/totalCounts'
+ 
 }

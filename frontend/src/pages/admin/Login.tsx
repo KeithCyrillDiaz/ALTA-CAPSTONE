@@ -32,8 +32,6 @@ const Login: React.FC = () => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         console.log("Submitting Form");
-
-        console.log(JSON.stringify(form, null, 2));
         const result = await adminLogin(form);
         if(!result){ 
             setModalDetails({

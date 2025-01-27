@@ -16,6 +16,7 @@ import {
   Login, 
   Dashboard, 
 } from "./pages";
+import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 
 const App: React.FC = () => {
   return(
@@ -31,7 +32,16 @@ const App: React.FC = () => {
 
         {/* ADMIN PAGES */}
         <Route path="/admin/login" element={<Login/>}/>
-        <Route path="/admin/dashboard" element={<Dashboard/>}/>
+        
+      
+        {/*PROTECTED ROUTES */}
+          <Route path="/admin/dashboard" element={
+            <AdminProtectedRoute>
+              <Dashboard/>
+            </AdminProtectedRoute>
+          }/>
+        
+      
 
         {/* Catch-all 404 route */}
       <Route path="*" element={<NotFoundPage/>} />
