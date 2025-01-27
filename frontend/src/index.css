@@ -280,4 +280,9 @@ input {
     .feedContentContainer{
         height: 90%;
     }
+    
+    .feedContainer {
+        overflow-y: auto;
+        max-height: 90vh;
+    }
 }
