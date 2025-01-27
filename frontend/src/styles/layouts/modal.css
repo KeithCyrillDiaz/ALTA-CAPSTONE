@@ -26,5 +26,6 @@
 /* PREVENT SCROLLING WHEN THE MODAL IS OPEN*/
 body.disable-scroll {
     overflow: hidden;
-  }
-  
+}
+
+

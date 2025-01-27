@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { JobDataTypes, JobDescription } from "./JobFeed";
+import { JobDataTypes, JobDescription } from "./client/JobFeed";
 import { SkillsIcon } from "./icons/SkillsIcon";
 import EducationIcon from "./icons/EducationIcon";
 import { EmploymentTypeIcon, SalaryIcon, SalaryTypeIcon, ScheduleIcon, ShiftIcon } from "./icons/JobDetailsIcons";
 import { useDeviceType } from "../hooks";
 import { BulletCard } from "./BulletCard";
 import Loader from "./Loader";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { findJob } from "../redux/slice/jobSlice";
 
 
 
@@ -54,16 +57,20 @@ const JobDescriptionCard: React.FC<{data: JobDescription}> = ({data}) => {
     )
 }
 interface RenderJobDescriptionProps {
-jobDescriptionData: JobDataTypes, 
+jobDescriptionData: JobDataTypes;
+hideApplyButton?: boolean;
 }
  export const RenderJobDescription: React.FC<RenderJobDescriptionProps> = ({
     jobDescriptionData,
+    hideApplyButton = false,
 }) => {
     // CUSTOM HOOK
     const {isMobile} = useDeviceType();
+    const dispatch = useDispatch();
     const [loading, setLoading] = useState<boolean>(true);
+    const navigate = useNavigate();
 
-    const {jobTitle, jobDescription, skills, education, isSalaryRange, minSalary, maxSalary, salaryType, employmentType, shift, schedule} = jobDescriptionData;
+    const {_id, jobTitle, jobDescription, skills, education, isSalaryRange, minSalary, maxSalary, salaryType, employmentType, shift, schedule} = jobDescriptionData;
     
     const jobDetailsRenderFormat = [
         {
@@ -101,7 +108,14 @@ jobDescriptionData: JobDataTypes,
         },400);
          //THIS WILL GET TRIGGER FIRST
         setLoading(true)
-    },[jobDescriptionData])
+    },[jobDescriptionData]);
+
+    const handleApply = () => {
+        dispatch(findJob(_id));
+        navigate(`/job/apply/${_id}`)
+    }
+
+
     
     if(loading) {
         return (
@@ -111,7 +125,7 @@ jobDescriptionData: JobDataTypes,
         )
     }
     return(
-        <div className="renderJobDescriptionContainer feedContentContainer">
+        <div className="feedContentContainer renderJobDescriptionContainer ">
             <h3><strong>{jobTitle}</strong></h3>
 
             {/* SKILLS */}
@@ -173,14 +187,21 @@ jobDescriptionData: JobDataTypes,
                 </div>
             )}
 
-            <p><strong>Job Description</strong></p>
+
             {/* JOB DESCRIPTION */}
+            <p><strong>Job Description</strong></p>
             <div className="jobDescriptionContainer">
                 {jobDescription.map((item, index) => (
                     <JobDescriptionCard key={index} data={item}/>
                 ))}
             </div>
             
+            {/* DISPLAY BUTTON IF MOBILE AND IF THE HIDE APPLY BUTTON IS NOT SET TO FALSE*/}
+            {(isMobile && hideApplyButton !== false) && (
+                <div className="flex justify-center">
+                    <button onClick={() => handleApply()} className="primary">Apply</button>
+                </div>
+            )}
             
         </div>
     )

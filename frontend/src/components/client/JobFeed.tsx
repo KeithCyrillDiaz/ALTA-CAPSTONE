@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { JobCard } from "./client/JobCard";
+import { JobCard } from "./JobCard";
 import { useDispatch } from "react-redux";
-import { findJob, setJobs } from "../redux/slice/jobSlice";
+import { findJob, setJobs } from "../../redux/slice/jobSlice";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { fetchJobs } from "../api/client/apiCalls";
-import Loader from "./Loader";
-import { RenderJobDescription } from "./RenderJobDescription";
-import { useDeviceType } from "../hooks";
+import { RootState } from "../../redux/store";
+import { fetchJobs } from "../../api/client/apiCalls";
+import Loader from "../Loader";
+import { RenderJobDescription } from "../RenderJobDescription";
+import { useDeviceType } from "../../hooks";
 
 
 export interface JobDescription {
@@ -122,15 +122,31 @@ export const JobFeed: React.FC= () => {
   }
 
     return (
-        <div className="feedContainer">
-            {jobs ? (
-              <>
-                {chosenJob && ( isTablet || isDesktop)  && <RenderJobDescription jobDescriptionData={chosenJob}/>}
+        <>
+        {jobs.length !== 0 && chosenJob ? (
+          <div className="feedContainer">
+          {chosenJob && ( isTablet || isDesktop)  && <RenderJobDescription jobDescriptionData={chosenJob}/>}
+          {jobs.length !== 0 ? (
+            <>
                 <RenderJobs data={jobs} onClickView={handleChooseJob}/>
-              </>
-            ) : (
-              <h1>No open job at the Moment</h1>
-            )}
+            </>
+          ) : (
+            <div className="feedContentContainer items-center justify-center">
+                <h3>No open job at the moment</h3>
+            </div>
+        
+          )}
         </div>
+        ) : (
+          <div className="feedContainer">
+              <div className="feedContentContainer items-center justify-center">
+                  <h3>No open job at the moment</h3>
+              </div>
+              <div className="feedContentContainer items-center justify-center">
+                  <h3>No open job at the moment</h3>
+              </div>
+          </div>
+        )}
+        </>
     )
 }

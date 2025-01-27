@@ -1,6 +1,6 @@
 // Functions to make specific API calls
 import { AxiosError } from "axios";
-import { JobDataTypes } from "../../components/JobFeed";
+import { JobDataTypes } from "../../components/client/JobFeed";
 import axiosInstance from "../axiosInstance";
 import {endpointClient } from "../endpoint";
 
