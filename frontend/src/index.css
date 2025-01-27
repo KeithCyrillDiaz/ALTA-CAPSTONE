@@ -168,6 +168,7 @@ input {
 
 /* CONTAINER FOR FORMS, JOB, E.G. THE SCROLLABLE BOX IN HOME PAGE */
 .feedContentContainer {
+    position: relative;   /* FOR VIEW JOB BUTTON IN MOBILE DEVICE */
     max-width: 500px;
     width: 500px;
     height: 500px;
@@ -254,15 +255,6 @@ input {
     }
 }
 
-/* MOBILE PHONES PORTRAIT */
-@media only screen and (max-width: 767px) {
-    .feedContainer { 
-        height: unset;
-        max-height: unset;
-        max-width: unset;
-        width: 100%;
-    }
-}
 
 /* SMALL LAPTOP
 @media only screen and (max-width: 1024px) {
@@ -281,5 +273,4 @@ input {
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    
 }
