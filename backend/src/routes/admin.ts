@@ -26,6 +26,6 @@ export default (router: Router) => {
     router.delete('/admin/application/delete/:id', deleteUserApplication);
 
     //DASHBOARD
-    router.get('/admin/dashboard/totalCounts', getTotalData);
+    router.post('/admin/dashboard/totalCounts', getTotalData);
 
 }

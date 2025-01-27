@@ -8,7 +8,7 @@ interface CustomError extends Error {
 const errorHandler: ErrorRequestHandler = (err: CustomError, req: Request, res: Response, next: NextFunction) => {
   const ERROR_MESSAGE = {
     code: "ERR_001",
-    status: err.name === "JsonWebTokenError" ? 401 : err.status || 500,
+    status: err.name === "JsonWebTokenError" || err.message === "jwt expired" ? 401 : err.status || 500,
     message: err.message,
   };
 
@@ -19,7 +19,7 @@ const errorHandler: ErrorRequestHandler = (err: CustomError, req: Request, res: 
       stack: err.stack,
     });
 
-    res.status(401).json({
+    res.status(err.status).json({
       code: "AUTH_002",
       message: err.message,
     });
