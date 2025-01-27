@@ -66,8 +66,8 @@ const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({data, visible,
        <>
         {visible && (
              <div className="modalLayoutContainer">
-                <div className="flex flex-col bg-gray-300 max-w-[90%] gap-4 relative">
-                    <div className="flex items-center">
+                <div className=" realtive flex flex-col bg-gray-300 max-w-[90%] gap-4  max-h-[70%] relative">
+                    <div className="flex overflow-y-scroll">
                         <RenderJobDescription jobDescriptionData={data}/>
                     </div>
                     <div className="absolute right-4 top-4 scale-125" onClick={onClose}>
