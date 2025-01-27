@@ -12,7 +12,7 @@ export const endpointClient = {
 
 export const endpointAdmin = {
     token: {
-        GET_ACCESS_TOKEN: '/getAccessToken'
-    }
-   
+        GET_ACCESS_TOKEN: '/getAccessToken',
+    },
+    ADMIN_LOGIN: '/login',
 }

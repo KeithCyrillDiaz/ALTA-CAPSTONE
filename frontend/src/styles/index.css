@@ -25,3 +25,7 @@
 
 /* NOT FOUND PAGE */
 @import url('./notFoundPage.css');
+
+
+/* ADMIN */
+@import url('./admin/login.css');
