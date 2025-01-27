@@ -19,23 +19,22 @@ const ViewJob: React.FC = () => {
     const data = location.state;
 
     // CUSTOM HOOK
-    const {isMobile} = useDeviceType();
+    const {isTablet} = useDeviceType();
     
     //CHECK IF THE DEVICE IS NOT MOBILE
     useEffect(() => {
-        if (!isMobile && data) {
+        if (isTablet && data) {
           const { _id } = data;
           dispatch(findJob(_id)); 
           navigate("/"); // REDIRECT TO HOMR
         }
-      }, [isMobile, data, dispatch, navigate]);
+      }, [isTablet, data, dispatch, navigate]);
 
     return(
        <MainLayout>
             <div className="feedContainer">
-                {data &&  <RenderJobDescription jobDescriptionData={data}/>}
+                {data &&  <RenderJobDescription hideApplyButton={true} jobDescriptionData={data}/>}
             </div>
-            
        </MainLayout>
     )
 }

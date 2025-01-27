@@ -122,7 +122,9 @@ export const JobFeed: React.FC= () => {
   }
 
     return (
-        <div className="feedContainer">
+        <>
+        {jobs.length !== 0 && chosenJob ? (
+          <div className="feedContainer">
           {chosenJob && ( isTablet || isDesktop)  && <RenderJobDescription jobDescriptionData={chosenJob}/>}
           {jobs.length !== 0 ? (
             <>
@@ -135,5 +137,16 @@ export const JobFeed: React.FC= () => {
         
           )}
         </div>
+        ) : (
+          <div className="feedContainer">
+              <div className="feedContentContainer items-center justify-center">
+                  <h3>No open job at the moment</h3>
+              </div>
+              <div className="feedContentContainer items-center justify-center">
+                  <h3>No open job at the moment</h3>
+              </div>
+          </div>
+        )}
+        </>
     )
 }
