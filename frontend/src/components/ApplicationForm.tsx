@@ -14,7 +14,7 @@ import { CustomModal } from "./modal/CustomModal";
 import { getCityData } from "../constant/json";
 import { FormValue, JobApplicationFormTypes } from "./JobForm";
 import Loader from "./Loader";
-import { JobDataTypes } from "./JobFeed";
+import { JobDataTypes } from "./client/JobFeed";
 import { RenderJobDescription } from "./RenderJobDescription";
 import { useDeviceType, useModal } from "../hooks";
 import CloseIcon from "./icons/CloseIcon";

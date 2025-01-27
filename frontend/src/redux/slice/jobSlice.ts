@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { JobDataTypes } from "../../components/JobFeed";
+import { JobDataTypes } from "../../components/client/JobFeed";
 import { DropDownDataType } from "../../components/DropDown";
 import { formatDropDownData } from "../../utils";
 
