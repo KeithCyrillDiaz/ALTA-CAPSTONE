@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authentication } from "../middleware/authentication";
-import { adminLogIn } from "../controllers/admin/adminController";
+import { adminLogIn, adminLogOut } from "../controllers/admin/adminController";
 import { createJob, updateJobStatus } from "../controllers/admin/jobController";
 import { deleteUserApplication, updateEmploymentStatus } from "../controllers/admin/userApplicationController";
 import { getTotalData } from "../controllers/admin/dashboardController";
@@ -9,6 +9,7 @@ import { getTotalData } from "../controllers/admin/dashboardController";
 export default (router: Router) => {
 
     router.post('/login', adminLogIn);
+    router.post('/logout', adminLogOut);
     
     //APPLY TOKEN AUTHENTICATION FOR SECURING API
     router.use('/admin', authentication);

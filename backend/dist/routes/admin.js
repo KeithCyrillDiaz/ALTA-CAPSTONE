@@ -7,6 +7,7 @@ const userApplicationController_1 = require("../controllers/admin/userApplicatio
 const dashboardController_1 = require("../controllers/admin/dashboardController");
 exports.default = (router) => {
     router.post('/login', adminController_1.adminLogIn);
+    router.post('/logout', adminController_1.adminLogOut);
     //APPLY TOKEN AUTHENTICATION FOR SECURING API
     router.use('/admin', authentication_1.authentication);
     //PROTECTED API ROUTES
