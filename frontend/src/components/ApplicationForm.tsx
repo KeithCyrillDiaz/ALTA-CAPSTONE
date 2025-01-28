@@ -1,7 +1,7 @@
 import React, {FormEvent, useEffect, useState} from "react";
 import { useNavigate} from "react-router-dom";
 
-import {fetchChosenJob, FormDataTypes, submitApplicationForm } from "../api/client/apiCalls";
+import {fetchChosenJob, FormDataTypes, submitApplicationForm } from "../api/apiCalls/client";
 
 import { Input, InputKeyboardTypes } from "./Input";
 import { DropDown, DropDownDataType } from "./DropDown";
