@@ -18,7 +18,8 @@ export const endpointAdmin = {
     },
     ADMIN_TOTAL: '/admin/dashboard/totalCounts',
     dashboard: {
-        FETCH_TOP_DATA: '/admin/dashboard/fetchTopData'
+        FETCH_TOP_DATA: '/admin/dashboard/fetchTopData',
+        FETCH_JOB_POSITIONS: '/admin/dashboard/fetchJobPositions'
     }
  
 }

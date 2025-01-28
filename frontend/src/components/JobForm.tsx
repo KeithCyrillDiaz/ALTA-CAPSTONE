@@ -23,6 +23,7 @@ export interface JobApplicationFormTypes {
     expectedSalary: number | "";
     resumeString: string;
     jobId: string;
+    position: string;
     jobTitle: string;
     company: string;
     workOnsite: boolean;
