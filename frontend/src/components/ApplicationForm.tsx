@@ -102,6 +102,7 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
         expectedSalary: "",
         resumeString: "",
         jobId: jobId, //ADDED THE ID OF THE CHOSEN JOB FOR FUTURE RETRIEVE
+        position: jobData?.jobTitle || "",
         jobTitle: "",
         company: "",
         workOnsite: false

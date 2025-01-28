@@ -42,7 +42,7 @@ export const AdminMenu: React.FC<{visible: boolean}> = ({visible}) => {
        <>
        {/* RENDER IF VISIBLE IS TRUE */}
         {visible && (
-             <div className={`z-10 w-[250px] bg-color-primary py-8 h-[100%] fixed top-[0] pt-24`}>
+             <div className={`z-10 w-[250px] bg-color-primary py-8 h-[100%] absolute top-0 pt-12`}>
                 <div className="flex flex-col">
                     {buttons.map((button, index) => {
                         const {label, icon} = button;
