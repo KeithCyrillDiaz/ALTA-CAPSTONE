@@ -47,13 +47,13 @@ export const createApplication = async (req: Request, res: Response, next: NextF
         // CONVERT DATA TO JSON TO ACCESS THE KEYS OF THE OBJECT
         const parsedData = JSON.parse(data);
  
-        const {givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, resumeString, jobId, jobTitle, company, workOnsite} = parsedData;
+        const {givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, resumeString, jobId, position, jobTitle, company, workOnsite} = parsedData;
 
         //validate fields
-        if (!givenName || !lastName || !birthday || !gender || !email || !phoneNumber || !currentCity || !expectedSalary || !resumeString || !jobId || !jobTitle || !company || workOnsite === undefined) {
+        if (!givenName || !lastName || !birthday || !gender || !email || !phoneNumber || !currentCity || !expectedSalary || !resumeString || !jobId || !position || !jobTitle || !company || workOnsite === undefined) {
             res.status(400).json({
                 code: "CAP_002",
-                message: "All fields are required: givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, jobId, jobTitle, company, workOnsite"
+                message: "All fields are required: givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, jobId, position,jobTitle, company, workOnsite"
             });
             return;
 
@@ -166,6 +166,9 @@ export const createApplication = async (req: Request, res: Response, next: NextF
             resumeGdriveID: resumeFileID,
             resumeString,
             jobId,
+            position,
+
+            // PREV COMPANY DETAILS
             jobTitle,
             company,
             workOnsite,

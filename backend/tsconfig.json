@@ -5,6 +5,8 @@
         "outDir": "dist",
         "sourceMap": true,
         "noImplicitAny": true,
+        "target": "ES2015", // TO ENABLE NEW SET()
+        "lib": ["ES2015"],  // TO ENABLE NEW SET()
     },
     "include": [
         "src/**/*",
