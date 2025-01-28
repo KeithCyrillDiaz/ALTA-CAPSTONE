@@ -171,25 +171,25 @@ export const getTotalData = async (req: Request, res: Response, next: NextFuncti
 }
 
 
-//NOT FINISH, UNDECIDED IF ITS NEEDED
+//THIS FUNCTION CURRENTLY IS FOR APPLICATNS ONLY AS OF THE MOMENT
 export const getTopData = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
-        logger.event("Fetching Top Clients Data");
+        logger.event("Fetching Top Data");
 
-        const {month, year} = req.body
+        const {month, year, position} = req.body;
 
-        if(!month || !year) {
-            logger.error("Error in GTD_001, Month and Year fields are required");
+        if(!month || !year || !position) {
+            logger.error("Error in GTD_001, month, year, and position fields are required");
             res.status(400).json({
                 code: "GTD_001",
-                message: "Error in GTD_001, Month and Year fields are required"
+                message: "Error in GTD_001, month, year and position fields are required"
             });
             return;
         }
 
         const topClients = await ApplicationModel.find(
-            {month, year}
+            {month, year, position}
         )
         .sort({ resumeAccuracy: -1 }) // SORT BY RESUME ACCURACY IN DESCENDING ORDER
         .limit(5); // LLIMIT THE RESULT TO 5 DOCUMENTS
@@ -214,4 +214,34 @@ export const getTopData = async (req: Request, res: Response, next: NextFunction
     }
 }
 
+export const getJobPositions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        logger.event("Fetching Job Positions");
 
+        const result = await JobModel.find({status: "Open"});
+
+        if(result.length === 0) {
+            logger.error("No Job Found");
+            res.status(404).json({
+                code: "GJP_001",
+                message: "No Job Found",
+            });
+            return;
+        }
+
+        const positions = result.map((item) => item.jobTitle);
+
+        // REMOVE THE DUPLICATES
+        const uniquePositions = [... new Set(positions)]
+
+        logger.success("Job Positions Fetched Successfully");
+        res.status(200).json({
+            code: "GJP_000",
+            message: "Job Positions Fetched Successfully",
+            data: uniquePositions,
+        });
+
+    } catch (error) {
+        next(error);
+    }
+}
