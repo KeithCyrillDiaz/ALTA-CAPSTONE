@@ -19,5 +19,6 @@ exports.default = (router) => {
     router.delete('/admin/application/delete/:id', userApplicationController_1.deleteUserApplication);
     //DASHBOARD
     router.post('/admin/dashboard/totalCounts', dashboardController_1.getTotalData);
+    router.post('/admin/dashboard/fetchTopData', dashboardController_1.getTopData);
 };
 //# sourceMappingURL=admin.js.map

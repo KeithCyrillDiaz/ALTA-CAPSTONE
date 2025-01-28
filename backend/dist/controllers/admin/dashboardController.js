@@ -142,10 +142,30 @@ exports.getTotalData = getTotalData;
 //NOT FINISH, UNDECIDED IF ITS NEEDED
 const getTopData = async (req, res, next) => {
     try {
-        logger_1.logger.event("Fetching Top Data");
-        const topClients = await applicationModel_1.ApplicationModel.find()
+        logger_1.logger.event("Fetching Top Clients Data");
+        const { month, year } = req.body;
+        if (!month || !year) {
+            logger_1.logger.error("Error in GTD_001, Month and Year fields are required");
+            res.status(400).json({
+                code: "GTD_001",
+                message: "Error in GTD_001, Month and Year fields are required"
+            });
+            return;
+        }
+        const topClients = await applicationModel_1.ApplicationModel.find({ month, year })
             .sort({ resumeAccuracy: -1 }) // SORT BY RESUME ACCURACY IN DESCENDING ORDER
             .limit(5); // LLIMIT THE RESULT TO 5 DOCUMENTS
+        // PLANNING TO ADD THE OTHER TOP DATA LIKE CLIENTS, PROJECTS, AND ETC
+        logger_1.logger.success("Successfully fetch Client Data");
+        res.status(200).json({
+            code: "GTCD_000",
+            message: "Successfully fetch Client Data",
+            data: {
+                topClients: topClients
+                // ADD THE OTHER TOP DATA LKE CLIENTS PROJECT AND ETC
+            }
+        });
+        return;
     }
     catch (error) {
         next(error);
