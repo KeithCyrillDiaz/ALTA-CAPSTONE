@@ -14,7 +14,7 @@ export const getTotalData = async (req: Request, res: Response, next: NextFuncti
         logger.event("Fetching Data for Admin Header Section");
         
         // EXTRACT THE DATA AND ASSIGNED NEW VARIABLE NAMES FOR THEM TO AVOID CONFLICT
-        const {month, year, totalApplicants: prevApplicantTotalValue, totalJob: prevEmployeesTotalValue, totalEmployees:prevJobTotalValue } = req.body;
+        const {month, year, totalApplicants: prevApplicantTotalValue, totalJob:prevJobTotalValue, totalEmployees: prevEmployeesTotalValue } = req.body;
         
         // VALIDATION OF MONTH AND YEAR TO PREVENT ERROR
         if(!month || !year || prevApplicantTotalValue === null || prevEmployeesTotalValue === null || prevJobTotalValue === null) {
