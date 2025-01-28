@@ -21,6 +21,7 @@
 
     /* THEME COLORS */
     --color-primary: #1C3F60; /* PRIMARY COLOR: USE FOR HEADINGS OR MAIN ELEMENTS */
+    --color-primary-hover: #073159; /* PRIMARY COLOR: USE FOR HEADINGS OR MAIN ELEMENTS */
     --color-text: #000000; /* BLACK FOR STANDARD TEXT */
     --color-bg: #FFFFFF; /* WHITE FOR BACKGROUND */
     --color-page-bg: #F5F5F5; /* WHITE FOR BACKGROUND */

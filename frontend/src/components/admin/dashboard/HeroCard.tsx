@@ -18,7 +18,8 @@ export const HeroCard: React.FC<HeroCardProps> = ({
             <div className="flex justify-between">
             <div className="flex items-center gap-1">
                 <p className="text-[32px]"><strong>{value}</strong></p>
-                <p className="text-positive text=[16px]"><strong> + {percentageIncrease}%</strong></p>
+                {/* ONLY SHOW PERCENTAGE INCREASE IF ITS NOT EQUAL TO 0 */}
+                {percentageIncrease !== 0 && (<p className="text-positive text=[16px]"><strong> + {percentageIncrease}%</strong></p>)}
             </div>
             {icon}
             </div>

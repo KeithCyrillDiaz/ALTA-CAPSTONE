@@ -44,7 +44,7 @@ export const HeroSection:React.FC = () => {
       useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-            const result = await fetchTotalCounts(data); // Pass `prevData` here
+            const result = await fetchTotalCounts(); // Pass `prevData` here
             setData(result);
             setLoading(false);
         };

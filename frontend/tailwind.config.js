@@ -14,6 +14,7 @@ export default {
       },
       colors: {
         "color-primary": "var(--color-primary)",
+        "color-primary-hover": "var(--color-primary-hover)",
         text: "var(--color-text)",
         bg: "var(--color-bg)",
         pageBg: "var(--color-page-bg)",

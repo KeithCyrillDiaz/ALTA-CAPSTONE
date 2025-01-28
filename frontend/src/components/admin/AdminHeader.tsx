@@ -18,7 +18,7 @@ export const AdminHeader:React.FC<AdminHeaderProps> = ({
 
     const {isMobile} = useDeviceType();
     return (
-        <div className={`flex justify-between px-12 py-4 bg-color-primary ${isMobile ? "z-20 absolute w-full" : ""}`}>
+        <div className={`flex justify-between px-12 py-4 bg-color-primary z-20 absolute w-full`}>
             <h1 className="text-white">ALTA CELESTIA ADMIN</h1>
             <div className="flex items-center gap-4">
                 <button onClick={handleLogout} className="secondary">Log Out</button>

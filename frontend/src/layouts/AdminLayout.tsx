@@ -19,14 +19,17 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
        <>
         <AdminHeader onClickMenu={() => setShowMenu(!showMenu)}/>
 
-        {/* Dummy space */}
-        {!isDesktop && (
-            
-            <div className="h-[80px] w-full bg-transparent">space</div>
-        )}
+        {/* DUMMY SPACE SINCE HEADER IS ABSOLUTE SO WE NEED TO PUT SOMETHING TO COVER THE SPACE UNDER THE HEADER */}
+        <div className="h-[80px] w-full bg-transparent">space</div>
 
         <div className="flex gap-4">
-            <AdminMenu visible={showMenu}/>
+            <AdminMenu visible={showMenu || isDesktop}/>
+            
+            {/* DUMMY SPACE IN DSKTOP MODE SINCE ADMIN MENU IS FIXED TO COVER THE SPACE UNDER THE MENU*/}
+            {isDesktop && (
+                <div className=" w-[300px] bg-transparent">space</div>
+            )}
+
             <div className="w-full px-4 pt-4">
                 <h3 className="text-[20px]">{title}</h3>
                 <div className ="flex flex-col container">

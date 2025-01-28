@@ -43,7 +43,7 @@ export interface ExtendedFormatData extends Record<keyof TotalDataType, number> 
     month: string; 
     year: number; 
 }
-export const fetchTotalCounts = async (prevData: TotalDataType | null): Promise<TotalDataType | null> => {
+export const fetchTotalCounts = async (): Promise<TotalDataType | null> => {
     try {
         console.log("Fetching total Counts");
         //EXTRACT THE PREV VALUE
@@ -57,12 +57,12 @@ export const fetchTotalCounts = async (prevData: TotalDataType | null): Promise<
             month, 
             year,
         }
-        // CHECK IF PREVIOUS DATA IS NOT NULL
-        if(prevData) {
-            // IF PREV DATA IS NOT NULL
-            // USE REDUCE TO MAKE THE FORMAT DATA AS OBJECT
+        // GET PREV DATA IN LOCAL STORAGE
+        const totals = localStorage.getItem("totals");
+        if(totals) {
+            const prevData = JSON.parse(totals);
             formatData = Object.keys(prevData).reduce((acc, key) => {
-                const { value } = data[key as keyof TotalDataType];
+                const { value } = prevData[key as keyof TotalDataType];
                 acc[key as keyof TotalDataType] = value;
                 return acc;
             }, { month, year } as ExtendedFormatData);
@@ -72,6 +72,13 @@ export const fetchTotalCounts = async (prevData: TotalDataType | null): Promise<
         const url = endpointAdmin.ADMIN_TOTAL;
         const response = await axiosInstance.post(url, formatData);
         const {data} = response.data;
+
+        // STORE THE UPDATE TOTALS IN LOCAL STORAGE
+
+        const dataStringify = JSON.stringify(data) //STRINGIFY DATA LIKE THIS '{"totalApplicants":{"value":16,"increase":0},"totalJob":{"value":4,"increase":0},"totalEmployees":{"value":0,"increase":0}}' TO STORE THEM IN LOCALSTORAGE
+        
+        //STORE THE THE STRINGIFY DATA IN LOCAL STORAGE AND NAME IT TOTALS
+        localStorage.setItem("totals", dataStringify);
         return data;
     } catch (error) {
         return errorHandler(error);

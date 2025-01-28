@@ -3,15 +3,13 @@ import { DashboardIcon } from "../icons/admin/DashboardIcon";
 import { ApplicantIcon } from "../icons/admin/ApplicantsIcon";
 import { JobIcon } from "../icons/admin/JobIcon";
 import { EmployeesIcon } from "../icons/admin/EmployeesIcon";
-import { useDeviceType } from "../../hooks";
-
 
 const IconWithLabel: React.FC<{ label: string; element: ReactNode }> = ({
     label,
     element,
   }) => {
     return (
-      <div className="flex gap-2 items-center text-white">
+      <div className="flex gap-2 items-center text-white pl-12 py-1  hover:cursor-pointer hover:bg-color-primary-hover duration-[300ms]">
         {element}
         <p className="text-white">
           <strong>{label}</strong>
@@ -40,14 +38,12 @@ export const AdminMenu: React.FC<{visible: boolean}> = ({visible}) => {
             icon: <EmployeesIcon/>
         },
      ]
-
-     const {isMobile} = useDeviceType();
     return (
        <>
        {/* RENDER IF VISIBLE IS TRUE */}
         {visible && (
-             <div className={`z-10 w-[250px] bg-color-primary pl-12 py-8 h-full  ${isMobile ? "fixed top-[0] pt-24" : ""}`}>
-                <div className="flex flex-col gap-3">
+             <div className={`z-10 w-[250px] bg-color-primary py-8 h-[100%] fixed top-[0] pt-24`}>
+                <div className="flex flex-col">
                     {buttons.map((button, index) => {
                         const {label, icon} = button;
                         return (
