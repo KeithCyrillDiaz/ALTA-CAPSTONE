@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import {fetchTotalCounts } from "../../../api/apiCalls/admin";
-import Loader from "../../Loader";
+import {fetchTotalCounts } from "../../api/apiCalls/admin";
+import Loader from "../Loader";
 import { HeroCard } from "./HeroCard";
-import { ApplicantIconHero } from "../../icons/admin/ApplicantsIcon";
-import { JobIconHero } from "../../icons/admin/JobIcon";
-import { EmployeesIconHero } from "../../icons/admin/EmployeesIcon";
+import { ApplicantIconHero } from "../icons/admin/ApplicantsIcon";
+import { JobIconHero } from "../icons/admin/JobIcon";
+import { EmployeesIconHero } from "../icons/admin/EmployeesIcon";
 
 
 

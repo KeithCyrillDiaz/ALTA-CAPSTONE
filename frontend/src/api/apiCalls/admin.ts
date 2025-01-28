@@ -1,4 +1,4 @@
-import { TotalDataType } from "../../components/admin/dashboard/HeroSection";
+import { TotalDataType } from "../../components/admin/HeroSection";
 import { getDateToday } from "../../helper/date";
 import { FormStateTypes } from "../../pages/admin/Login";
 import axiosInstance from "../axiosInstance";
@@ -6,6 +6,11 @@ import { endpointAdmin } from "../endpoint";
 import errorHandler from "./errorhandler";
 
 
+import { fetchTopData } from "./admin/dashboard/dashboard";
+
+export {
+    fetchTopData
+}
 
 export const adminLogin = async (form: FormStateTypes) => {
     try {

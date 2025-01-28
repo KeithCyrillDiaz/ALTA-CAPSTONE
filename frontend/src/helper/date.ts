@@ -1,5 +1,19 @@
+export type MonthStringTypes = 
+  | "January"
+  | "February"
+  | "March"
+  | "April"
+  | "May"
+  | "June"
+  | "July"
+  | "August"
+  | "September"
+  | "October"
+  | "November"
+  | "December";
 
-export const monthArray = [
+
+export const monthArray: MonthStringTypes[] = [
     "January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"
 ];
