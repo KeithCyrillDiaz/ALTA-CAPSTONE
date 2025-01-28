@@ -39,5 +39,7 @@ const applicationSchema = new mongoose.Schema ({
     
 }, {timestamps: true})
 
+//THIS IS NEED FOR BETTER PERFORMANCE IN QUERRYING FOR TOP DATA
+applicationSchema.index({month: 1, year: 1})
 
 export const ApplicationModel = mongoose.model('Application', applicationSchema);
