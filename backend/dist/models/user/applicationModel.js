@@ -34,5 +34,7 @@ const applicationSchema = new mongoose_1.default.Schema({
     month: { type: String, required: true },
     year: { type: Number, required: true },
 }, { timestamps: true });
+//THIS IS NEED FOR BETTER PERFORMANCE IN QUERRYING FOR TOP DATA
+applicationSchema.index({ month: 1, year: 1 });
 exports.ApplicationModel = mongoose_1.default.model('Application', applicationSchema);
 //# sourceMappingURL=applicationModel.js.map
