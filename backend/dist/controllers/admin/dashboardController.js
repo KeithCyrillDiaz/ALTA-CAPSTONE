@@ -12,13 +12,14 @@ const validMonths = date_1.monthArray;
 const getTotalData = async (req, res, next) => {
     try {
         logger_1.logger.event("Fetching Data for Admin Header Section");
-        const { month, year } = req.body;
-        //VALIDATION OF MONTH AND YEAR TO PREVENT ERROR
-        if (!month || !year) {
-            logger_1.logger.error("Error in GTD_001. Month and Year fields are required");
+        // EXTRACT THE DATA AND ASSIGNED NEW VARIABLE NAMES FOR THEM TO AVOID CONFLICT
+        const { month, year, totalApplicants: prevApplicantTotalValue, totalJob: prevJobTotalValue, totalEmployees: prevEmployeesTotalValue } = req.body;
+        // VALIDATION OF MONTH AND YEAR TO PREVENT ERROR
+        if (!month || !year || prevApplicantTotalValue === null || prevEmployeesTotalValue === null || prevJobTotalValue === null) {
+            logger_1.logger.error("Error in GTD_001. Month, Year, prevApplicantTotalValue, prevEmployeesTotalValue, and prevJobTotalValue fields are required");
             res.status(400).json({
                 code: 'GTD_001',
-                message: "Month and Year fields are required"
+                message: "Month, Year, prevApplicantTotalValue, prevEmployeesTotalValue, and prevJobTotalValue fields are required."
             });
             return;
         }
@@ -74,14 +75,12 @@ const getTotalData = async (req, res, next) => {
         else {
             //IF TOTAL DATA IS EXISTING
             logger_1.logger.event(`Updating the existing total data for ${month} ${year}`);
-            //EXTRACT THE PREVIOUS DATA TO CALCULATE THE INCREASE AND RENAMING THEM TO AVOID CONFLICT
-            const { totalApplicants: prevApplicantTotalValue, totalEmployees: prevEmployeesTotalValue, totalJob: prevJobTotalValue } = existingTotalData;
-            //CHECK IF THE VALUE CHANGES
-            if (prevApplicantTotalValue !== totalApplicants ||
-                prevEmployeesTotalValue !== totalEmployees ||
-                prevJobTotalValue !== totalJob) {
+            //CHECK IF THE PREV VALUES ARE 0 MEANING THIS ARE THE FIRST FETCH
+            if (prevApplicantTotalValue === 0 &&
+                prevEmployeesTotalValue === 0 &&
+                prevJobTotalValue === 0) {
                 //IF THE VALUES DID NOT CHANGE RETURN THE RESPONSE RIGHT AWAY
-                logger_1.logger.event("Values did not change");
+                logger_1.logger.event("First Data Fetched");
                 logger_1.logger.success("Successfully Fetched Count Documents");
                 res.status(200).json({
                     code: 'GTD_000',

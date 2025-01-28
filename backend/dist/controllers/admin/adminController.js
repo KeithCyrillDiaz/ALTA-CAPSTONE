@@ -20,7 +20,7 @@ const adminLogIn = async (req, res, next) => {
         }
         const { admin_pass, admin_user, access_secret_key, refresh_secret_key } = dotenv_1.configuration;
         if (password !== admin_pass && username !== admin_user) {
-            res.status(401).json({
+            res.status(400).json({
                 code: "ALI_002",
                 message: "Invalid username or password"
             });

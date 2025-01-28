@@ -18,6 +18,6 @@ exports.default = (router) => {
     router.patch('/admin/application/updateStatus/:id', userApplicationController_1.updateEmploymentStatus);
     router.delete('/admin/application/delete/:id', userApplicationController_1.deleteUserApplication);
     //DASHBOARD
-    router.get('/admin/dashboard/totalCounts', dashboardController_1.getTotalData);
+    router.post('/admin/dashboard/totalCounts', dashboardController_1.getTotalData);
 };
 //# sourceMappingURL=admin.js.map

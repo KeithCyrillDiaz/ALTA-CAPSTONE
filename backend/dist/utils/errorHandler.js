@@ -4,7 +4,7 @@ const logger_1 = require("./logger");
 const errorHandler = (err, req, res, next) => {
     const ERROR_MESSAGE = {
         code: "ERR_001",
-        status: err.name === "JsonWebTokenError" ? 401 : err.status || 500,
+        status: err.name === "JsonWebTokenError" || err.message === "jwt expired" ? 401 : err.status || 500,
         message: err.message,
     };
     if (err.name === "JsonWebTokenError") {
@@ -12,7 +12,7 @@ const errorHandler = (err, req, res, next) => {
             ERROR_MESSAGE,
             stack: err.stack,
         });
-        res.status(401).json({
+        res.status(err.status).json({
             code: "AUTH_002",
             message: err.message,
         });
