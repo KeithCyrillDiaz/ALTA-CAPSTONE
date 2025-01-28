@@ -16,6 +16,9 @@ export const endpointAdmin = {
     token: {
         GET_ACCESS_TOKEN: '/getAccessToken',
     },
-    ADMIN_TOTAL: '/admin/dashboard/totalCounts'
+    ADMIN_TOTAL: '/admin/dashboard/totalCounts',
+    dashboard: {
+        FETCH_TOP_DATA: '/admin/dashboard/fetchTopData'
+    }
  
 }
