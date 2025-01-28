@@ -14,6 +14,12 @@ const axiosInstance = axios.create({
 // ADD REQUEST INTERCEPTOR TO ATTACH TOKEN TO REQUEST
 axiosInstance.interceptors.request.use(
   (config) => {
+
+    //CHECK IF THE REQUEST IS FOR ADMIN LOG IN
+    if(!config.url?.includes("/admin") && !config.url?.includes("/client")) {
+      // RETURN THE CONFIG WITH NO TOKEN ATTACHED
+      return config;
+    }
     //INITIALIZE AUTHTOKEN VARIABLE TO STORE THE AUTHORIZATION TOKEN
     let authToken;
 
@@ -56,26 +62,21 @@ axiosInstance.interceptors.response.use(
     const isClientRequest = requestUrl.includes("/client");
 
     if(isClientRequest && !envConfig.clientToken) {
-      // IF ITS CLIENT REQUEST AND NO TOKEN FOUND, REJECT THE REQUEST TO BACKEND
+      // IF ITS CLIENT REQUEST AND NO CLIENT TOKEN FOUND, REJECT THE REQUEST TO BACKEND
       console.error("Client request without a valid token.");
       return Promise.reject(error);
     }
-
     
     //IF REQUEST IS FROM ADMIN
     if (error.response?.status === 401) {
-      //  FETCH THE REFRESH TOKEN AND CHECK IF EXIST
-      const refreshToken = document.cookie.split(';').find(cookie => cookie.trim().startsWith('refreshToken='));
-      if (refreshToken) {
-        //IF REFRESH TOKEN IS EXISTING
+      // FETCH THE REFRESH TOKEN AND CHECK IF EXIST
         try {
           // REQUEST TO REFRESH THE ACCESS TOKEN USING THE REFRESH TOKEN
           const apiURL = endpointAdmin.token.GET_ACCESS_TOKEN;
-          const refreshResponse = await axiosInstance.post(apiURL, {}, {
+          const refreshResponse = await axiosInstance.get(apiURL, {
             withCredentials: true // ENSURE REFRESH TOKEN IS SENT WITH THE REQUEST
           });   
           const newAccessToken = refreshResponse.data.token;
-
           // SAVE THE NEW ACCESS TOKEN TO LOCAL STORAGE OR COOKIES
           localStorage.setItem('authToken', newAccessToken);
 
@@ -85,21 +86,15 @@ axiosInstance.interceptors.response.use(
           return axiosInstance(originalRequest);
         } catch {
           // HANDLE REFRESH TOKEN FAILURE, REDIRECT TO LOGIN PAGE
-          localStorage.clear(); // CLEARS THE LOCAL STORAGE INCLUDING THE TOKENS
+          // localStorage.clear(); // CLEARS THE LOCAL STORAGE INCLUDING THE TOKENS
           
-          //CHECK IF THE REQUEST IS NOT FROM CLIENT
+          // CHECK IF THE REQUEST IS NOT FROM CLIENT
           if(!isClientRequest) {
-            window.location.href = '/login'; //REDIRECT TO ADMIN LOGIN PAGE
+            return Promise.reject(error);
+            return "refreshTokenExpired"
+            // window.location.href = '/admin/login'; //REDIRECT TO ADMIN LOGIN PAGE
           }
         }
-      } else {
-        // IF NO REFRESH TOKEN EXISTS, REDIRECT TO LOGIN
-
-        //CHECK IF THE REQUEST IS NOT FROM CLIENT
-        if(!isClientRequest) {
-          window.location.href = '/login'; //REDIRECT TO ADMIN LOGIN PAGE
-        }
-      }
     }
     return Promise.reject(error);
   }

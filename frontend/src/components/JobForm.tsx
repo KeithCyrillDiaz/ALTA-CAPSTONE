@@ -5,7 +5,7 @@ import { useDeviceType } from "../hooks";
 
 import { JobDataTypes } from "./client/JobFeed";
 import { useParams } from "react-router-dom";
-import { fetchChosenJob, } from "../api/client/apiCalls";
+import { fetchChosenJob, } from "../api/apiCalls/client";
 import Loader from "./Loader";
 import { ApplicationForm } from "./ApplicationForm";
 import { RenderJobDescription } from "./RenderJobDescription";
