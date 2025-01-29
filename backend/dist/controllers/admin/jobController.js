@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -9,7 +18,7 @@ const date_1 = require("../../helper/date");
 const resultHandler_1 = require("../../utils/resultHandler");
 const mongoose_1 = __importDefault(require("mongoose"));
 const jobModel_1 = require("../../models/admin/jobModel");
-const createJob = async (req, res, next) => {
+const createJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Creating Job");
         const { jobTitle, jobDescription, skills, education, isSalaryRange, minSalary, maxSalary, salaryType, employmentType, shift, schedule } = req.body;
@@ -45,7 +54,7 @@ const createJob = async (req, res, next) => {
             month,
             year
         });
-        const result = await newJob.save();
+        const result = yield newJob.save();
         (0, resultHandler_1.createResultHandler)(res, result, "CJB_003", "creating job");
         // if(!result) {
         //     logger.error("error in CJB_003, Error Creating Job");
@@ -65,12 +74,12 @@ const createJob = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.createJob = createJob;
-const getJobApplications = async (req, res, next) => {
+const getJobApplications = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Fetching Job Applications");
-        const result = await jobModel_1.JobModel.find();
+        const result = yield jobModel_1.JobModel.find();
         if (result.length === 0) {
             logger_1.logger.error("No Job Application Found");
             res.status(404).json({
@@ -90,10 +99,10 @@ const getJobApplications = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.getJobApplications = getJobApplications;
 const validJobStatus = ['Open', 'Close'];
-const updateJobStatus = async (req, res, next) => {
+const updateJobStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Updating Job Status");
         const { id } = req.params;
@@ -121,7 +130,7 @@ const updateJobStatus = async (req, res, next) => {
                 message: "Invalid Job Status"
             });
         }
-        const result = await jobModel_1.JobModel.findByIdAndUpdate(id, { status }, { new: true });
+        const result = yield jobModel_1.JobModel.findByIdAndUpdate(id, { status }, { new: true });
         if (!result) {
             logger_1.logger.error("Job Record not found");
             res.status(404).json({
@@ -139,9 +148,9 @@ const updateJobStatus = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.updateJobStatus = updateJobStatus;
-const updateJobInformation = async (req, res, next) => {
+const updateJobInformation = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Updating Job Information");
         const { id } = req.params;
@@ -178,7 +187,7 @@ const updateJobInformation = async (req, res, next) => {
             });
             return;
         }
-        const existingJob = await jobModel_1.JobModel.findById(id);
+        const existingJob = yield jobModel_1.JobModel.findById(id);
         if (!existingJob) {
             logger_1.logger.error("error in UJI_005, Job information is not found in database");
             res.status(404).json({
@@ -187,7 +196,7 @@ const updateJobInformation = async (req, res, next) => {
             });
             return;
         }
-        const result = await jobModel_1.JobModel.findByIdAndUpdate(id, req.body, { new: true });
+        const result = yield jobModel_1.JobModel.findByIdAndUpdate(id, req.body, { new: true });
         if (!result) {
             logger_1.logger.error("error in UJI_006, Failed Updating Job Information");
             res.status(404).json({
@@ -205,6 +214,6 @@ const updateJobInformation = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.updateJobInformation = updateJobInformation;
 //# sourceMappingURL=jobController.js.map

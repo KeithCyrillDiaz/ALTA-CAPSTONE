@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,7 +24,8 @@ const sendMessage_1 = require("../../services/geminiAI/sendMessage");
 const geminiResumeModel_1 = require("../../models/gemini/geminiResumeModel");
 const json_1 = require("../../helper/json");
 const gdrive_1 = require("../../services/gdrive/gdrive");
-const createApplication = async (req, res, next) => {
+const createApplication = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
     let resumeFile;
     let coverLetterFile;
     try {
@@ -23,8 +33,8 @@ const createApplication = async (req, res, next) => {
         //NEED TO EXPLICIT THE TYPES OF REQ.FILES FOR TYPE SAFETY OF TYPESCRIPT
         const files = req.files;
         //ACCESS THE FILES
-        resumeFile = files?.resume?.[0];
-        coverLetterFile = files?.coverLetter?.[0];
+        resumeFile = (_a = files === null || files === void 0 ? void 0 : files.resume) === null || _a === void 0 ? void 0 : _a[0];
+        coverLetterFile = (_b = files === null || files === void 0 ? void 0 : files.coverLetter) === null || _b === void 0 ? void 0 : _b[0];
         //EXTRACT DATA FROM REQ.BODY SINCE DATA IS EMBEDDED IN FORMDATA FROM FRONTEND
         const { data } = req.body;
         if (!data) {
@@ -36,12 +46,12 @@ const createApplication = async (req, res, next) => {
         }
         // CONVERT DATA TO JSON TO ACCESS THE KEYS OF THE OBJECT
         const parsedData = JSON.parse(data);
-        const { givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, resumeString, jobId, jobTitle, company, workOnsite } = parsedData;
+        const { givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, resumeString, jobId, position, jobTitle, company, workOnsite } = parsedData;
         //validate fields
-        if (!givenName || !lastName || !birthday || !gender || !email || !phoneNumber || !currentCity || !expectedSalary || !resumeString || !jobId || !jobTitle || !company || workOnsite === undefined) {
+        if (!givenName || !lastName || !birthday || !gender || !email || !phoneNumber || !currentCity || !expectedSalary || !resumeString || !jobId || !position || !jobTitle || !company || workOnsite === undefined) {
             res.status(400).json({
                 code: "CAP_002",
-                message: "All fields are required: givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, jobId, jobTitle, company, workOnsite"
+                message: "All fields are required: givenName, lastName, birthday, gender, email, phoneNumber, currentCity, expectedSalary, jobId, position,jobTitle, company, workOnsite"
             });
             return;
         }
@@ -55,11 +65,11 @@ const createApplication = async (req, res, next) => {
         }
         const { month, year } = (0, date_1.getDateToday)();
         logger_1.logger.event("Sending Resume Accuarcy Prompt to Gemini");
-        const jobData = await jobModel_1.JobModel.findById(jobId);
+        const jobData = yield jobModel_1.JobModel.findById(jobId);
         //SET PROMPT FORMAT TO RESUME PROMPT
         const prompt = (0, resumePrompts_1.resumePrompt)(resumeString, jobData);
         //SEND PROMPT AND GET THE RESPONSE
-        const response = await (0, sendMessage_1.sendPromptToGemini)(prompt);
+        const response = yield (0, sendMessage_1.sendPromptToGemini)(prompt);
         //DECLARE AN OBJECT ID VARIABLE AND RESUME RATING OF GEMINI RESPONSE TO STORE IT IN USER APPLICAITON
         let geminiObjectId;
         let geminiResumeRating;
@@ -83,7 +93,7 @@ const createApplication = async (req, res, next) => {
                 "Full Explanation": fullExplanation,
             });
             //SAVE THE RESPONSE TO MONGODB DATABASE
-            const geminiResult = await newPrompt.save();
+            const geminiResult = yield newPrompt.save();
             //EXTRACT THE NEEDED DATA AND RENAMED THEM TO AVOID CONFLICT
             const { _id: objectId, rating: resumeRating } = geminiResult;
             geminiObjectId = objectId;
@@ -105,7 +115,7 @@ const createApplication = async (req, res, next) => {
             uploadPromises.push((0, gdrive_1.uploadCoverLetterInGdrive)(coverLetterFile, next));
         }
         //WAIT FOR BOTH UPLOADS TO COMPLETE
-        const [uploadedResumeDetails, uploadedCoverLetterDetails] = await Promise.all(uploadPromises);
+        const [uploadedResumeDetails, uploadedCoverLetterDetails] = yield Promise.all(uploadPromises);
         //EXTRACT THE FILE ID'S FROM GDRIVE API
         const resumeFileID = uploadedResumeDetails.id;
         //CHECK IF THE COVER LETTER EXIST BEFORE EXTRACTING
@@ -125,6 +135,8 @@ const createApplication = async (req, res, next) => {
             resumeGdriveID: resumeFileID,
             resumeString,
             jobId,
+            position,
+            // PREV COMPANY DETAILS
             jobTitle,
             company,
             workOnsite,
@@ -135,7 +147,7 @@ const createApplication = async (req, res, next) => {
             year,
         });
         // Save the application to the database
-        const result = await newApplication.save();
+        const result = yield newApplication.save();
         // Check if the save was successful
         if (!result) {
             logger_1.logger.error("Failed to create application");
@@ -177,12 +189,12 @@ const createApplication = async (req, res, next) => {
             });
         }
     }
-};
+});
 exports.createApplication = createApplication;
-const getOpenJobApplications = async (req, res, next) => {
+const getOpenJobApplications = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Fetching Job Applications");
-        const result = await jobModel_1.JobModel.find({ status: 'Open' });
+        const result = yield jobModel_1.JobModel.find({ status: 'Open' });
         if (result.length === 0) {
             logger_1.logger.error("No Open Job Application Found");
             res.status(404).json({
@@ -202,13 +214,13 @@ const getOpenJobApplications = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.getOpenJobApplications = getOpenJobApplications;
-const getJobInformation = async (req, res, next) => {
+const getJobInformation = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Fetching Job Infomration By ID");
         const { id } = req.params;
-        const result = await jobModel_1.JobModel.findById(id);
+        const result = yield jobModel_1.JobModel.findById(id);
         if (!result) {
             logger_1.logger.error("Job Information Not Found");
             res.status(404).json({
@@ -227,6 +239,6 @@ const getJobInformation = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.getJobInformation = getJobInformation;
 //# sourceMappingURL=userController.js.map
