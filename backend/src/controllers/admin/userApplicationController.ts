@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express"
 import { logger } from "../../utils/logger";
 import { deleteFilesInGdrive } from "../../services/gdrive/gdrive";
-import { ApplicationModel } from "../../models/user/applicationModel";
+import { ApplicationModel, IApplication } from "../../models/user/applicationModel";
 import mongoose from "mongoose";
 import { GeminiResumeModel } from "../../models/gemini/geminiResumeModel";
-import { userGmailDesign } from "../../services/gmail/html/emailToUserTemplates";
+import { userGmailDesign } from "../../services/gmail/emailToUserTemplates";
 import { JobDocument } from "../../models/admin/jobModel";
 import { sendEmail } from "../../services/gmail/gmail";
 
@@ -13,6 +13,7 @@ const validEmploymentStatus = [
   'Pending', 
   'Rejected', //REJECTING APPLICAITON
   'Approved', //APPROVING APPLICAITON
+  'Interviewed',
   'Failed',   //FAILED INTERVIEW
   'Employed', //SUCCESSFUL INTERVIEW
   'Blocked'
@@ -65,11 +66,20 @@ export const updateEmploymentStatus = async (req: Request, res: Response, next: 
                 message: "Invalid Status"
             })
         }
-        
-        //UPDATE THE STATUS
+
+        let updateFields: Partial<IApplication> = { employmentStatus: status };
+
+        //UPDATE EXPIRES AT IF THE STATUS IS FAILED
+        if (status === 'Failed') {
+            const sixMonthsFromNow = new Date();
+            sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);  // ADD 6 MONTHS
+            updateFields.expiresAt = sixMonthsFromNow;  // THIS DOCUMENT TILL EXPIRE AFTER 6 MONTHS, THEN THE USER CAN REAPPLY AGAIN
+        }
+
+        //UPDATE THE THE MODEL BASED ON THE UPDATE FIELDS
         const result = await ApplicationModel.findByIdAndUpdate(
             id,
-            {employmentStatus: status},
+            updateFields,
             {new: true}
         );
 
@@ -84,14 +94,14 @@ export const updateEmploymentStatus = async (req: Request, res: Response, next: 
 
         logger.success("Employment status updated successfully");
 
-        //IF STATUS IS BLOCKED OR APPROVED, NO NEED FOR EMAIL SENDING SO RETURN THE RESPONSE
-        if(status === 'Blocked' || status === 'Approved') {
+        //IF STATUS IS BLOCKED OR APPROVED OR INTERVIEWED, NO NEED FOR EMAIL SENDING SO RETURN THE RESPONSE
+        if(status === 'Blocked' || status === 'Approved' || status === "Interviewed") {
             res.status(200).json({
                 code: 'UES_000',
                 message: "Employment status updated successfully.",
                 data: result
             });
-            return;
+            return; //END THE FUNCTION
         }
 
         //PREPARING EMAIL SENDING TO USER
@@ -131,14 +141,14 @@ export const updateEmploymentStatus = async (req: Request, res: Response, next: 
         //GET THE RIGHT TEMPLATE
         const emailTemplate = userGmailDesign[emailKeyTemplate](name, position);
 
-        //SEND EMAIL
-        await sendEmail(email, subject, emailTemplate);
-
         res.status(200).json({
             code: 'UES_000',
             message: `Employment status updated successfully and a ${emailTemplate} is sent to the user.`,
             data: result
         });
+
+        //SEND EMAIL
+        await sendEmail(email, subject, emailTemplate);
 
     } catch (error) {
         next(error);

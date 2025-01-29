@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApplicationModel = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-//This is for data structure for mognodb
 const applicationSchema = new mongoose_1.default.Schema({
     // Personal Information
     givenName: { type: String, required: true },
@@ -13,7 +12,7 @@ const applicationSchema = new mongoose_1.default.Schema({
     birthday: { type: Date, required: true },
     gender: { type: String, required: true },
     email: { type: String, required: true },
-    phoneNumber: { type: Number, required: true },
+    phoneNumber: { type: String, required: true },
     currentCity: { type: String, required: true },
     expectedSalary: { type: Number, required: true },
     coverLetterGdriveID: { type: String },
@@ -34,7 +33,10 @@ const applicationSchema = new mongoose_1.default.Schema({
     //TimeStamp for filter
     month: { type: String, required: true },
     year: { type: Number, required: true },
-}, { timestamps: true });
+    expiresAt: { type: Date }
+}, { timestamps: true, expireAfterSeconds: 0, });
+//Create a TTL index on the expiresAt field to automatically delete the document after expiresAt time
+applicationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 //THIS IS NEED FOR BETTER PERFORMANCE IN QUERRYING FOR TOP DATA
 applicationSchema.index({ month: 1, year: 1, position: 1 });
 exports.ApplicationModel = mongoose_1.default.model('Application', applicationSchema);

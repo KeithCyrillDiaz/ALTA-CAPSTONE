@@ -1,4 +1,4 @@
-import { gmailCredentials } from "../../../config/dotenv"
+import { gmailCredentials } from "../../config/dotenv"
 
 
 const thankYouForApplyingEmailTemplate = (applicantName: string, jobPosition: string) => `
@@ -331,7 +331,7 @@ const welcomeEmailTemplate = (applicantName: string, jobPosition: string) =>  `
       <p>Warm regards,</p>
       <p><strong>The Alta Celestia Team</strong></p>
       <div class="cta">
-        <a href="mailto:careers@altacelestia.com">Contact Us</a>
+        <a href="mailto:${gmailCredentials.contactEmail}">Contact Us</a>
       </div>
     </div>
   </div>

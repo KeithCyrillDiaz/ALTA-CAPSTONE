@@ -1,6 +1,47 @@
 import mongoose from "mongoose";
 
 //This is for data structure for mognodb
+export interface IApplication extends mongoose.Document {
+    // Personal Information
+    givenName: string;
+    lastName: string;
+    birthday: Date;
+    gender: string;
+    email: string;
+    phoneNumber: string;
+    currentCity: string;
+    expectedSalary: number;
+    coverLetterGdriveID?: string;
+    resumeGdriveID: string;
+
+    // For Gemini Prompting
+    resumeString: string;
+    jobId: mongoose.Schema.Types.ObjectId;
+    position: string;
+    
+    // Previous Company Details
+    jobTitle: string;
+    company: string;
+    workOnsite: boolean;
+
+    // Other fields
+    employmentStatus: string;
+
+    // Gemini Contents
+    resumeAccuracy: number; // percentage result based on accuracy of resume in Job Description from AI
+    geminiResponseId: mongoose.Schema.Types.ObjectId;
+
+    // TimeStamp for filter
+    month: string;
+    year: number;
+
+    // Expiry field for document expiration
+    expiresAt?: Date;
+    
+    // Timestamps (createdAt and updatedAt) are included automatically due to `timestamps: true`
+    createdAt?: Date;
+    updatedAt?: Date;
+}
 
 const applicationSchema = new mongoose.Schema ({
 
@@ -36,9 +77,13 @@ const applicationSchema = new mongoose.Schema ({
     //TimeStamp for filter
     month: {type: String, required: true},
     year: {type: Number, required: true},
-
     
-}, {timestamps: true})
+    expiresAt: { type: Date }
+    
+}, {timestamps: true, expireAfterSeconds: 0,})
+
+//Create a TTL index on the expiresAt field to automatically delete the document after expiresAt time
+applicationSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 //THIS IS NEED FOR BETTER PERFORMANCE IN QUERRYING FOR TOP DATA
 applicationSchema.index({month: 1, year: 1, position: 1})
