@@ -28,5 +28,5 @@ export default (router: Router) => {
     //DASHBOARD
     router.post('/admin/dashboard/totalCounts', getTotalData);
     router.post('/admin/dashboard/fetchTopData', getTopData);
-    router.post('/admin/dashboard/fetchJobPositions', getJobPositions);
+    router.get('/admin/dashboard/fetchJobPositions', getJobPositions);
 }
