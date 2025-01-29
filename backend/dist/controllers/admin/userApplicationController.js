@@ -12,18 +12,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserApplication = exports.updateEmploymentStatus = void 0;
+exports.getUserApplicantRecord = exports.getAllUserApplicants = exports.deleteUserApplication = exports.updateEmploymentStatus = void 0;
 const logger_1 = require("../../utils/logger");
 const gdrive_1 = require("../../services/gdrive/gdrive");
 const applicationModel_1 = require("../../models/user/applicationModel");
 const mongoose_1 = __importDefault(require("mongoose"));
 const geminiResumeModel_1 = require("../../models/gemini/geminiResumeModel");
-const emailToUserTemplates_1 = require("../../services/gmail/html/emailToUserTemplates");
+const emailToUserTemplates_1 = require("../../services/gmail/emailToUserTemplates");
 const gmail_1 = require("../../services/gmail/gmail");
 const validEmploymentStatus = [
     'Pending',
     'Rejected', //REJECTING APPLICAITON
     'Approved', //APPROVING APPLICAITON
+    'Interviewed',
     'Failed', //FAILED INTERVIEW
     'Employed', //SUCCESSFUL INTERVIEW
     'Blocked'
@@ -67,8 +68,15 @@ const updateEmploymentStatus = (req, res, next) => __awaiter(void 0, void 0, voi
                 message: "Invalid Status"
             });
         }
-        //UPDATE THE STATUS
-        const result = yield applicationModel_1.ApplicationModel.findByIdAndUpdate(id, { employmentStatus: status }, { new: true });
+        let updateFields = { employmentStatus: status };
+        //UPDATE EXPIRES AT IF THE STATUS IS FAILED
+        if (status === 'Failed') {
+            const sixMonthsFromNow = new Date();
+            sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6); // ADD 6 MONTHS
+            updateFields.expiresAt = sixMonthsFromNow; // THIS DOCUMENT TILL EXPIRE AFTER 6 MONTHS, THEN THE USER CAN REAPPLY AGAIN
+        }
+        //UPDATE THE THE MODEL BASED ON THE UPDATE FIELDS
+        const result = yield applicationModel_1.ApplicationModel.findByIdAndUpdate(id, updateFields, { new: true });
         if (!result) {
             logger_1.logger.error(`Document not found or failed to update employment status for ID: ${id}`);
             res.status(404).json({
@@ -78,14 +86,14 @@ const updateEmploymentStatus = (req, res, next) => __awaiter(void 0, void 0, voi
             return;
         }
         logger_1.logger.success("Employment status updated successfully");
-        //IF STATUS IS BLOCKED OR APPROVED, NO NEED FOR EMAIL SENDING SO RETURN THE RESPONSE
-        if (status === 'Blocked' || status === 'Approved') {
+        //IF STATUS IS BLOCKED OR APPROVED OR INTERVIEWED, NO NEED FOR EMAIL SENDING SO RETURN THE RESPONSE
+        if (status === 'Blocked' || status === 'Approved' || status === "Interviewed") {
             res.status(200).json({
                 code: 'UES_000',
                 message: "Employment status updated successfully.",
                 data: result
             });
-            return;
+            return; //END THE FUNCTION
         }
         //PREPARING EMAIL SENDING TO USER
         //GET THE NECESSARY DETAILS FOR SENDING EMAIL
@@ -115,13 +123,13 @@ const updateEmploymentStatus = (req, res, next) => __awaiter(void 0, void 0, voi
         }
         //GET THE RIGHT TEMPLATE
         const emailTemplate = emailToUserTemplates_1.userGmailDesign[emailKeyTemplate](name, position);
-        //SEND EMAIL
-        yield (0, gmail_1.sendEmail)(email, subject, emailTemplate);
         res.status(200).json({
             code: 'UES_000',
             message: `Employment status updated successfully and a ${emailTemplate} is sent to the user.`,
             data: result
         });
+        //SEND EMAIL
+        yield (0, gmail_1.sendEmail)(email, subject, emailTemplate);
     }
     catch (error) {
         next(error);
@@ -183,4 +191,63 @@ const deleteUserApplication = (req, res, next) => __awaiter(void 0, void 0, void
     }
 });
 exports.deleteUserApplication = deleteUserApplication;
+const getAllUserApplicants = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        logger_1.logger.event("Fetching All User Applicants");
+        const result = yield applicationModel_1.ApplicationModel.find();
+        if (result.length === 0) {
+            logger_1.logger.error("No User Applicants Record Found");
+            res.status(404).json({
+                code: "GAUP_001",
+                message: "No User Applicants Record Found"
+            });
+            return;
+        }
+        logger_1.logger.success("Successfully Fetched Records of User Applicants");
+        res.status(200).json({
+            code: "GAUP_000",
+            message: "Successfully Fetched Records of User Applicants",
+            data: result
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getAllUserApplicants = getAllUserApplicants;
+const getUserApplicantRecord = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        logger_1.logger.event("Fetching User Applicant Record");
+        const { id } = req.params;
+        if (!id) {
+            logger_1.logger.error("Error in GUAR_001, id field is required");
+            res.status(400).json({
+                code: "GUAR_001",
+                message: "id field is required"
+            });
+            return;
+        }
+        // POPOULATE THE JOB ID SO IT WILL ALSO INCLUDE ALL THE DOCUMENT DATA OF THAT JOB ID FROM JOBS COLLECTION
+        const result = yield applicationModel_1.ApplicationModel.findById(id).populate("jobId");
+        if (!result) {
+            logger_1.logger.error("Error in GUAR_002, no Record Found");
+            res.status(404).json({
+                code: "GUAR_002",
+                message: "No Record Found"
+            });
+            return;
+        }
+        logger_1.logger.success("Successfully Fetched Applicant Record");
+        res.status(200).json({
+            code: "GUAR_002",
+            message: "Successfully Fetched Applicant Record",
+            data: result
+        });
+        return;
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getUserApplicantRecord = getUserApplicantRecord;
 //# sourceMappingURL=userApplicationController.js.map

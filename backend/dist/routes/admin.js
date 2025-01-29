@@ -16,6 +16,8 @@ exports.default = (router) => {
     router.patch('/admin/job/updateStatus/:id', jobController_1.updateJobStatus);
     //APPLICATION
     router.patch('/admin/application/updateStatus/:id', userApplicationController_1.updateEmploymentStatus);
+    router.get('/admin/application/fetchAll', userApplicationController_1.getAllUserApplicants);
+    router.get('/admin/applicantion/fetchOne/:id', userApplicationController_1.getUserApplicantRecord);
     router.delete('/admin/application/delete/:id', userApplicationController_1.deleteUserApplication);
     //DASHBOARD
     router.post('/admin/dashboard/totalCounts', dashboardController_1.getTotalData);
