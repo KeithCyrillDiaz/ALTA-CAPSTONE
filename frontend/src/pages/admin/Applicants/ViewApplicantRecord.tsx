@@ -48,6 +48,12 @@ const ViewApplicantRecord: React.FC = () => {
         fetchData();
     },[id])
 
+    if(loading) {
+        return (
+            <Loader/>
+        )
+    }
+
     return (
         <AdminLayout title="APPLICANT">
         <div className="flex flex-col gap-4 relative pb-12 items-center">

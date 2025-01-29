@@ -34,7 +34,7 @@ export const AdminMenu: React.FC<{visible: boolean}> = ({visible}) => {
         {
             label: "Applicants",
             icon: <ApplicantIcon/>,
-            path: '/admin/Applicants'
+            path: '/admin/applicants'
         },
         {
             label: "Jobs",

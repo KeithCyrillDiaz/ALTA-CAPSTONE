@@ -45,7 +45,7 @@ export const FileHandler: React.FC<UploadFileProps> = ({
             <input
             disabled //DISABLED SO ITS NOT CLICKABLE
             placeholder={placeholder}
-            value={fileId === "" ? value : "Download"} //PASS THE FILE NAME HERE AS VALUE
+            value={fileId === "" ? value : "Download PDF"} //PASS THE FILE NAME HERE AS VALUE
             required={required}
             />
             {/* DISPLAY ICON ACCORDINGLY, IF THE TYPE IS UPLOAD THEN UPLOAD ICON WILL BE DISPLAYED */}

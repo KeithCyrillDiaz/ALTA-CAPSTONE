@@ -44,7 +44,7 @@ const App: React.FC = () => {
           }/>
 
           {/* APPLICANTS */}
-          <Route path="/admin/Applicants" element={
+          <Route path="/admin/applicants" element={
             <AdminProtectedRoute>
               <Applicants/>
             </AdminProtectedRoute>

@@ -21,6 +21,7 @@ import CloseIcon from "./icons/CloseIcon";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { UserApplicationTypes } from "../pages/admin/Dashboard";
+import { updateApplicantStatus } from "../api/apiCalls/admin/applicants/applicant";
 
 
 interface formFormatTypes {
@@ -44,6 +45,7 @@ interface ModalPropsType {
     title: string; 
     message: string; 
     showModal: boolean;
+    showAdminModal?: boolean;
     type?: 'confirmation' | null,
     showLoadingModal: boolean
     navigate?: string;
@@ -92,6 +94,7 @@ export type ApplicantStatusTypes =
     | 'Pending' 
     | 'Rejected' //REJECTING APPLICAITON
     | 'Approved' //APPROVING APPLICAITON
+    | 'Interviewed' 
     | 'Failed' //FAILED INTERVIEW
     | 'Employed' //SUCCESSFUL INTERVIEW
     | 'Blocked'
@@ -138,6 +141,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
         title: "",
         message: "",
         showModal: false,
+        showAdminModal: false,
         showLoadingModal: false,
         type: null
     })
@@ -342,26 +346,24 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
 
          //SET LOADING TO TRUE AND SHOW THE  LOADING MODAL FOR BETTER UI EXPERIENCE AND PREPARE THE SUCCESSFULL MESSAGE
          setLoading(true);
-         //PREPARE FORM DATA
-         const formData: FormDataTypes = {
-             resume: uploadedResume,
-             coverLetter: uploadedCoverLetter || null,
-             data: JSON.stringify(form)
-         }
- 
-            await submitApplicationForm(formData);
-            console.log("Form Submitted");
-            console.log("form: ", JSON.stringify(form, null, 2));
+        //PREPARE FORM DATA
+        const formData: FormDataTypes = {
+            resume: uploadedResume,
+            coverLetter: uploadedCoverLetter || null,
+            data: JSON.stringify(form)
+        }
+        await submitApplicationForm(formData);
+        console.log("Form Submitted");
+        console.log("form: ", JSON.stringify(form, null, 2));
 
-         setModalDetails({
+        setModalDetails({
             title: "Submission Confirmation",
             message: "Your application has been successfully submitted! We will review your details and get back to you shortly. Thank you for applying!",
             showModal: true, //HIDE THE CUSTOM MODAL
             showLoadingModal: false, //SHOW THE LOADING MODAL
             // NAIVGATE PAGE ACCORDINGLY '/' FOR CLIENT AND THE OTHER ONE IS FOR ADMIN
-            navigate: !admin? "/" : `/admin/applicant/view/${userDetails?._id}`
+            navigate: "/"
         });
-
 
        } catch (error) {
             console.log("Error Submitting Form", error);
@@ -418,8 +420,43 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
     }
 
     // FOR ADMIN 
-    const handleApproveOrRejectClick = (value: ApplicantStatusTypes) => {
-        
+    const handleAdminButtonClick = async (value: ApplicantStatusTypes) => {
+        const action = value === "Approved" ? "approve" 
+        : value ==="Rejected" ? "reject" 
+        : value ==="Interviewed" ? 'mark as "Interviewed"' 
+        : value ==="Employed" ? 'mark as "employed"'
+        : 'mark as "failed"' 
+        setApplicantStatus(value);
+        setModalDetails({
+            title: "Update Application Status Confirmation",
+            message: `Are you sure you want to ${action} this applicant? Please note, this action is irreversible.`,
+            showModal: false, //HIDE THE CUSTOM MODAL
+            showAdminModal: true,
+            showLoadingModal: false, 
+            type: "confirmation",
+        });
+    }
+
+    const updateStatus = async () => {
+        if(!userDetails?._id) {
+            console.log("user Id is Undefined");
+            return;
+        }
+
+        setLoading(true);
+        const data = await updateApplicantStatus(userDetails._id, applicantStatus);
+        setForm(data);
+        setLoading(false);
+
+        setModalDetails({
+            title: "Status Updated Successfully",
+            message: `The status of this application has ben updated to "${applicantStatus}"`,
+            showModal: false, //HIDE THE CUSTOM MODAL
+            showLoadingModal: false, 
+            showAdminModal: true,
+            // NAIVGATE PAGE ACCORDINGLY '/' FOR CLIENT AND THE OTHER ONE IS FOR ADMIN
+            navigate: `reload`
+        });
     }
 
 
@@ -441,8 +478,10 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
             <h3><strong>Personal Information</strong></h3>
             {admin === true && (
                 <div className="absolute top-2 right-2">
-                    <p className={applicantStatus === "Approved" || applicantStatus === "Employed" ? 'positive' : 'negative'}>
-                        <strong>{applicantStatus === "Pending" ? "" : applicantStatus}</strong>
+                    <p className={
+                        userDetails?.employmentStatus === "Approved" || userDetails?.employmentStatus === "Employed" ? 'positive' 
+                         : userDetails?.employmentStatus === "Rejected" || userDetails?.employmentStatus === "Failed" ?'negative' : 'primary'}>
+                        <strong>{userDetails?.employmentStatus === "Pending" ? "" : userDetails?.employmentStatus.toUpperCase()}</strong>
                     </p>
                 </div>
             )}
@@ -583,6 +622,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
 
                 <div className="flex justify-center mt-4">
                     <CheckBoxContainer
+                    disabled={admin === true}
                     label="Willing to work on-site"
                     value={form.workOnsite}
                     onClick={(bool) => handleUpdateForm("workOnsite", bool)}
@@ -624,23 +664,63 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
                 </div>
 
             </form>
-            {admin === true && (
-                // ONLY SHOW THESE BUTTONS IF ADMIN IS SET TO TRUE
+            {admin === true && userDetails?.employmentStatus !== "Failed" && userDetails?.employmentStatus !== "Employed" && (
+
+                // ONLY SHOW THESE BUTTONS IF ADMIN IS SET TO TRUE AND IF THE STATUS IS EITHER NOT FAILED OR EMPLOYED
+                
                  <div className="flex items-center justify-center gap-2 mt-[-24px]">
-                    <button
-                    onClick={() => setApplicantStatus("Approved")} 
-                    className={`positive`}>
-                            Approve
-                    </button>
-                    <button 
-                    onClick={() => setApplicantStatus("Rejected")} 
-                    className={`negative`}>
-                            Reject
-                    </button>
-                    <button 
-                    className={`primary`}>
-                            Send an email
-                    </button>
+
+                    {userDetails?.employmentStatus === "Pending" && (
+
+                        // THESE BUTTONS WILL SHOW IF THE STATUS IS PENDING
+                         <>
+                            <button 
+                                onClick={() => handleAdminButtonClick("Rejected")} 
+                                className={`negative`}>
+                                        Reject
+                            </button>  
+                        
+                            <button 
+                            onClick={() => handleAdminButtonClick("Approved")} 
+                            className={`positive`}>
+                                    Approved
+                            </button>
+                        </>
+
+                    )}
+
+                    {userDetails?.employmentStatus === "Interviewed" && (
+                         // THIS BUTTON WILL SHOW IF THE STATUS IS INTERVEIWED.
+                         <>
+                            <button 
+                            onClick={() => handleAdminButtonClick("Employed")} 
+                            className={`positive`}>
+                                    Employed
+                            </button>
+                            <button 
+                            onClick={() => handleAdminButtonClick("Failed")} 
+                            className={`negative`}>
+                                    Failed
+                            </button>
+                        </>
+                    )}
+
+                    {/*THESE BUTTONS WILL SHOW WHEN STATUS IS APPROVED */}
+                    {userDetails?.employmentStatus === "Approved" && (
+                       <>
+                            <button 
+                                onClick={() => handleAdminButtonClick("Rejected")} 
+                                className={`negative`}>
+                                        Reject
+                            </button>  
+                    
+                            <button
+                                onClick={() => handleAdminButtonClick("Interviewed")}
+                                className={`primary`}>
+                                        Mark as Interviewed
+                            </button>
+                       </>
+                    )}
                 </div>
             )}
             {/* Modal */}
@@ -661,6 +741,29 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
                 //AUTO NAVIGATE AFTER CLICKING CLOSE WHEN NAVIGATE IS NOT NULL OR UNDEFINED
                 if(modalDetails.navigate) {
                     navigate(modalDetails.navigate)
+                    return;
+                }
+          
+            }}
+            />
+            {/* ADMIN MODAL */}
+             <CustomModal
+            type={modalDetails.type}
+            confirmLabel="Confirm"
+            cancelLabel="Cancel"
+            onClickConfirm={() => updateStatus()}
+            visible={modalDetails.showAdminModal || false}
+            title={modalDetails.title}
+            message={modalDetails.message}
+            onClose={() => {
+                //UPDATE THE STATE TO FALSE TO HIDE THE MODAL
+                setModalDetails((prev) => ({
+                    ...prev,
+                    showAdminModal: false
+                }))
+                //AUTO RELOAD THE PAGE AFTER UPDATE
+                if(modalDetails.navigate === "reload") {
+                    window.location.reload();
                     return;
                 }
           

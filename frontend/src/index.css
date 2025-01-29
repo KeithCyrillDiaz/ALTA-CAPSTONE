@@ -72,6 +72,19 @@ p {
     padding: 0;
 }
 
+p.negative {
+    color: var(--color-negative);
+}
+
+p.positive {
+    color: var(--color-positive);
+}
+
+p.primary {
+    color: var(--color-primary);
+}
+
+
 /* SECONDARY TEXT OR SUBTITLES */
 .secondary-text {
     font-family: var(--font-secondary); /* USING SECONDARY FONT */

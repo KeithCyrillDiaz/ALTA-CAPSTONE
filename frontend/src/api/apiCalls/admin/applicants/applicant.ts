@@ -32,11 +32,13 @@ export const getApplicantRecord = async (id: TableDataTypesValue): Promise<UserA
     }
 }
 
-export const updateStatus = async (id: string, value: ApplicantStatusTypes) => {
+export const updateApplicantStatus = async (id: string, value: ApplicantStatusTypes) => {
     try {
         console.log("Updating Applicant Status");
-        
-
+        const url = `${endpointAdmin.applicants.UPDATE_STATUS}/${id}`;
+        const response = await axiosInstance.patch(url, {status: value});
+        const {data} = response.data;
+        return data;
     } catch (error) {
         return errorHandler(error)
     }
