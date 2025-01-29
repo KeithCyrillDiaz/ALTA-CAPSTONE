@@ -10,7 +10,8 @@ interface UploadFileProps  {
     type: 'upload' | 'download';
     value: string;
     placeholder: string;
-    required?: boolean
+    required?: boolean,
+    fileId?: string;
 }
 
 export const FileHandler: React.FC<UploadFileProps> = ({
@@ -18,7 +19,8 @@ export const FileHandler: React.FC<UploadFileProps> = ({
     type,
     value,
     placeholder,
-    required = false
+    required = false,
+    fileId
 }) => {
 
     const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -43,7 +45,7 @@ export const FileHandler: React.FC<UploadFileProps> = ({
             <input
             disabled //DISABLED SO ITS NOT CLICKABLE
             placeholder={placeholder}
-            value={value} //PASS THE FILE NAME HERE AS VALUE
+            value={fileId === "" ? value : "Download"} //PASS THE FILE NAME HERE AS VALUE
             required={required}
             />
             {/* DISPLAY ICON ACCORDINGLY, IF THE TYPE IS UPLOAD THEN UPLOAD ICON WILL BE DISPLAYED */}
@@ -52,7 +54,13 @@ export const FileHandler: React.FC<UploadFileProps> = ({
                     <UploadIcon/>
                 </div>
             ) : (
-                <DownloadIcon/>
+                <a 
+                    href={`https://drive.google.com/uc?export=download&id=${fileId}`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                >
+                    <DownloadIcon />
+                </a>
             )}
         </div>
     )

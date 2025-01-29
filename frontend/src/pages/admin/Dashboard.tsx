@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { HeroSection } from "../../components/admin/HeroSection";
 import { TopDataCard, TopDataTypes } from "../../components/admin/dashboard/TopDataCard";
@@ -7,53 +7,52 @@ import { fetchTopData } from "../../api/apiCalls/admin";
 import { fetchJobPositions } from "../../api/apiCalls/admin/dashboard/dashboard";
 import { Loader } from "../../components";
 import { DropDownDataType } from "../../components/DropDown";
+import { DashboardInitialState} from "../../redux/slice/dashboardSlice";
+import { JobDataTypes } from "../../components/client/JobFeed";
 
 
-
-interface DropDownValuesTypes {
-    chosenJobPosition: string
-  }
-interface UserApplicationTypes {
+export interface UserApplicationTypes {
     _id: string;
     givenName: string;
     lastName: string;
-    birthday: string; // ISO date string
-    gender: string; // e.g., "Male", "Female", etc.
+    birthday: string; 
+    gender: string; 
     email: string;
-    phoneNumber: number; // Assuming this is a numeric value
+    phoneNumber: number; 
     currentCity: string;
-    expectedSalary: number; // Salary in numeric format
-    coverLetterGdriveID: string; // Google Drive ID for the cover letter
-    resumeGdriveID: string; // Google Drive ID for the resume
-    resumeString: string; // Text extracted from the resume
-    jobId: string; // ID of the associated job
-    jobTitle: string; // Title of the job
-    company: string; // Name of the company
-    workOnsite: boolean; // True if onsite work is required
-    employmentStatus: string; // e.g., "Pending", "Approved", etc.
-    resumeAccuracy: number; // Accuracy percentage (e.g., 87)
-    geminiResponseId: string; // ID for the Gemini response
-    month: MonthStringTypes; // Month in string format
-    year: number; // Year in numeric format
+    expectedSalary: number; 
+    coverLetterGdriveID: string; 
+    resumeGdriveID: string;
+    resumeString: string; 
+    jobId: string | JobDataTypes; // IT HAS TWO TYPES BECAUSE OF POPULATE METHOD OF MONGOOSE
+    jobTitle: string; // TITLE OF THE PREVIOUS JOB 
+    company: string;
+    workOnsite: boolean; 
+    employmentStatus: string; 
+    resumeAccuracy: number; 
+    geminiResponseId: string; 
+    month: MonthStringTypes; 
+    year: number;
 }
 
 
 const Dashboard: React.FC = () => {
 
+    //REDUX
     const [topApplicantsData, setTopApplicantsData] = useState<TopDataTypes[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [jobPositionData, setJobPositionData] = useState<DropDownDataType[]>();
-    const [dropDownValues, setDropDownValues] = useState<DropDownValuesTypes>({
+    const [month, setMonth] = useState<MonthStringTypes>(monthArray[new Date().getMonth() + 1]);
+    const [year, setYear] = useState<number>(new Date().getFullYear());
+    const [dropDownValues, setDropDownValues] = useState<DashboardInitialState>({
         chosenJobPosition: "",
     })
-    const [month, setMonth] = useState<MonthStringTypes>(monthArray[new Date().getMonth() + 1]);
-    const [year, setYear] = useState<number>(new Date().getFullYear())
-    const handleUpdateDropDownValue = (field: keyof DropDownValuesTypes, value: string) => {
+    const handleUpdateDropDownValue = useCallback((field: keyof DashboardInitialState, value: string) => {
         setDropDownValues((prev) => ({
             ...prev,
             [field]: value
-        }))
-    }
+        }));
+    }, [])
 
     // FETCH ALL DATA
     useEffect(() => {
@@ -64,12 +63,14 @@ const Dashboard: React.FC = () => {
             // ONLY UPDATE THE STATE IF DATA IS EXISTING
             if(data){
                 // IF DATA EXIST FORMAT IT AND UPDATE THE STATE
-
                 const formatData = data.map((item: string) => ({
                     value: item,
                     label: item
                 }))
+                console.log("job", formatData)
                 setJobPositionData(formatData);
+                // SET THE INITIAL JOB POSITION TO FIRST VALUE OF DATA IN INDEX 0
+                handleUpdateDropDownValue("chosenJobPosition", data[0]);
             }
             setLoading(false);
         }
@@ -82,8 +83,7 @@ const Dashboard: React.FC = () => {
 
         fetchJobPositionsData();
         getMonthAndYear();
-      
-    },[jobPositionData]);
+    },[handleUpdateDropDownValue]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -102,10 +102,15 @@ const Dashboard: React.FC = () => {
                     data: item
                 }
             })
+            console.log(topClients)
             setTopApplicantsData(formatTopClients);
             setLoading(false);
         }
-        fetchData();
+        // ONLY FETCH DATA IF THE POSITION IS NOT AN EMPTY STRING TO AVOID INFINITE LOOP
+        if(dropDownValues.chosenJobPosition !== "") {
+            fetchData();
+        }
+
     },[dropDownValues.chosenJobPosition])
 
     if(loading) {
@@ -117,7 +122,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <AdminLayout title="DASHBOARD">
-            <div className="flex flex-col justify-center gap-4 relative">
+            <div className="flex flex-col justify-center gap-4 relative pb-12">
                 <HeroSection/>
                 <main className="flex gap-2">
                     <section className=" w-[68%] max-w-[700px] flex flex-col gap-2">
@@ -129,9 +134,10 @@ const Dashboard: React.FC = () => {
                                 <div className="w-[49%]">
                                     {jobPositionData && topApplicantsData && (
                                         <TopDataCard 
+                                        title="Applicants"
                                         month={month} 
                                         year={year}
-                                        jobPositionData={jobPositionData}
+                                        dropDownData={jobPositionData}
                                         onChangeDropDown={(value) => handleUpdateDropDownValue("chosenJobPosition", value)}
                                         dropDownValue={dropDownValues.chosenJobPosition}
                                         topData={topApplicantsData}
@@ -141,30 +147,32 @@ const Dashboard: React.FC = () => {
                                 <div className="w-[49%]">
                                     {jobPositionData && topApplicantsData && (
                                         <TopDataCard 
+                                        title="Clients"
                                         month={month} 
                                         year={year}
-                                        jobPositionData={jobPositionData}
-                                        onChangeDropDown={(value) => handleUpdateDropDownValue("chosenJobPosition", value)}
-                                        dropDownValue={dropDownValues.chosenJobPosition}
-                                        topData={topApplicantsData}
+                                        dropDownData={[]}
+                                        onChangeDropDown={() =>{}}
+                                        dropDownValue={""}
+                                        topData={[]}
                                         />
                                     )}
                                 </div>
                                 
                             </div>
                     </section>
-                    <section className="w-[32%] max-w-[350px] flex flex-col gap-2">
+                    <section className="w-[32%] max-w-[350px] flex flex-col gap-2 items-end">
                         <div className="w-full h-[200px] bg-white shadow">
                             PieGraph
                         </div>
                         {jobPositionData && topApplicantsData && (
                             <TopDataCard 
+                            title="Projects"
                             month={month} 
                             year={year}
-                            jobPositionData={jobPositionData}
-                            onChangeDropDown={(value) => handleUpdateDropDownValue("chosenJobPosition", value)}
-                            dropDownValue={dropDownValues.chosenJobPosition}
-                            topData={topApplicantsData}
+                            dropDownData={[]}
+                            onChangeDropDown={() =>{}}
+                            dropDownValue={""}
+                            topData={[]}
                             />
                         )}
                     </section>
