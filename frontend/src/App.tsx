@@ -17,6 +17,8 @@ import {
   Dashboard, 
 } from "./pages";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
+import Applicants from "./pages/admin/Applicants/Applicants";
+import ViewApplicantRecord from "./pages/admin/Applicants/ViewApplicantRecord";
 
 const App: React.FC = () => {
   return(
@@ -38,6 +40,20 @@ const App: React.FC = () => {
           <Route path="/admin/dashboard" element={
             <AdminProtectedRoute>
               <Dashboard/>
+            </AdminProtectedRoute>
+          }/>
+
+          {/* APPLICANTS */}
+          <Route path="/admin/applicants" element={
+            <AdminProtectedRoute>
+              <Applicants/>
+            </AdminProtectedRoute>
+          }/>
+
+
+          <Route path="/admin/applicant/view/:id" element={
+            <AdminProtectedRoute>
+              <ViewApplicantRecord/>
             </AdminProtectedRoute>
           }/>
         

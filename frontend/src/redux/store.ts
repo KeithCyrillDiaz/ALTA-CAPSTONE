@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { jobReducer } from './slice';
+import { 
+    dashBoardReducer, 
+    jobReducer 
+} from './slice';
 
 
 export const store = configureStore({
     reducer: {
         job: jobReducer,
+        dashboard: dashBoardReducer
     },
 })
 

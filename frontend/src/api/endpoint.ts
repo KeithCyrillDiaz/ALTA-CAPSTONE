@@ -20,6 +20,11 @@ export const endpointAdmin = {
     dashboard: {
         FETCH_TOP_DATA: '/admin/dashboard/fetchTopData',
         FETCH_JOB_POSITIONS: '/admin/dashboard/fetchJobPositions'
+    },
+    applicants: {
+        FETCH_ALL_USER_APPLICANTS: '/admin/application/fetchAll',
+        FETCH_USER_APPLICANTS: '/admin/applicantion/fetchOne',
+        UPDATE_STATUS: '/admin/application/updateStatus'
     }
  
 }

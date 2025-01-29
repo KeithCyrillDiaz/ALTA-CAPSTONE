@@ -30,6 +30,7 @@ interface DropDownProps {
     data: DropDownDataType[],
     placeHolder: string;
     search?: boolean;
+    disabled?: boolean;
 }
 
 export const DropDown: React.FC<DropDownProps> = ({
@@ -37,7 +38,8 @@ export const DropDown: React.FC<DropDownProps> = ({
     onChange,
     data,
     placeHolder,
-    search
+    search,
+    disabled = false
 }) => {
 
     const [showOptions, setShowOptions] = useState<boolean>(false)
@@ -73,9 +75,11 @@ export const DropDown: React.FC<DropDownProps> = ({
     return (
         <div className="inputWithIconContainer">
             <p className={`text-[.8rem] mobile-truncate ${!dropdownValue || dropdownValue === "" ? "text-gray-400" : ""}`}>{!dropdownValue || dropdownValue === '' ?  placeHolder : dropdownValue}</p>
-            <div className="dropdownButton" onClick={handleDropDownIconClick}>
-                <DownArrowIcon/>
-            </div>
+            {disabled !== true && (
+                <div className="dropdownButton" onClick={handleDropDownIconClick}>
+                    <DownArrowIcon/>
+                </div>
+            )}
             {showOptions && dropdownData.length !== 0 && (
                 <div className="dropdownOption">
                     {search && (

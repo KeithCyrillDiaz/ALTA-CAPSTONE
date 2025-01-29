@@ -26,7 +26,7 @@ export const CustomModal:React.FC<CustomModal> = ({
     const {setIsModalOpen} = useModal();
 
     useEffect(() => {
-        setIsModalOpen(!visible);
+        setIsModalOpen(false);
     },[visible, setIsModalOpen])
 
     return (

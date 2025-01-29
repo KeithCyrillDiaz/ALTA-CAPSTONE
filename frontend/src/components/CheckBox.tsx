@@ -4,15 +4,23 @@ import { CheckedCheckBoxIcon, UncheckedCheckBoxIcon } from "./icons/CheckBoxIcon
 
 interface CheckBoxProps {
     onClick: (bool: boolean) => void;
-    value: boolean
+    value: boolean;
+    disabled?: boolean;
 }
 
 const CheckBox: React.FC<CheckBoxProps> = ({
     onClick,
-    value
+    value,
+    disabled
 }) => {
+    const handleClick = () => {
+        if(disabled === true){
+            return //EARLY EXIT IF ITS DISABLED
+        }
+        onClick(!value);
+    }
     return (
-        <div onClick={() => onClick(!value)}>
+        <div onClick={handleClick}>
             {value? (
                 <CheckedCheckBoxIcon/>
             ) : (
@@ -26,16 +34,19 @@ interface CheckBoxContainerProps {
     onClick: (bool: boolean) => void;
     value: boolean;
     label:  string;
+    disabled?: boolean;
 }
 
 export const CheckBoxContainer:React.FC<CheckBoxContainerProps> = ({
     onClick,
     value,
-    label
+    label,
+    disabled
 }) => {
     return (
         <div className="flex items-center gap-1">
         <CheckBox
+        disabled = {disabled}
         onClick={onClick}
         value={value}
         />

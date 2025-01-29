@@ -20,6 +20,8 @@ import { useDeviceType, useModal } from "../hooks";
 import CloseIcon from "./icons/CloseIcon";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { UserApplicationTypes } from "../pages/admin/Dashboard";
+import { updateApplicantStatus } from "../api/apiCalls/admin/applicants/applicant";
 
 
 interface formFormatTypes {
@@ -36,13 +38,14 @@ interface FilesFieldFormat {
     title: string;
     placeholder: string;
     value: string,
-    
+    fileId?: string;
 }
 
 interface ModalPropsType {
     title: string; 
     message: string; 
     showModal: boolean;
+    showAdminModal?: boolean;
     type?: 'confirmation' | null,
     showLoadingModal: boolean
     navigate?: string;
@@ -80,8 +83,23 @@ const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({data, visible,
     )
 }
 
+interface ApplicationFormProps {
+    jobId: string;
+    userDetails?: UserApplicationTypes;
+    admin?: boolean;
+}
 
-export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
+  
+export type ApplicantStatusTypes = 
+    | 'Pending' 
+    | 'Rejected' //REJECTING APPLICAITON
+    | 'Approved' //APPROVING APPLICAITON
+    | 'Interviewed' 
+    | 'Failed' //FAILED INTERVIEW
+    | 'Employed' //SUCCESSFUL INTERVIEW
+    | 'Blocked'
+
+export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDetails, admin = false}) => {
 
 
     const navigate = useNavigate();
@@ -91,21 +109,26 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [jobData, setJobData] = useState<JobDataTypes | null>(chosenJob);
 
+    // FOR ADMIN
+    const [applicantStatus, setApplicantStatus] = useState<ApplicantStatusTypes>(userDetails?.employmentStatus as ApplicantStatusTypes)
+    
+
+    // USER DETAILS IS THERE FOR VIEWING THE FORM IN ADMIN "??" MEANS IF USER DETAILS IS NULL THEN IT WILL BE AN EMPTY STRING ("")
     const [form, setForm] = useState<JobApplicationFormTypes>({
-        givenName: "",
-        lastName: "",
-        birthday: null,
-        gender: "",
-        email: "",
-        phoneNumber: "",
-        currentCity: "",
-        expectedSalary: "",
-        resumeString: "",
+        givenName: userDetails?.givenName ?? "",
+        lastName: userDetails?.lastName ?? "",
+        birthday: userDetails?.birthday ? new Date(userDetails.birthday) : null,
+        gender: userDetails?.gender ?? "",
+        email: userDetails?.email ?? "",
+        phoneNumber: userDetails?.phoneNumber ?? "",
+        currentCity: userDetails?.currentCity ?? "",
+        expectedSalary: userDetails?.expectedSalary ?? "",
+        resumeString: userDetails?.resumeString ?? "",
         jobId: jobId, //ADDED THE ID OF THE CHOSEN JOB FOR FUTURE RETRIEVE
         position: jobData?.jobTitle || "",
-        jobTitle: "",
-        company: "",
-        workOnsite: false
+        jobTitle: userDetails?.jobTitle ?? "",
+        company: userDetails?.company ?? "",
+        workOnsite: userDetails?.workOnsite ?? false
     });
 
     //INITIALZED FILES OBJECT FOR DISPLAY AND UPLOADING THE FILE IN BACKEND
@@ -118,6 +141,7 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
         title: "",
         message: "",
         showModal: false,
+        showAdminModal: false,
         showLoadingModal: false,
         type: null
     })
@@ -183,14 +207,16 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
         {
             field: "coverLetter",
             title: "Cover Letter",
-            placeholder: "Upload PDF",
+            placeholder: `${admin === false  ? "Upload" : "Download"} PDF`,
             value: uploadedCoverLetter?.name || '',
+            fileId: userDetails?.coverLetterGdriveID ?? ""
         },
         {
             field: "resume",
             title: "Resume",
-            placeholder: "Upload PDF",
+            placeholder:  `${admin === false ? "Upload" : "Download"} PDF`,
             value:  uploadedResume?.name || '',
+            fileId: userDetails?.resumeGdriveID ?? ""
         },
     ]
 
@@ -301,8 +327,9 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
         
     }
 
+    // FOR CLIENT
     const handleSubmit = async () => {
-    
+        if(admin === true) return; //EARLY EXIT IF ADMIN TO PREVENT ERROR IN BACKEND
        try {
          //CHECK IF THE THE RESUME IS UPLOADED
         if (!uploadedResume || !uploadedResume.name || uploadedResume.size === 0) {
@@ -319,25 +346,24 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
 
          //SET LOADING TO TRUE AND SHOW THE  LOADING MODAL FOR BETTER UI EXPERIENCE AND PREPARE THE SUCCESSFULL MESSAGE
          setLoading(true);
-         //PREPARE FORM DATA
-         const formData: FormDataTypes = {
-             resume: uploadedResume,
-             coverLetter: uploadedCoverLetter || null,
-             data: JSON.stringify(form)
-         }
- 
-         await submitApplicationForm(formData);
-         console.log("Form Submitted");
-         console.log("form: ", JSON.stringify(form, null, 2));
+        //PREPARE FORM DATA
+        const formData: FormDataTypes = {
+            resume: uploadedResume,
+            coverLetter: uploadedCoverLetter || null,
+            data: JSON.stringify(form)
+        }
+        await submitApplicationForm(formData);
+        console.log("Form Submitted");
+        console.log("form: ", JSON.stringify(form, null, 2));
 
-         setModalDetails({
+        setModalDetails({
             title: "Submission Confirmation",
             message: "Your application has been successfully submitted! We will review your details and get back to you shortly. Thank you for applying!",
             showModal: true, //HIDE THE CUSTOM MODAL
             showLoadingModal: false, //SHOW THE LOADING MODAL
+            // NAIVGATE PAGE ACCORDINGLY '/' FOR CLIENT AND THE OTHER ONE IS FOR ADMIN
             navigate: "/"
         });
-
 
        } catch (error) {
             console.log("Error Submitting Form", error);
@@ -354,10 +380,11 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
        }
     }
 
+    // FOR CLIENT
     const handleSubmitConfirmation = (e: FormEvent) => {
         e.preventDefault();
+        if(admin === true) return; //EARLY EXIT IF ADMIN TO PREVENT ERROR IN BACKEND
         // VALIDATE THE FORM FIRST
-
           //CHECK IF FORM IS INVALID
           if(!isFormValid) {
             //IF INVALID SHOW DETAILS
@@ -392,6 +419,47 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
         });
     }
 
+    // FOR ADMIN 
+    const handleAdminButtonClick = async (value: ApplicantStatusTypes) => {
+        const action = value === "Approved" ? "approve" 
+        : value ==="Rejected" ? "reject" 
+        : value ==="Interviewed" ? 'mark as "Interviewed"' 
+        : value ==="Employed" ? 'mark as "employed"'
+        : 'mark as "failed"' 
+        setApplicantStatus(value);
+        setModalDetails({
+            title: "Update Application Status Confirmation",
+            message: `Are you sure you want to ${action} this applicant? Please note, this action is irreversible.`,
+            showModal: false, //HIDE THE CUSTOM MODAL
+            showAdminModal: true,
+            showLoadingModal: false, 
+            type: "confirmation",
+        });
+    }
+
+    const updateStatus = async () => {
+        if(!userDetails?._id) {
+            console.log("user Id is Undefined");
+            return;
+        }
+
+        setLoading(true);
+        const data = await updateApplicantStatus(userDetails._id, applicantStatus);
+        setForm(data);
+        setLoading(false);
+
+        setModalDetails({
+            title: "Status Updated Successfully",
+            message: `The status of this application has ben updated to "${applicantStatus}"`,
+            showModal: false, //HIDE THE CUSTOM MODAL
+            showLoadingModal: false, 
+            showAdminModal: true,
+            // NAIVGATE PAGE ACCORDINGLY '/' FOR CLIENT AND THE OTHER ONE IS FOR ADMIN
+            navigate: `reload`
+        });
+    }
+
+
     //INITIALIZED CONSTANT REQUIRED VARIABLE FOR EASY CHANGES
     const required = true;
 
@@ -408,7 +476,15 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
     return (
         <div className="feedContentContainer">
             <h3><strong>Personal Information</strong></h3>
-
+            {admin === true && (
+                <div className="absolute top-2 right-2">
+                    <p className={
+                        userDetails?.employmentStatus === "Approved" || userDetails?.employmentStatus === "Employed" ? 'positive' 
+                         : userDetails?.employmentStatus === "Rejected" || userDetails?.employmentStatus === "Failed" ?'negative' : 'primary'}>
+                        <strong>{userDetails?.employmentStatus === "Pending" ? "" : userDetails?.employmentStatus.toUpperCase()}</strong>
+                    </p>
+                </div>
+            )}
 
              {/* ONLY SHOW THIS IF ITS NOT TABLET MODE SIZE AND ABOVE*/}
                 {!isTablet && (
@@ -429,7 +505,8 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                     {givenNameANdLastName.map((item, index) => {
                         const {field, title, placeholder, value, type} = item;
                         return (
-                            <Input 
+                            <Input
+                            disabled={admin === true}
                             key={index}
                             onChange={(text) => handleUpdateForm(field, text)} 
                             value={value}
@@ -448,14 +525,17 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                     <div className="inputWithLabelContainer">
                         <p className="secondary-text"><strong>Gender</strong></p>
                         <DropDown
+                            disabled={admin === true}
                             data={genderData}
                             placeHolder="Gender"
                             onChange={(text) => handleUpdateForm("gender", text)}
+                            value={form.gender}
                         />
                     </div>
                     <div className="inputWithLabelContainer">
                         <p className="secondary-text"><strong>Gender</strong></p>
                         <BirthdayField
+                        disabled={admin === true}
                         onChange={(date) => handleUpdateForm("birthday", date)}
                         value={form.birthday}
                         required={required}
@@ -469,6 +549,7 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                         const {field, title, placeholder, value, type} = item;
                         return (
                             <Input 
+                            disabled={admin === true}
                             key={index}
                             onChange={(text) => handleUpdateForm(field, text)} 
                             value={value}
@@ -490,6 +571,7 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                                 <div key={index} className="inputWithLabelContainer">
                                     <p className="secondary-text"><strong>{title}</strong></p>
                                     <DropDown
+                                        disabled={admin === true}
                                         search
                                         data={getCityData()}
                                         placeHolder={placeholder}
@@ -503,6 +585,7 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                             // Salary
                             return (
                                 <Input 
+                                disabled={admin === true}
                                 key={index}
                                 onChange={(text) => handleUpdateForm(field, text)} 
                                 value={value}
@@ -520,7 +603,7 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                 {/* COVER LETTER AND RESUME FIELDS */}
                 <div className="form-row">
                     {filesFields.map((item, index) => {
-                        const {field, title, placeholder, value} = item;
+                        const {field, title, placeholder, value, fileId} = item;
                         return (
                         <div key={index} className="inputWithLabelContainer">
                             <p className="secondary-text"><strong>{title}</strong></p>
@@ -529,15 +612,17 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                                 onChange={(file) =>{handleUploadFile(field, file)}} 
                                 value={value}
                                 placeholder={placeholder}
-                                type="upload"
+                                fileId={fileId}
+                                type= {admin == false ? "upload": "download"}
                                 />
                         </div>
-                        )
+                        )   
                     })}
                 </div>
 
                 <div className="flex justify-center mt-4">
                     <CheckBoxContainer
+                    disabled={admin === true}
                     label="Willing to work on-site"
                     value={form.workOnsite}
                     onClick={(bool) => handleUpdateForm("workOnsite", bool)}
@@ -553,6 +638,7 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                         const {field, title, placeholder, value, type} = item;
                         return (
                             <Input 
+                            disabled={admin === true}
                             key={index}
                             onChange={(text) => handleUpdateForm(field, text)} 
                             value={value}
@@ -566,15 +652,77 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                 </div>
 
                 <div className="flex justify-center items-center my-4">
-                    <button 
-                    type="submit" 
-                    className={`primary ${isFormValid ? "" : "opacity-70"}`}>
-                            Submit
-                    </button>
+                    
+                    {admin === false && (
+                        // THIS BUTTON WILL ONLY SHOW IF THE ADMIN PROP IS SET TO FALSE OR NULL
+                        <button 
+                        type="submit" 
+                        className={`primary ${isFormValid ? "" : "opacity-70"}`}>
+                                Submit
+                        </button>
+                    )}
                 </div>
 
             </form>
-            
+            {admin === true && userDetails?.employmentStatus !== "Failed" && userDetails?.employmentStatus !== "Employed" && (
+
+                // ONLY SHOW THESE BUTTONS IF ADMIN IS SET TO TRUE AND IF THE STATUS IS EITHER NOT FAILED OR EMPLOYED
+                
+                 <div className="flex items-center justify-center gap-2 mt-[-24px]">
+
+                    {userDetails?.employmentStatus === "Pending" && (
+
+                        // THESE BUTTONS WILL SHOW IF THE STATUS IS PENDING
+                         <>
+                            <button 
+                                onClick={() => handleAdminButtonClick("Rejected")} 
+                                className={`negative`}>
+                                        Reject
+                            </button>  
+                        
+                            <button 
+                            onClick={() => handleAdminButtonClick("Approved")} 
+                            className={`positive`}>
+                                    Approved
+                            </button>
+                        </>
+
+                    )}
+
+                    {userDetails?.employmentStatus === "Interviewed" && (
+                         // THIS BUTTON WILL SHOW IF THE STATUS IS INTERVEIWED.
+                         <>
+                            <button 
+                            onClick={() => handleAdminButtonClick("Employed")} 
+                            className={`positive`}>
+                                    Employed
+                            </button>
+                            <button 
+                            onClick={() => handleAdminButtonClick("Failed")} 
+                            className={`negative`}>
+                                    Failed
+                            </button>
+                        </>
+                    )}
+
+                    {/*THESE BUTTONS WILL SHOW WHEN STATUS IS APPROVED */}
+                    {userDetails?.employmentStatus === "Approved" && (
+                       <>
+                            <button 
+                                onClick={() => handleAdminButtonClick("Rejected")} 
+                                className={`negative`}>
+                                        Reject
+                            </button>  
+                    
+                            <button
+                                onClick={() => handleAdminButtonClick("Interviewed")}
+                                className={`primary`}>
+                                        Mark as Interviewed
+                            </button>
+                       </>
+                    )}
+                </div>
+            )}
             {/* Modal */}
             <CustomModal
             type={modalDetails.type}
@@ -593,6 +741,29 @@ export const ApplicationForm: React.FC<{jobId: string}> = ({jobId}) => {
                 //AUTO NAVIGATE AFTER CLICKING CLOSE WHEN NAVIGATE IS NOT NULL OR UNDEFINED
                 if(modalDetails.navigate) {
                     navigate(modalDetails.navigate)
+                    return;
+                }
+          
+            }}
+            />
+            {/* ADMIN MODAL */}
+             <CustomModal
+            type={modalDetails.type}
+            confirmLabel="Confirm"
+            cancelLabel="Cancel"
+            onClickConfirm={() => updateStatus()}
+            visible={modalDetails.showAdminModal || false}
+            title={modalDetails.title}
+            message={modalDetails.message}
+            onClose={() => {
+                //UPDATE THE STATE TO FALSE TO HIDE THE MODAL
+                setModalDetails((prev) => ({
+                    ...prev,
+                    showAdminModal: false
+                }))
+                //AUTO RELOAD THE PAGE AFTER UPDATE
+                if(modalDetails.navigate === "reload") {
+                    window.location.reload();
                     return;
                 }
           

@@ -6,12 +6,14 @@ import "react-datepicker/dist/react-datepicker.css"; // CSS for the calendar
 interface BirthdayFieldProps {
     onChange: (date: Date | null) => void;
     value?: Date | null,
-    required?: boolean
+    required?: boolean;
+    disabled?:boolean
 }
 export const BirthdayField:React.FC<BirthdayFieldProps> = ({
     onChange,
     value,
-    required = false
+    required = false,
+    disabled = false
 }) => {
 
     const datePickerRef = useRef<DatePicker | null>(null);
@@ -37,10 +39,13 @@ export const BirthdayField:React.FC<BirthdayFieldProps> = ({
                 showMonthDropdown
                 dropdownMode="select"
                 required={required}
+                disabled={disabled}
                 />
-            <div onClick={openDatePicker}>
-                <CalendarIcon/>
-            </div>
+            {disabled !== true && (
+                <div onClick={openDatePicker}>
+                    <CalendarIcon/>
+                </div>
+            )}
         </div>
     )
 }
