@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,7 +28,7 @@ const validEmploymentStatus = [
     'Employed', //SUCCESSFUL INTERVIEW
     'Blocked'
 ];
-const updateEmploymentStatus = async (req, res, next) => {
+const updateEmploymentStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Updating Employment Status of User Application");
         //EXTRACT ID IN PARAMS
@@ -40,7 +49,7 @@ const updateEmploymentStatus = async (req, res, next) => {
             });
             return;
         }
-        const existingApplicant = await applicationModel_1.ApplicationModel.findById(id).populate('jobId');
+        const existingApplicant = yield applicationModel_1.ApplicationModel.findById(id).populate('jobId');
         if (!existingApplicant) {
             logger_1.logger.error("Applicant Not Found");
             res.status(400).json({
@@ -59,7 +68,7 @@ const updateEmploymentStatus = async (req, res, next) => {
             });
         }
         //UPDATE THE STATUS
-        const result = await applicationModel_1.ApplicationModel.findByIdAndUpdate(id, { employmentStatus: status }, { new: true });
+        const result = yield applicationModel_1.ApplicationModel.findByIdAndUpdate(id, { employmentStatus: status }, { new: true });
         if (!result) {
             logger_1.logger.error(`Document not found or failed to update employment status for ID: ${id}`);
             res.status(404).json({
@@ -107,7 +116,7 @@ const updateEmploymentStatus = async (req, res, next) => {
         //GET THE RIGHT TEMPLATE
         const emailTemplate = emailToUserTemplates_1.userGmailDesign[emailKeyTemplate](name, position);
         //SEND EMAIL
-        await (0, gmail_1.sendEmail)(email, subject, emailTemplate);
+        yield (0, gmail_1.sendEmail)(email, subject, emailTemplate);
         res.status(200).json({
             code: 'UES_000',
             message: `Employment status updated successfully and a ${emailTemplate} is sent to the user.`,
@@ -117,9 +126,9 @@ const updateEmploymentStatus = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.updateEmploymentStatus = updateEmploymentStatus;
-const deleteUserApplication = async (req, res, next) => {
+const deleteUserApplication = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Deleting User Application");
         const { id } = req.params;
@@ -140,7 +149,7 @@ const deleteUserApplication = async (req, res, next) => {
             return;
         }
         //GET THE APPLICATION DATA BASED ON THE OBJECT ID
-        const existingApplication = await applicationModel_1.ApplicationModel.findById(id);
+        const existingApplication = yield applicationModel_1.ApplicationModel.findById(id);
         //CHECK IF THE APPLICATION IS EXISTING IN DATABASE
         if (!existingApplication) {
             logger_1.logger.error("Application Not Found");
@@ -153,16 +162,16 @@ const deleteUserApplication = async (req, res, next) => {
         logger_1.logger.event("Deleting the resume and cover letter in Gdrive");
         //DELETE RESUME AND COVER LETTER IN GDRIVE
         const { resumeGdriveID, coverLetterGdriveID } = existingApplication;
-        await Promise.all([
+        yield Promise.all([
             (0, gdrive_1.deleteFilesInGdrive)(resumeGdriveID),
             (0, gdrive_1.deleteFilesInGdrive)(coverLetterGdriveID)
         ]);
         logger_1.logger.event("Deleting the Gemini Prompt in Database");
         //DELETE THE GEMINI PROMPT IN MONGODB 
-        await geminiResumeModel_1.GeminiResumeModel.findOneAndDelete({ applicationId: id });
+        yield geminiResumeModel_1.GeminiResumeModel.findOneAndDelete({ applicationId: id });
         logger_1.logger.success("Successfully Deleted Gemini Resume Response");
         //DELETE THE APPLICATION
-        await applicationModel_1.ApplicationModel.findByIdAndDelete(id);
+        yield applicationModel_1.ApplicationModel.findByIdAndDelete(id);
         logger_1.logger.success("Successfully Deleted the Application");
         res.status(200).json({
             code: 'DUA_000',
@@ -172,6 +181,6 @@ const deleteUserApplication = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.deleteUserApplication = deleteUserApplication;
 //# sourceMappingURL=userApplicationController.js.map

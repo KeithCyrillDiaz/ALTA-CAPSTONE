@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -10,10 +19,10 @@ const gdriveConfig_1 = __importDefault(require("../../config/gdriveConfig"));
 const logger_1 = require("../../utils/logger");
 const dotenv_1 = require("../../config/dotenv");
 // UPLOAD FILES
-const uploadFilesInGdrive = async (fileObject, folder_id) => {
+const uploadFilesInGdrive = (fileObject, folder_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const fileStream = fs_1.default.createReadStream(fileObject.path);
-        const { data } = await googleapis_1.google.drive({ version: "v3", auth: gdriveConfig_1.default }).files.create({
+        const { data } = yield googleapis_1.google.drive({ version: "v3", auth: gdriveConfig_1.default }).files.create({
             media: {
                 mimeType: fileObject.mimetype,
                 body: fileStream, // PASS THE READABLE STREAM (FILE CONTENT)
@@ -29,10 +38,10 @@ const uploadFilesInGdrive = async (fileObject, folder_id) => {
     catch (err) {
         console.log(err);
     }
-};
+});
 exports.uploadFilesInGdrive = uploadFilesInGdrive;
 //UPLOAD RESUME IN GDRIVE
-const uploadResumeInGdrive = async (file, next) => {
+const uploadResumeInGdrive = (file, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //GET RESUME FOLDER ID IN ENV
         const folderId = dotenv_1.gdriveCredentials.resumeFolderId;
@@ -52,7 +61,7 @@ const uploadResumeInGdrive = async (file, next) => {
             throw new Error("Folder ID for resume is not set");
         }
         //UPLOAD FILES IN GDRIVE
-        const result = await (0, exports.uploadFilesInGdrive)(file, folderId);
+        const result = yield (0, exports.uploadFilesInGdrive)(file, folderId);
         //GET THE FILE PATH 
         const filePath = file.path;
         //DELETE THE LOCAL FILE AFTER UPLOADING IN GDRIVE
@@ -72,10 +81,10 @@ const uploadResumeInGdrive = async (file, next) => {
         //PROCEED TO ERROR HANDLER IF UPLOADING RESUME FAILS
         next(error);
     }
-};
+});
 exports.uploadResumeInGdrive = uploadResumeInGdrive;
 //UPLOAD COVER LETTER IN GDRIVE
-const uploadCoverLetterInGdrive = async (file, next) => {
+const uploadCoverLetterInGdrive = (file, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         //GET COVER LETTER FOLDER ID IN ENV
         const folderId = dotenv_1.gdriveCredentials.coverLetterFolderId;
@@ -84,7 +93,7 @@ const uploadCoverLetterInGdrive = async (file, next) => {
             throw new Error("Folder ID for cover letter is not set");
         }
         //UPLOAD FILES IN GDRIVE
-        const result = await (0, exports.uploadFilesInGdrive)(file, folderId);
+        const result = yield (0, exports.uploadFilesInGdrive)(file, folderId);
         //GET THE FILE PATH 
         const filePath = file.path;
         //DELETE THE LOCAL FILE AFTER UPLOADING IN GDRIVE
@@ -103,21 +112,21 @@ const uploadCoverLetterInGdrive = async (file, next) => {
         //PROCEED TO ERROR HANDLER IF UPLOADING RESUME FAILS
         next(error);
     }
-};
+});
 exports.uploadCoverLetterInGdrive = uploadCoverLetterInGdrive;
 //RETRIEVE FILES IN GDRIVE
-const retrieveFilesInGdrive = async (fileID) => {
+const retrieveFilesInGdrive = (fileID) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const drive = googleapis_1.google.drive({ version: 'v3', auth: gdriveConfig_1.default });
         //FETCH THE FILE META DATA(OPTIONAL BUT USEFUL FOR DEBUGGING) 
-        const fileMetadata = await drive.files.get({
+        const fileMetadata = yield drive.files.get({
             fileId: fileID,
             fields: 'id, name, mimeType, webViewLink',
         });
         //WEBVIEWLINK: https://drive.google.com/file/d/${id}/view
         console.log("File metadata:", fileMetadata.data);
         // Now, download the file. For example, a PDF.
-        const fileStream = await drive.files.get({
+        const fileStream = yield drive.files.get({
             fileId: fileID,
             alt: 'media', // This fetches the actual file content, not metadata.
         }, { responseType: 'stream' } // This returns the file as a stream.
@@ -136,12 +145,12 @@ const retrieveFilesInGdrive = async (fileID) => {
         console.error('Error retrieving file:', error);
         throw new Error('Failed to retrieve file from Google Drive');
     }
-};
+});
 exports.retrieveFilesInGdrive = retrieveFilesInGdrive;
 // DELETE FILES
-const deleteFilesInGdrive = async (fileID) => {
+const deleteFilesInGdrive = (fileID) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { data } = await googleapis_1.google
+        const { data } = yield googleapis_1.google
             .drive({ version: "v3", auth: gdriveConfig_1.default })
             .files.delete({
             fileId: fileID,
@@ -152,6 +161,6 @@ const deleteFilesInGdrive = async (fileID) => {
     catch (err) {
         logger_1.logger.error("Error Deleting Files in Gdrive:", err.message);
     }
-};
+});
 exports.deleteFilesInGdrive = deleteFilesInGdrive;
 //# sourceMappingURL=gdrive.js.map

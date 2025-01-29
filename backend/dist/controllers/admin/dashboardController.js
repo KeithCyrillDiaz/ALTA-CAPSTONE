@@ -1,6 +1,15 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTopData = exports.getTotalData = void 0;
+exports.getJobPositions = exports.getTopData = exports.getTotalData = void 0;
 const logger_1 = require("../../utils/logger");
 const applicationModel_1 = require("../../models/user/applicationModel");
 const jobModel_1 = require("../../models/admin/jobModel");
@@ -9,7 +18,7 @@ const totalCountModel_1 = require("../../models/admin/totalCountModel");
 const date_1 = require("../../helper/date");
 const math_1 = require("../../helper/math");
 const validMonths = date_1.monthArray;
-const getTotalData = async (req, res, next) => {
+const getTotalData = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         logger_1.logger.event("Fetching Data for Admin Header Section");
         // EXTRACT THE DATA AND ASSIGNED NEW VARIABLE NAMES FOR THEM TO AVOID CONFLICT
@@ -32,11 +41,11 @@ const getTotalData = async (req, res, next) => {
             return;
         }
         //FETCHED TOTAL DATA FOR THE SPECIFIED MONTH AND YEAR
-        const existingTotalData = await totalCountModel_1.TotalModel.findOne({ month, year });
+        const existingTotalData = yield totalCountModel_1.TotalModel.findOne({ month, year });
         //COUNT THE DOCUMENTS
-        const totalApplicants = await applicationModel_1.ApplicationModel.countDocuments();
-        const totalJob = await jobModel_1.JobModel.countDocuments();
-        const totalEmployees = await employeeModel_1.EmployeeModel.countDocuments();
+        const totalApplicants = yield applicationModel_1.ApplicationModel.countDocuments();
+        const totalJob = yield jobModel_1.JobModel.countDocuments();
+        const totalEmployees = yield employeeModel_1.EmployeeModel.countDocuments();
         //NO CLIENT YET
         //NO COLLABORATORS YET
         let result;
@@ -52,7 +61,7 @@ const getTotalData = async (req, res, next) => {
                 month,
                 year
             });
-            result = await newTotal.save();
+            result = yield newTotal.save();
             if (!result) {
                 logger_1.logger.error("Failed to created new total information");
                 res.status(500).json({
@@ -101,7 +110,7 @@ const getTotalData = async (req, res, next) => {
             //GET THE TOTAL JOB COUNT INCREASE IN PERCENTAGE
             const totalJobIncreasePercentage = (0, math_1.caclucateIncreasePercentage)(prevJobTotalValue, totalJob);
             //UPDATE THE EXISTING DOCUMENT
-            result = await totalCountModel_1.TotalModel.findOneAndUpdate({ month, year }, {
+            result = yield totalCountModel_1.TotalModel.findOneAndUpdate({ month, year }, {
                 totalApplicants,
                 totalEmployees,
                 totalJob
@@ -137,22 +146,22 @@ const getTotalData = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.getTotalData = getTotalData;
-//NOT FINISH, UNDECIDED IF ITS NEEDED
-const getTopData = async (req, res, next) => {
+//THIS FUNCTION CURRENTLY IS FOR APPLICATNS ONLY AS OF THE MOMENT
+const getTopData = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        logger_1.logger.event("Fetching Top Clients Data");
-        const { month, year } = req.body;
-        if (!month || !year) {
-            logger_1.logger.error("Error in GTD_001, Month and Year fields are required");
+        logger_1.logger.event("Fetching Top Data");
+        const { month, year, position } = req.body;
+        if (!month || !year || !position) {
+            logger_1.logger.error("Error in GTD_001, month, year, and position fields are required");
             res.status(400).json({
                 code: "GTD_001",
-                message: "Error in GTD_001, Month and Year fields are required"
+                message: "Error in GTD_001, month, year and position fields are required"
             });
             return;
         }
-        const topClients = await applicationModel_1.ApplicationModel.find({ month, year })
+        const topClients = yield applicationModel_1.ApplicationModel.find({ month, year, position })
             .sort({ resumeAccuracy: -1 }) // SORT BY RESUME ACCURACY IN DESCENDING ORDER
             .limit(5); // LLIMIT THE RESULT TO 5 DOCUMENTS
         // PLANNING TO ADD THE OTHER TOP DATA LIKE CLIENTS, PROJECTS, AND ETC
@@ -170,6 +179,33 @@ const getTopData = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 exports.getTopData = getTopData;
+const getJobPositions = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        logger_1.logger.event("Fetching Job Positions");
+        const result = yield jobModel_1.JobModel.find({ status: "Open" });
+        if (result.length === 0) {
+            logger_1.logger.error("No Job Found");
+            res.status(404).json({
+                code: "GJP_001",
+                message: "No Job Found",
+            });
+            return;
+        }
+        const positions = result.map((item) => item.jobTitle);
+        // REMOVE THE DUPLICATES
+        const uniquePositions = [...new Set(positions)];
+        logger_1.logger.success("Job Positions Fetched Successfully");
+        res.status(200).json({
+            code: "GJP_000",
+            message: "Job Positions Fetched Successfully",
+            data: uniquePositions,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getJobPositions = getJobPositions;
 //# sourceMappingURL=dashboardController.js.map

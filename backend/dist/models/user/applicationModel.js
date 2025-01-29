@@ -21,6 +21,7 @@ const applicationSchema = new mongoose_1.default.Schema({
     //FOR GEMINI PROMPTING
     resumeString: { type: String, required: true },
     jobId: { type: mongoose_1.default.Schema.Types.ObjectId, ref: 'jobs', required: true },
+    position: { type: String, required: true },
     // Previous Company Details
     jobTitle: { type: String, required: true },
     company: { type: String, required: true },
@@ -35,6 +36,6 @@ const applicationSchema = new mongoose_1.default.Schema({
     year: { type: Number, required: true },
 }, { timestamps: true });
 //THIS IS NEED FOR BETTER PERFORMANCE IN QUERRYING FOR TOP DATA
-applicationSchema.index({ month: 1, year: 1 });
+applicationSchema.index({ month: 1, year: 1, position: 1 });
 exports.ApplicationModel = mongoose_1.default.model('Application', applicationSchema);
 //# sourceMappingURL=applicationModel.js.map
