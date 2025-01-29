@@ -213,3 +213,71 @@ export const deleteUserApplication = async (req: Request, res: Response, next: N
         next(error);
     }
 }
+
+
+export const getAllUserApplicants = async ( req: Request, res: Response, next: NextFunction) => {
+    try {
+        logger.event("Fetching All User Applicants");
+
+        const result = await ApplicationModel.find();
+
+        if(result.length === 0) {
+            logger.error("No User Applicants Record Found");
+            res.status(404).json({
+                code: "GAUP_001",
+                message: "No User Applicants Record Found"
+            });
+            return; 
+        }
+
+        logger.success("Successfully Fetched Records of User Applicants");
+        res.status(200).json({
+            code: "GAUP_000",
+            message: "Successfully Fetched Records of User Applicants",
+            data: result
+        });
+
+    } catch (error) {
+       next(error);
+    }
+}
+
+export const getUserApplicantRecord = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        logger.event("Fetching User Applicant Record");
+
+        const {id} = req.params;
+        if(!id) {
+            logger.error("Error in GUAR_001, id field is required");
+            res.status(400).json({
+                code: "GUAR_001",
+                message: "id field is required"
+            });
+            return;
+        }
+
+        // POPOULATE THE JOB ID SO IT WILL ALSO INCLUDE ALL THE DOCUMENT DATA OF THAT JOB ID FROM JOBS COLLECTION
+        const result = await ApplicationModel.findById(id).populate("jobId"); 
+
+        if(!result) {
+            logger.error("Error in GUAR_002, no Record Found");
+            res.status(404).json({
+                code: "GUAR_002",
+                message: "No Record Found"
+            });
+            return;
+        }
+
+        logger.success("Successfully Fetched Applicant Record");
+        res.status(200).json({
+            code: "GUAR_002",
+            message: "Successfully Fetched Applicant Record",
+            data: result
+        });
+
+        return;
+
+    } catch (error) {
+        next(error);
+    }
+}

@@ -10,7 +10,7 @@ const applicationSchema = new mongoose.Schema ({
     birthday: {type: Date, required: true},
     gender: {type: String, required: true},
     email: {type: String, required: true},
-    phoneNumber: {type: Number, required: true},
+    phoneNumber: {type: String, required: true},
     currentCity: {type: String, required: true},
     expectedSalary: {type: Number, required: true},
     coverLetterGdriveID: {type: String},
