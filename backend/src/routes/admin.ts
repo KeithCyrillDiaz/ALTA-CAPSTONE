@@ -2,7 +2,7 @@ import { Router } from "express";
 import { authentication } from "../middleware/authentication";
 import { adminLogIn, adminLogOut } from "../controllers/admin/adminController";
 import { createJob, updateJobStatus } from "../controllers/admin/jobController";
-import { deleteUserApplication, updateEmploymentStatus } from "../controllers/admin/userApplicationController";
+import { deleteUserApplication, getAllUserApplicants, getUserApplicantRecord, updateEmploymentStatus } from "../controllers/admin/userApplicationController";
 import { getJobPositions, getTopData, getTotalData } from "../controllers/admin/dashboardController";
 
 
@@ -22,7 +22,8 @@ export default (router: Router) => {
 
     //APPLICATION
     router.patch('/admin/application/updateStatus/:id', updateEmploymentStatus);
-
+    router.get('/admin/application/fetchAll', getAllUserApplicants);
+    router.get('/admin/applicantion/fetchOne/:id', getUserApplicantRecord)
     router.delete('/admin/application/delete/:id', deleteUserApplication);
 
     //DASHBOARD
