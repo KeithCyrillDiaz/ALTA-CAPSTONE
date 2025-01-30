@@ -20,6 +20,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const geminiResumeModel_1 = require("../../models/gemini/geminiResumeModel");
 const emailToUserTemplates_1 = require("../../services/gmail/emailToUserTemplates");
 const gmail_1 = require("../../services/gmail/gmail");
+const employeeModel_1 = require("../../models/admin/employeeModel");
+const date_1 = require("../../helper/date");
 const validEmploymentStatus = [
     'Pending',
     'Rejected', //REJECTING APPLICAITON
@@ -89,11 +91,39 @@ const updateEmploymentStatus = (req, res, next) => __awaiter(void 0, void 0, voi
         //IF STATUS IS BLOCKED OR APPROVED OR INTERVIEWED, NO NEED FOR EMAIL SENDING SO RETURN THE RESPONSE
         if (status === 'Blocked' || status === 'Approved' || status === "Interviewed") {
             res.status(200).json({
-                code: 'UES_000',
+                code: 'UES_004',
                 message: "Employment status updated successfully.",
                 data: result
             });
             return; //END THE FUNCTION
+        }
+        // IF STATUS IS EMPLOYED
+        if (status === "Employed") {
+            // IF YES
+            logger_1.logger.event("Adding New Employee");
+            // EXTRACT THE NEEDED DATA FROM THE RESULT
+            const { givenName, lastName, birthday, gender, email, phoneNumber, currentCity, position, workOnsite } = result;
+            const { month, year } = (0, date_1.getDateToday)();
+            const newEmployee = new employeeModel_1.EmployeeModel({
+                givenName,
+                lastName,
+                birthday,
+                gender,
+                email,
+                phoneNumber,
+                currentCity,
+                position,
+                workOnsite,
+                month,
+                year
+            });
+            const employeeResult = yield newEmployee.save();
+            if (!employeeResult) {
+                logger_1.logger.error("Failed to save new Employee in Database");
+            }
+            else {
+                logger_1.logger.success("Successfully save New Employee in Database");
+            }
         }
         //PREPARING EMAIL SENDING TO USER
         //GET THE NECESSARY DETAILS FOR SENDING EMAIL

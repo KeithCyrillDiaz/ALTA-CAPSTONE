@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmployeeModel = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 //This is for data structure for mognodb
-const applicationSchema = new mongoose_1.default.Schema({
+const employeeSchema = new mongoose_1.default.Schema({
     // Personal Information
     givenName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -15,13 +15,13 @@ const applicationSchema = new mongoose_1.default.Schema({
     email: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     currentCity: { type: String, required: true },
-    salary: { type: Number, required: true },
-    companyEmail: { type: String, required: true },
+    salary: { type: Number },
+    companyEmail: { type: String },
     position: { type: String, required: true },
     workOnsite: { type: Boolean, required: true },
     //TimeStamp for filter
     month: { type: String, required: true },
     year: { type: Number, required: true },
 }, { timestamps: true });
-exports.EmployeeModel = mongoose_1.default.model('Employee', applicationSchema);
+exports.EmployeeModel = mongoose_1.default.model('Employee', employeeSchema);
 //# sourceMappingURL=employeeModel.js.map

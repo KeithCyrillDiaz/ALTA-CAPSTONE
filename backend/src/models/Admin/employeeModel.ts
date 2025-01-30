@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 //This is for data structure for mognodb
 
-const applicationSchema = new mongoose.Schema ({
+const employeeSchema = new mongoose.Schema ({
 
     // Personal Information
     givenName: {type: String, required: true},
@@ -12,8 +12,8 @@ const applicationSchema = new mongoose.Schema ({
     email: {type: String, required: true},
     phoneNumber: {type: String, required: true},
     currentCity: {type: String, required: true},
-    salary: {type: Number, required: true},
-    companyEmail: {type: String, required: true},
+    salary: {type: Number},
+    companyEmail: {type: String},
     position: {type: String, required: true},
     workOnsite: {type: Boolean, required: true},
 
@@ -24,4 +24,4 @@ const applicationSchema = new mongoose.Schema ({
 }, {timestamps: true})
 
 
-export const EmployeeModel = mongoose.model('Employee', applicationSchema);
+export const EmployeeModel = mongoose.model('Employee', employeeSchema);
