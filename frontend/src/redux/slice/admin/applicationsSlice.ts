@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserApplicationTypes } from "../../../pages/admin/Dashboard";
 import { DropDownDataType } from "../../../components/DropDown";
+import { TableDataTypes } from "../../../components/admin/table/ApplicantsTable";
 
+export type FilterOptionsTypes = {
+    [key in keyof UserApplicationTypes]: string | number;
+}
 
 export interface ApplicationsInitialState {
     applicationData: UserApplicationTypes[];
-    filteredApplicationData: UserApplicationTypes[];
+    filteredApplicationData: UserApplicationTypes[] | TableDataTypes[];
     cityArray: DropDownDataType[];
     jobPositionsArray: DropDownDataType[];
     monthsArray: DropDownDataType[];
@@ -67,14 +71,41 @@ const ApplicationsSlice = createSlice({
             const statuses = data.map((item) => item.employmentStatus);
             const formattedStatuses: DropDownDataType[] = formatDataToDropDownDataYpes(statuses);
             state.statusArray = formattedStatuses; //UPDATE STATE
+        },
+        filterApplicants: (state, action: PayloadAction<Partial<FilterOptionsTypes>>) => {
+            const options = action.payload;
+            const data = state.applicationData; //USE THE ORIGINAL DATA
+            const filteredData = data.filter((application) => {
+                return Object.entries(options).every(([key, value]) => {
+                    return value ? application[key as keyof UserApplicationTypes] === value : true;
+                });
+            });
+            console.log("filtered Data: ", JSON.stringify([... new Set(filteredData)], null, 2));
+            state.filteredApplicationData = filteredData;
+        },
+        clearFilter: (state) => {
+            state.filteredApplicationData = state.applicationData;
+        },
+        searchFilter: (state, action: PayloadAction<string>) => {
+            const searchTerm = action.payload.toLowerCase();
+            const data = state.filteredApplicationData;
+            const filteredData = data.filter((item) => {
+                return Object.values(item).some((value) => 
+                    value !== null && value !== undefined && value.toString().toLowerCase().includes(searchTerm)
+                );
+            });
 
+            state.filteredApplicationData = filteredData as UserApplicationTypes[]
         }
     }
 })
 
 
 export const {
-    setApplicationData
+    setApplicationData,
+    filterApplicants,
+    clearFilter,
+    searchFilter
 } = ApplicationsSlice.actions;
 
 export default ApplicationsSlice.reducer;

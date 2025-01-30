@@ -69,7 +69,6 @@ const Dashboard: React.FC = () => {
                     value: item,
                     label: item
                 }))
-                console.log("job", formatData)
                 setJobPositionData(formatData);
                 // SET THE INITIAL JOB POSITION TO FIRST VALUE OF DATA IN INDEX 0
                 handleUpdateDropDownValue("chosenJobPosition", data[0]);
@@ -104,7 +103,6 @@ const Dashboard: React.FC = () => {
                     data: item
                 }
             })
-            console.log(topClients)
             setTopApplicantsData(formatTopClients);
             setLoading(false);
         }

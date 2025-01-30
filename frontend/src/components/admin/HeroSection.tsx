@@ -39,7 +39,7 @@ const titleMap: { [key in keyof TotalDataType]: string } = {
 export const HeroSection:React.FC = () => {
 
     const [data, setData] = useState<TotalDataType | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
   
       useEffect(() => {
         const fetchData = async () => {
@@ -53,7 +53,7 @@ export const HeroSection:React.FC = () => {
     }, []); 
 
     if(loading){
-       return <div className="absolute w-full top-0 left-0">
+       return <div className="h-[50px]">
          <Loader/>
        </div>
     }

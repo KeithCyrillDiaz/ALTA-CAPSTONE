@@ -1,32 +1,20 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { DropDown, DropDownDataType } from "../DropDown"
 import { ModalLayout } from "../../layouts"
 import { useSelector } from "react-redux"
 import { RootState } from "../../redux/store"
 import { useModal } from "../../hooks"
+import { filterApplicants, FilterOptionsTypes } from "../../redux/slice/admin/applicationsSlice"
+import { useDispatch } from "react-redux"
 
 
 interface AdminFilterProps {
     visible: boolean;
     type: "Applicants" | "Jobs" | "Employees",
-    onCityChange?: (value: string) => void;
-    onJobTitleChange?: (value: string) => void;
-    onMonthChange?: (value: string) => void;
-    onYearChange?: (value: number) => void;
-    onStatusChange?: (value: string) => void;
-    onAccuracyChange?: (value: string) => void;
-    onClickApply: () => void;
     onClickCancel: () => void;
 }
 export const AdminFilter:React.FC<AdminFilterProps> = ({
     visible,
-    onCityChange = () => {},
-    onJobTitleChange = () => {},
-    onMonthChange = () => {},
-    onYearChange = () => {},
-    onStatusChange = () => {},
-    onAccuracyChange = () => {},
-    onClickApply,
     onClickCancel
    
 }) => {
@@ -36,6 +24,28 @@ export const AdminFilter:React.FC<AdminFilterProps> = ({
     const monthsArray = useSelector((state: RootState) => state.applications.monthsArray);
     const yearsArray = useSelector((state: RootState) => state.applications.yearsArray);
     const statusArray = useSelector((state: RootState) => state.applications.statusArray);
+    const dispatch = useDispatch();
+
+    const [options, setOptions] = useState<Partial<FilterOptionsTypes>>({
+        currentCity: "",
+        employmentStatus: "",
+        position: "",
+        month: "",
+        year: 2025,
+    })
+
+    const handleUpdateOptions = (field: Partial<keyof FilterOptionsTypes>, value: string | number) => {
+        setOptions((prev) => ({
+            ...prev,
+            [field]: value
+        }));
+    }
+
+
+    const handleFilter = () => {
+        dispatch(filterApplicants(options))
+        onClickCancel();
+    }
 
     const accuracyArray: DropDownDataType[] = [
         {value: "Ascending",label: "Ascending"},
@@ -59,41 +69,41 @@ export const AdminFilter:React.FC<AdminFilterProps> = ({
                         <DropDown
                         placeHolder="City"
                         data={cityArray}
-                        onChange={(value) => onCityChange(value)}
+                        onChange={(value) => handleUpdateOptions("currentCity", value)}
                         />
                         <DropDown
                         placeHolder="Job Title"
                         data={jobPositionsArray}
-                        onChange={(value) => onJobTitleChange(value)}
+                        onChange={(value) => handleUpdateOptions("position", value)}
                         />
                     </div>
                     <div className="flex items-center justify-between ">
                         <DropDown
                         placeHolder="Month"
                         data={monthsArray}
-                        onChange={(value) => onMonthChange(value)}
+                        onChange={(value) => handleUpdateOptions("month", value)}
                         />
                         <DropDown
                         placeHolder="Year"
                         data={yearsArray}
-                        onChange={(value) => onYearChange(parseInt(value))}
+                        onChange={(value) => handleUpdateOptions("year", parseInt(value))}
                         />
                     </div>
                     <div className="flex items-center justify-between">
                         <DropDown
                         placeHolder="Status"
                         data={statusArray}
-                        onChange={(value) => onStatusChange(value)}
+                        onChange={(value) => handleUpdateOptions("employmentStatus", value)}
                         />
                         <DropDown
                         placeHolder="Accuracy"
                         data={accuracyArray}
-                        onChange={(value) => onAccuracyChange(value)}
+                        onChange={(value) => handleUpdateOptions("resumeAccuracy", value)}
                         />
                     </div>
                     <div className="flex items-center justify-center gap-2 mt-4">
-                        <button className="primary">Apply</button>
-                        <button className="secondary">Cancel</button>
+                        <button onClick={handleFilter} className="primary">Apply</button>
+                        <button onClick={onClickCancel} className="secondary">Cancel</button>
                     </div>
                 </div>
             </ModalLayout>

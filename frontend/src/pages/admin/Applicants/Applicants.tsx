@@ -8,32 +8,30 @@ import { useNavigate } from "react-router-dom";
 import { Options } from "../../../components/admin/Options";
 import { AdminFilter } from "../../../components/admin/AdminFilterModal";
 import { useDispatch } from "react-redux";
-import { setApplicationData } from "../../../redux/slice/admin/applicationsSlice";
+import { searchFilter, setApplicationData } from "../../../redux/slice/admin/applicationsSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const Applicants: React.FC = () => {
 
+    const applicantionsData = useSelector((state: RootState) => state.applications.filteredApplicationData)
     const [loading, setLoading] =useState<boolean>(true);
-    const [tableData, setTableData] =useState<TableDataTypes[]>();
     const navigate = useNavigate();
-
-    const [searchText, setSearchText] = useState<string>("");
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     
     // REDUX
     const dispatch = useDispatch();
-
 
     useEffect(() => {
         const fetchTableData = async () => {
             setLoading(true);
             const data = await getAllUserApplicants();
             // console.log("data: ", JSON.stringify(data, null, 2))
-            setTableData(data);
             dispatch(setApplicationData(data));
             setLoading(false)
         }
         fetchTableData();
-    },[]);
+    },[dispatch]);
 
     return(
         <AdminLayout title="APPLICANT">
@@ -45,11 +43,13 @@ const Applicants: React.FC = () => {
                     ) : (
                         <div className="container flex flex-col gap-2">
                             <Options 
-                            onChangeSearchText={(text) => setSearchText(text)}
+                            onChangeSearchText={(text) => dispatch(searchFilter(text))}
                             onFilterClick={() => setShowFilterModal(!showFilterModal)}
-                            onSearchClick={() => {}}
+                            onSearchClick={() =>{}} //TO AVOID ERRORS
                             />
-                            {tableData && <ApplicantsTable onClickView={(id) => navigate(`/admin/applicant/view/${id}`)} tableData={tableData}/>}
+                            {applicantionsData && <ApplicantsTable 
+                            onClickView={(id) => navigate(`/admin/applicant/view/${id}`)} 
+                            tableData={applicantionsData as TableDataTypes[]}/>}
                         </div>
                     )}
                 </main>
@@ -57,6 +57,7 @@ const Applicants: React.FC = () => {
             <AdminFilter
             visible={showFilterModal}
             type="Applicants"
+            onClickCancel={() => setShowFilterModal(false)}
             />
         </AdminLayout>
     )
