@@ -30,4 +30,7 @@ export default (router: Router) => {
     router.post('/admin/dashboard/totalCounts', getTotalData);
     router.post('/admin/dashboard/fetchTopData', getTopData);
     router.get('/admin/dashboard/fetchJobPositions', getJobPositions);
+
+    // EMPLOYEES
+    router.post('/admin/employee')
 }

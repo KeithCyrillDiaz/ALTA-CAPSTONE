@@ -7,6 +7,8 @@ import { GeminiResumeModel } from "../../models/gemini/geminiResumeModel";
 import { userGmailDesign } from "../../services/gmail/emailToUserTemplates";
 import { JobDocument } from "../../models/admin/jobModel";
 import { sendEmail } from "../../services/gmail/gmail";
+import { EmployeeModel } from "../../models/admin/employeeModel";
+import { getDateToday } from "../../helper/date";
 
 
 const validEmploymentStatus = [
@@ -97,11 +99,41 @@ export const updateEmploymentStatus = async (req: Request, res: Response, next: 
         //IF STATUS IS BLOCKED OR APPROVED OR INTERVIEWED, NO NEED FOR EMAIL SENDING SO RETURN THE RESPONSE
         if(status === 'Blocked' || status === 'Approved' || status === "Interviewed") {
             res.status(200).json({
-                code: 'UES_000',
+                code: 'UES_004',
                 message: "Employment status updated successfully.",
                 data: result
             });
             return; //END THE FUNCTION
+        }
+        
+        // IF STATUS IS EMPLOYED
+        if(status === "Employed"){
+            // IF YES
+            logger.event("Adding New Employee");
+            // EXTRACT THE NEEDED DATA FROM THE RESULT
+            const {givenName, lastName, birthday,gender, email, phoneNumber, currentCity, position, workOnsite} = result;
+            const {month, year} = getDateToday()
+            const newEmployee = new EmployeeModel({
+                givenName,
+                lastName,
+                birthday,
+                gender,
+                email,
+                phoneNumber,
+                currentCity,
+                position,
+                workOnsite,
+                month, 
+                year
+            });
+
+            const employeeResult = await newEmployee.save();
+
+            if(!employeeResult) {
+                logger.error("Failed to save new Employee in Database");
+            } else {
+                logger.success("Successfully save New Employee in Database");
+            }
         }
 
         //PREPARING EMAIL SENDING TO USER
