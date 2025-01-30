@@ -23,5 +23,7 @@ exports.default = (router) => {
     router.post('/admin/dashboard/totalCounts', dashboardController_1.getTotalData);
     router.post('/admin/dashboard/fetchTopData', dashboardController_1.getTopData);
     router.get('/admin/dashboard/fetchJobPositions', dashboardController_1.getJobPositions);
+    // EMPLOYEES
+    router.post('/admin/employee');
 };
 //# sourceMappingURL=admin.js.map
