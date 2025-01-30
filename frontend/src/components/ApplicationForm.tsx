@@ -196,7 +196,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
         },
         {
             field: "expectedSalary",
-            title: "Salary",
+            title: "Expected Salary",
             placeholder: "e.g. 27000",
             value: form.expectedSalary,
             type: 'number'
