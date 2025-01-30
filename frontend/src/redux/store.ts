@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { 
+    applicationSReducer,
     dashBoardReducer, 
     jobReducer 
 } from './slice';
@@ -8,7 +9,10 @@ import {
 export const store = configureStore({
     reducer: {
         job: jobReducer,
-        dashboard: dashBoardReducer
+        
+        // ADMIN
+        dashboard: dashBoardReducer,
+        applications: applicationSReducer
     },
 })
 

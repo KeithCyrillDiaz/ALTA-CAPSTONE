@@ -7,15 +7,16 @@ import { useDeviceType } from "../../../hooks";
     fullName: string; 
     index: number;
     data: Record<string, unknown>;
+    onClickView: () => void;
   }
 
-const TopCard: React.FC<TopApplicantsCardProps> = ({fullName, index}) => {
+const TopCard: React.FC<TopApplicantsCardProps> = ({fullName, index, onClickView}) => {
 
     const {isMobile} = useDeviceType();
     return (
         <div className="flex items-center justify-between gap-2">
             <p className={`${isMobile ? "max-w-[150px] overflow-hidden truncate" : ""}`}>{index}. <strong>{fullName}</strong></p>
-            <button className="primary">View</button>
+            <button onClick={onClickView} className="primary">View</button>
         </div>
     )
 }
@@ -28,6 +29,7 @@ interface TopDataProps {
     onChangeDropDown: (value: string) => void;
     dropDownValue: string;
     topData: TopDataTypes[]
+    onClickView: (id: string) => void;
 }
 
 export interface TopDataTypes {
@@ -44,7 +46,8 @@ export const TopDataCard:React.FC<TopDataProps> = ({
     dropDownData,
     onChangeDropDown,
     dropDownValue,
-    topData
+    topData,
+    onClickView,
 }) => {
     const formatTitle = topData.length === 1 ? title.replace(/s$/, "") : title;
     return (
@@ -67,6 +70,7 @@ export const TopDataCard:React.FC<TopDataProps> = ({
                         return (
                         <TopCard 
                         key={_id} 
+                        onClickView={() => onClickView(_id)}
                         index={index + 1}
                         data={data}
                         fullName={fullName}/>

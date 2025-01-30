@@ -5,23 +5,33 @@ import { ApplicantsTable, TableDataTypes} from "../../../components/admin/table/
 import { getAllUserApplicants} from "../../../api/apiCalls/admin/applicants/applicant";
 import { Loader } from "../../../components";
 import { useNavigate } from "react-router-dom";
+import { Options } from "../../../components/admin/Options";
+import { AdminFilter } from "../../../components/admin/AdminFilterModal";
+import { useDispatch } from "react-redux";
+import { searchFilter, setApplicationData } from "../../../redux/slice/admin/applicationsSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../redux/store";
 
 const Applicants: React.FC = () => {
 
+    const applicantionsData = useSelector((state: RootState) => state.applications.filteredApplicationData)
     const [loading, setLoading] =useState<boolean>(true);
-    const [tableData, setTableData] =useState<TableDataTypes[]>();
     const navigate = useNavigate();
+    const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+    
+    // REDUX
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const fetchTableData = async () => {
             setLoading(true);
             const data = await getAllUserApplicants();
             // console.log("data: ", JSON.stringify(data, null, 2))
-            setTableData(data);
+            dispatch(setApplicationData(data));
             setLoading(false)
         }
         fetchTableData();
-    },[]);
+    },[dispatch]);
 
     return(
         <AdminLayout title="APPLICANT">
@@ -31,12 +41,24 @@ const Applicants: React.FC = () => {
                     {loading ? (
                         <Loader/>
                     ) : (
-                        <div className="container">
-                            {tableData && <ApplicantsTable onClickView={(id) => navigate(`/admin/applicant/view/${id}`)} tableData={tableData}/>}
+                        <div className="container flex flex-col gap-2">
+                            <Options 
+                            onChangeSearchText={(text) => dispatch(searchFilter(text))}
+                            onFilterClick={() => setShowFilterModal(!showFilterModal)}
+                            onSearchClick={() =>{}} //TO AVOID ERRORS
+                            />
+                            {applicantionsData && <ApplicantsTable 
+                            onClickView={(id) => navigate(`/admin/applicant/view/${id}`)} 
+                            tableData={applicantionsData as TableDataTypes[]}/>}
                         </div>
                     )}
                 </main>
             </div>
+            <AdminFilter
+            visible={showFilterModal}
+            type="Applicants"
+            onClickCancel={() => setShowFilterModal(false)}
+            />
         </AdminLayout>
     )
 }

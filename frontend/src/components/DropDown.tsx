@@ -20,7 +20,9 @@ const OptionCard: React.FC<OptionCardProps> = ({
 
 }) => {
     return (
-             <div className="optionCard" onClick={() => onClick(value)}>{label}</div>
+             <div className="optionCard" onClick={() => onClick(value)}>
+                <p>{label}</p>
+            </div>
     )
 }
 

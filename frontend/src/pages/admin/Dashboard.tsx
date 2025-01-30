@@ -7,8 +7,9 @@ import { fetchTopData } from "../../api/apiCalls/admin";
 import { fetchJobPositions } from "../../api/apiCalls/admin/dashboard/dashboard";
 import { Loader } from "../../components";
 import { DropDownDataType } from "../../components/DropDown";
-import { DashboardInitialState} from "../../redux/slice/dashboardSlice";
+import { DashboardInitialState} from "../../redux/slice/admin/dashboardSlice";
 import { JobDataTypes } from "../../components/client/JobFeed";
+import { useNavigate } from "react-router-dom";
 
 
 export interface UserApplicationTypes {
@@ -25,6 +26,7 @@ export interface UserApplicationTypes {
     resumeGdriveID: string;
     resumeString: string; 
     jobId: string | JobDataTypes; // IT HAS TWO TYPES BECAUSE OF POPULATE METHOD OF MONGOOSE
+    position: string;
     jobTitle: string; // TITLE OF THE PREVIOUS JOB 
     company: string;
     workOnsite: boolean; 
@@ -38,7 +40,7 @@ export interface UserApplicationTypes {
 
 const Dashboard: React.FC = () => {
 
-    //REDUX
+    const navigate = useNavigate();
     const [topApplicantsData, setTopApplicantsData] = useState<TopDataTypes[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [jobPositionData, setJobPositionData] = useState<DropDownDataType[]>();
@@ -67,7 +69,6 @@ const Dashboard: React.FC = () => {
                     value: item,
                     label: item
                 }))
-                console.log("job", formatData)
                 setJobPositionData(formatData);
                 // SET THE INITIAL JOB POSITION TO FIRST VALUE OF DATA IN INDEX 0
                 handleUpdateDropDownValue("chosenJobPosition", data[0]);
@@ -102,7 +103,6 @@ const Dashboard: React.FC = () => {
                     data: item
                 }
             })
-            console.log(topClients)
             setTopApplicantsData(formatTopClients);
             setLoading(false);
         }
@@ -141,6 +141,7 @@ const Dashboard: React.FC = () => {
                                         onChangeDropDown={(value) => handleUpdateDropDownValue("chosenJobPosition", value)}
                                         dropDownValue={dropDownValues.chosenJobPosition}
                                         topData={topApplicantsData}
+                                        onClickView={(id) => navigate(`/admin/applicant/view/${id}`)}
                                         />
                                     )}
                                 </div>
@@ -154,6 +155,7 @@ const Dashboard: React.FC = () => {
                                         onChangeDropDown={() =>{}}
                                         dropDownValue={""}
                                         topData={[]}
+                                        onClickView={() => {}}
                                         />
                                     )}
                                 </div>
@@ -173,11 +175,10 @@ const Dashboard: React.FC = () => {
                             onChangeDropDown={() =>{}}
                             dropDownValue={""}
                             topData={[]}
+                            onClickView={() => {}}
                             />
                         )}
                     </section>
-                     {/* TOP DATA CARDS */}
-                   
                 </main>
             </div>
         </AdminLayout>
