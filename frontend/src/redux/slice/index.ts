@@ -1,7 +1,14 @@
 import jobReducer from './jobSlice'
-import dashBoardReducer from './dashboardSlice'
+
+// ADMIN
+import dashBoardReducer from './admin/dashboardSlice'
+import applicationSReducer from './admin/applicationsSlice'
+
 
 export {
     jobReducer,
-    dashBoardReducer
+
+    // ADMIN
+    dashBoardReducer,
+    applicationSReducer
 }

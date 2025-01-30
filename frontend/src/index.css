@@ -211,7 +211,7 @@ table thead, tbody {
 }
 
 table th, table td {
-    padding: 12px 8px;
+    padding: 12px 6px;
     border: 1px solid #ddd; 
     text-align: center;
 }
@@ -274,10 +274,6 @@ table tbody tr:hover {
     .feedContentContainer{ 
         height: 425px;
         max-height: unset;
-    }
-
-    table th, table td {
-        padding: 12px 6px;
     }
 
     table p {
