@@ -107,6 +107,55 @@ export const getJobApplications = async (req: Request, res: Response, next: Next
     }
 }
 
+export const getJobDetails = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        logger.event("Fetching Job Details");
+        const {id} = req.params;
+
+        if(!id) {
+            logger.error("ID not found in Params");
+            res.status(400).json({
+                code: "GJD_001",
+                message: "ID not found in Params"
+            });
+            return;
+        }
+
+        if(!mongoose.Types.ObjectId.isValid(id)) {
+            logger.error("Invalid ID format");
+            res.status(400).json({
+                code: 'GJD_002',
+                message: "Invalid ID format"
+            });
+            return;
+        }
+
+        const result = await JobModel.findById(id);
+
+        if(!result) {
+            logger.error("Error in GJD_003, Job Record Not Found");
+            res.status(404).json({
+                code: "GJD_003",
+                message: "Job Record Not Found"
+            });
+            return;
+        }
+
+        logger.success("Successfully Fetched Job Record");
+
+        res.status(200).json({
+            code: "GJD_000",
+            message: "Successfully Fetched Job Record",
+            data: result
+        })
+          
+        
+    } catch (error) {
+        next(error)
+    }
+}
+
+
 const validJobStatus = ['Open', 'Close'];
 
 export const updateJobStatus = async (req: Request, res: Response, next:NextFunction) => {

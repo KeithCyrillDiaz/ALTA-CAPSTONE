@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authentication } from "../middleware/authentication";
 import { adminLogIn, adminLogOut } from "../controllers/admin/adminController";
-import { createJob, updateJobStatus } from "../controllers/admin/jobController";
+import { createJob, getJobApplications, getJobDetails, updateJobStatus } from "../controllers/admin/jobController";
 import { deleteUserApplication, getAllUserApplicants, getUserApplicantRecord, updateEmploymentStatus } from "../controllers/admin/userApplicationController";
 import { getJobPositions, getTopData, getTotalData } from "../controllers/admin/dashboardController";
 
@@ -19,6 +19,8 @@ export default (router: Router) => {
     //JOB
     router.post('/admin/job/create', createJob);
     router.patch('/admin/job/updateStatus/:id', updateJobStatus);
+    router.get('/admin/job/fetch', getJobApplications);
+    router.get('/admim/job/fetchOne/:id', getJobDetails)
 
     //APPLICATION
     router.patch('/admin/application/updateStatus/:id', updateEmploymentStatus);
