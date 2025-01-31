@@ -11,6 +11,8 @@ import { useDeviceType } from "../../hooks";
 
 
 export interface JobDescription {
+    dummyId?: string; //new Date() in miliseconds
+    _id?: string;
     title: string;
     paragraph: string;
     isBullet: boolean;

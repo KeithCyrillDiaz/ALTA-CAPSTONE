@@ -9,6 +9,7 @@ interface InputProps {
     required?: boolean,
     type: InputKeyboardTypes,
     disabled?: boolean,
+    maxLength?: number,
     onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
@@ -20,7 +21,8 @@ export const Input: React.FC<InputProps> = ({
     required = false,
     type,
     disabled = false,
-    onKeyDown = () => {}
+    onKeyDown = () => {},
+    maxLength
 }) => {
     return(
         <div className="inputContainer">
@@ -29,7 +31,7 @@ export const Input: React.FC<InputProps> = ({
             disabled={disabled}
             onKeyDown={onKeyDown}
             type={type}
-            maxLength={type === "tel" ? 11 : undefined}
+            maxLength={type === "tel" ? 11 : maxLength ? maxLength : undefined}
             className="shadow py-2 px-4"
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}

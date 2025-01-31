@@ -9,7 +9,7 @@ import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { findJob } from "../redux/slice/jobSlice";
-import { removeItemInEducationOrSkillArray } from "../redux/slice/admin/jobSlice";
+import { removeItemInEducationOrSkillArray, removeItemOnBulletData } from "../redux/slice/admin/jobSlice";
 
 
 
@@ -27,8 +27,16 @@ const IconWithLabel: React.FC<{ label: string; element: React.ReactNode }> = ({
     );
   };
 
-const JobDescriptionCard: React.FC<{data: JobDescription}> = ({data}) => {
+const JobDescriptionCard: React.FC<{data: JobDescription, onEdit?: boolean}> = ({
+    data, 
+    onEdit = false
+}) => {
     const {title, paragraph, isBullet, bulletData} = data;
+    const dispatch = useDispatch();
+
+    const handleDeleteBulletData = (prev: JobDescription, value: string) => {
+        dispatch(removeItemOnBulletData({prev, value}));
+    }
     return (
         <>
             {isBullet ? (
@@ -38,7 +46,11 @@ const JobDescriptionCard: React.FC<{data: JobDescription}> = ({data}) => {
                     </p>
                     <div className="ml-4 flex flex-col gap-2">
                         {bulletData.map((item, index) => (
-                            <BulletCard key={index} label={item}/>
+                            <BulletCard 
+                            key={index} 
+                            label={item} 
+                            onEdit={onEdit} 
+                            onClickDelete={(label) => handleDeleteBulletData(data, label)}/>
                         ))}
                     </div>
                    
@@ -208,7 +220,7 @@ interface RenderJobDescriptionProps {
             <p><strong>Job Description</strong></p>
             <div className="jobDescriptionContainer">
                 {jobDescription.map((item, index) => (
-                    <JobDescriptionCard key={index} data={item}/>
+                    <JobDescriptionCard key={index} data={item} onEdit={onEdit}/>
                 ))}
             </div>
             
