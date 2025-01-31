@@ -56,20 +56,20 @@ export const createJob = async (req: Request, res: Response, next: NextFunction)
 
         createResultHandler(res, result, "CJB_003", "creating job");
 
-        // if(!result) {
-        //     logger.error("error in CJB_003, Error Creating Job");
-        //     res.status(500).json({
-        //         code: 'CJB_003',
-        //         message: "Error Creating Job"
-        //     });
-        //     return;
-        // }
+        if(!result) {
+            logger.error("error in CJB_003, Error Creating Job");
+            res.status(500).json({
+                code: 'CJB_003',
+                message: "Error Creating Job"
+            });
+            return;
+        }
 
-        // logger.success("Successfully Created Job");
-        // res.status(201).json({
-        //     code: "CJB_000",
-        //     message: "Successfully Created Job"
-        // });
+        logger.success("Successfully Created Job");
+        res.status(201).json({
+            code: "CJB_000",
+            message: "Successfully Created Job"
+        });
 
         return;
 
