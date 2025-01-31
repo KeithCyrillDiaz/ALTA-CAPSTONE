@@ -5,12 +5,12 @@ import CloseIcon from "./icons/CloseIcon";
   interface BulletCardProps {
     label: string;
     onEdit?: boolean;
-    onClick?: (label: string) => void;
+    onClickDelete?: (label: string) => void;
 }
   export const BulletCard: React.FC<BulletCardProps> = ({
     label,
     onEdit,
-    onClick = () => {}
+    onClickDelete = () => {}
 }) => {
     return (
         <div className={`${onEdit ? "highlight" : ""} bulletCardContainer` }>
@@ -20,7 +20,7 @@ import CloseIcon from "./icons/CloseIcon";
             </div>
            
            {onEdit && (
-            <div className="close" onClick={() => onClick(label)}>
+            <div className="close" onClick={() => onClickDelete(label)}>
               <CloseIcon/>
             </div>
            )}

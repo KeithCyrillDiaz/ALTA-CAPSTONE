@@ -1,9 +1,10 @@
-import { TableDataTypesValue } from "../../../../components/admin/table/ApplicantsTable";
-import { ApplicantStatusTypes } from "../../../../components/ApplicationForm";
-import { UserApplicationTypes } from "../../../../pages/admin/Dashboard";
-import axiosInstance from "../../../axiosInstance";
-import { endpointAdmin } from "../../../endpoint";
-import errorHandler from "../../errorhandler"
+
+import { TableDataTypesValue } from "../../../components/admin/table/Table";
+import { ApplicantStatusTypes } from "../../../components/ApplicationForm";
+import { UserApplicationTypes } from "../../../pages/admin/Dashboard";
+import axiosInstance from "../../axiosInstance";
+import { endpointAdmin } from "../../endpoint";
+import errorHandler from "../errorhandler"
 
 
 

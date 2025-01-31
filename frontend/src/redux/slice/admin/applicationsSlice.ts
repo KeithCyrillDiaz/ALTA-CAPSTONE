@@ -1,10 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserApplicationTypes } from "../../../pages/admin/Dashboard";
 import { DropDownDataType } from "../../../components/DropDown";
-import { TableDataTypes } from "../../../components/admin/table/ApplicantsTable";
+import { TableDataTypes } from "../../../components/admin/table/Table";
+import { JobDataTypes } from "../../../components/client/JobFeed";
+
 
 export type FilterOptionsTypes = {
-    [key in keyof UserApplicationTypes]: string | number;
+    [key in keyof UserApplicationTypes | keyof JobDataTypes]: string | number;
 }
 
 export interface ApplicationsInitialState {
@@ -83,10 +85,10 @@ const ApplicationsSlice = createSlice({
             console.log("filtered Data: ", JSON.stringify([... new Set(filteredData)], null, 2));
             state.filteredApplicationData = filteredData;
         },
-        clearFilter: (state) => {
+        clearApplicantsFilter: (state) => {
             state.filteredApplicationData = state.applicationData;
         },
-        searchFilter: (state, action: PayloadAction<string>) => {
+        searchApplicantsFilter: (state, action: PayloadAction<string>) => {
             const searchTerm = action.payload.toLowerCase();
             const data = state.filteredApplicationData;
             const filteredData = data.filter((item) => {
@@ -104,8 +106,8 @@ const ApplicationsSlice = createSlice({
 export const {
     setApplicationData,
     filterApplicants,
-    clearFilter,
-    searchFilter
+    clearApplicantsFilter,
+    searchApplicantsFilter
 } = ApplicationsSlice.actions;
 
 export default ApplicationsSlice.reducer;

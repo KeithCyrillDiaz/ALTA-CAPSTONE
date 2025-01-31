@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TableDataTypes } from "../components/admin/table/ApplicantsTable";
+import { TableDataTypes } from "../components/admin/table/Table";
 
 const usePagination = (data: TableDataTypes[]) => {
     const [currentPage, setCurrentPage] = useState(1);

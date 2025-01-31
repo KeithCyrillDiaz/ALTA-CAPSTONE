@@ -1,7 +1,7 @@
-import { MonthStringTypes } from "../../../../helper/date";
-import axiosInstance from "../../../axiosInstance";
-import { endpointAdmin } from "../../../endpoint";
-import errorHandler from "../../errorhandler"
+import { MonthStringTypes } from "../../../helper/date";
+import axiosInstance from "../../axiosInstance";
+import { endpointAdmin } from "../../endpoint";
+import errorHandler from "../errorhandler"
 
 
 export const fetchTopData = async (month: MonthStringTypes, year: number, position: string) => {

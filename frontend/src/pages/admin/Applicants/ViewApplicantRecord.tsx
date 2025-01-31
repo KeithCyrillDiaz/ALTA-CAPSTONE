@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { UserApplicationTypes } from "../Dashboard";
-import { getApplicantRecord } from "../../../api/apiCalls/admin/applicants/applicant";
+import { getApplicantRecord } from "../../../api/apiCalls/admin/applicant";
 import AdminLayout from "../../../layouts/AdminLayout";
 import { Loader } from "../../../components";
 import { JobDataTypes} from "../../../components/client/JobFeed";

@@ -6,7 +6,7 @@ import NotFoundPage from "./NotFoundPage";
 // ADMIN
 import Login from "./admin/Login";
 import Dashboard from "./admin/Dashboard";
-
+import Jobs from "./admin/Job/Jobs";
 export {
     // CLIENT PAGES
     Home,
@@ -15,6 +15,7 @@ export {
 
     //ADMIN
     Login,
-    Dashboard
+    Dashboard,
+    Jobs
 
 }

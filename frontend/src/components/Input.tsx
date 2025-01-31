@@ -8,7 +8,8 @@ interface InputProps {
     value?: string | number | boolean;
     required?: boolean,
     type: InputKeyboardTypes,
-    disabled?: boolean
+    disabled?: boolean,
+    onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -18,13 +19,15 @@ export const Input: React.FC<InputProps> = ({
     value="",
     required = false,
     type,
-    disabled = false
+    disabled = false,
+    onKeyDown = () => {}
 }) => {
     return(
         <div className="inputContainer">
             <p className="secondary-text"><strong>{label}</strong></p>
             <input
             disabled={disabled}
+            onKeyDown={onKeyDown}
             type={type}
             maxLength={type === "tel" ? 11 : undefined}
             className="shadow py-2 px-4"

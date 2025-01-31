@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { useDeviceType } from "../hooks";
+import { RootState } from "../../redux/store";
+import { useDeviceType } from "../../hooks";
 
-import { JobDataTypes } from "./client/JobFeed";
+import { JobDataTypes } from "./JobFeed";
 import { useParams } from "react-router-dom";
-import { fetchChosenJob, } from "../api/apiCalls/client";
-import Loader from "./Loader";
-import { ApplicationForm } from "./ApplicationForm";
-import { RenderJobDescription } from "./RenderJobDescription";
+import { fetchChosenJob, } from "../../api/apiCalls/client";
+import Loader from "../Loader";
+import { ApplicationForm } from "../ApplicationForm";
+import { RenderJobDescription } from "../RenderJobDescription";
+
 
 
 export type FormValue = string | number | boolean | Date | null
