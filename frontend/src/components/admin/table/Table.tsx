@@ -1,40 +1,35 @@
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
+import usePagination from "../../../hooks/usePagination";
 import { UserApplicationTypes } from "../../../pages/admin/Dashboard";
 import { TablePagination } from "./TablePagination";
-import usePagination from "../../../hooks/usePagination";
+import { JobDataTypes } from "../../client/JobFeed";
+
 
 export type TableDataTypesValue = string | number | ReactNode;
 export type TableDataTypes = {
     [key: string]: TableDataTypesValue;
 };
 
-interface HeadTitlesTypes {
+export interface HeadTitlesTypes {
     title: string; // THIS WILL BE THE TABLE HEAD LABEL
-    field: keyof UserApplicationTypes;
+    field: keyof UserApplicationTypes | keyof JobDataTypes;
 }
-interface ApplicantsTableProps {
-    tableData: TableDataTypes[];
+
+interface TableProps {
+    headTitles: HeadTitlesTypes[];
     onClickView: (id: TableDataTypesValue) => void;
+    tableData: TableDataTypes[]
 }
 
-
-export const ApplicantsTable:React.FC<ApplicantsTableProps> = ({tableData, onClickView}) => {
-
-    const headTitles: HeadTitlesTypes[] = [
-        { title: "ID", field: "_id" },
-        { title: "Given Name", field: "givenName" },
-        { title: "Last Name", field: "lastName" },
-        { title: "Gender", field: "gender" },
-        { title: "Email", field: "email" },
-        { title: "Phone No.", field: "phoneNumber" },
-        { title: "Current City", field: "currentCity" },
-        { title: "Status", field: "employmentStatus" },
-        { title: "AI Rating", field: "resumeAccuracy" },
-    ];
+export const Table:React.FC<TableProps> = ({
+    headTitles,
+    onClickView,
+    tableData
+}) => {
 
     const {paginatedData, currentPage, handleChangePage, totalPages} = usePagination(tableData);
 
-    return(
+    return (
         <div className="min-h-[400px]">
             <table>
                 <thead>
@@ -65,7 +60,6 @@ export const ApplicantsTable:React.FC<ApplicantsTableProps> = ({tableData, onCli
                     })}
                 </tbody>
             </table>
-
             {/* Pagination Controls */}
             <TablePagination
             currentPage={currentPage}

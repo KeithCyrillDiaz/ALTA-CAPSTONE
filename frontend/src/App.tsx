@@ -14,11 +14,13 @@ import {
 
   //ADMIN
   Login, 
-  Dashboard, 
+  Dashboard,
+  Jobs, 
 } from "./pages";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
 import Applicants from "./pages/admin/Applicants/Applicants";
 import ViewApplicantRecord from "./pages/admin/Applicants/ViewApplicantRecord";
+import ViewJobDetails from "./pages/admin/Job/ViewJobDetails";
 
 const App: React.FC = () => {
   return(
@@ -50,10 +52,23 @@ const App: React.FC = () => {
             </AdminProtectedRoute>
           }/>
 
-
           <Route path="/admin/applicant/view/:id" element={
             <AdminProtectedRoute>
               <ViewApplicantRecord/>
+            </AdminProtectedRoute>
+          }/>
+
+
+          {/* JOBS */}
+          <Route path="/admin/jobs" element={
+            <AdminProtectedRoute>
+              <Jobs/>
+            </AdminProtectedRoute>
+          }/>
+          
+          <Route path="/admin/jobs/view/:id" element={
+            <AdminProtectedRoute>
+              <ViewJobDetails/>
             </AdminProtectedRoute>
           }/>
         

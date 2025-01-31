@@ -12,7 +12,7 @@ import { CheckBoxContainer } from "./CheckBox";
 import { checkForm, validateEmail, validatePhoneNumber } from "../utils/validation";
 import { CustomModal } from "./modal/CustomModal";
 import { getCityData } from "../constant/json";
-import { FormValue, JobApplicationFormTypes } from "./JobForm";
+import { FormValue, JobApplicationFormTypes } from "./client/JobForm";
 import Loader from "./Loader";
 import { JobDataTypes } from "./client/JobFeed";
 import { RenderJobDescription } from "./RenderJobDescription";
@@ -21,7 +21,7 @@ import CloseIcon from "./icons/CloseIcon";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { UserApplicationTypes } from "../pages/admin/Dashboard";
-import { updateApplicantStatus } from "../api/apiCalls/admin/applicants/applicant";
+import { updateApplicantStatus } from "../api/apiCalls/admin/applicant";
 
 
 interface formFormatTypes {
@@ -196,7 +196,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
         },
         {
             field: "expectedSalary",
-            title: "Salary",
+            title: "Expected Salary",
             placeholder: "e.g. 27000",
             value: form.expectedSalary,
             type: 'number'

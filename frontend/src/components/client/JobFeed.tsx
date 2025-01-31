@@ -30,7 +30,10 @@ export interface JobDataTypes {
     employmentType: string;
     shift: string;
     schedule: string;
-  
+    datePublished: Date,
+    slot: number,
+    applicants: number,
+    workMode: string,
     status: string;
     month: string;
     year: number;

@@ -9,6 +9,7 @@ import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { findJob } from "../redux/slice/jobSlice";
+import { removeItemInEducationOrSkillArray } from "../redux/slice/admin/jobSlice";
 
 
 
@@ -57,12 +58,14 @@ const JobDescriptionCard: React.FC<{data: JobDescription}> = ({data}) => {
     )
 }
 interface RenderJobDescriptionProps {
-jobDescriptionData: JobDataTypes;
-hideApplyButton?: boolean;
+    jobDescriptionData: JobDataTypes;
+    hideApplyButton?: boolean;
+    onEdit?: boolean;
 }
  export const RenderJobDescription: React.FC<RenderJobDescriptionProps> = ({
     jobDescriptionData,
     hideApplyButton = false,
+    onEdit = false
 }) => {
     // CUSTOM HOOK
     const {isMobile} = useDeviceType();
@@ -115,9 +118,13 @@ hideApplyButton?: boolean;
         navigate(`/job/apply/${_id}`)
     }
 
+    const handleRemoveItemOnArray = (field: "education" | "skills", value: string) => {
+        dispatch(removeItemInEducationOrSkillArray({field, value}));
+    }
+
 
     
-    if(loading) {
+    if(loading && onEdit === false) {
         return (
             <div className="feedContentContainer">
                  <Loader/>
@@ -135,7 +142,12 @@ hideApplyButton?: boolean;
             />
             <div className="bulletContainer">
                 {skills.map((skill:string, index: number) => (
-                    <BulletCard key={index} label={skill}/>
+                    <BulletCard 
+                    key={index} 
+                    label={skill} 
+                    onEdit={onEdit}
+                    onClickDelete={(label: string) => handleRemoveItemOnArray("skills", label)}
+                    />
                 ))}
             </div>
 
@@ -146,7 +158,11 @@ hideApplyButton?: boolean;
             />
             <div className="bulletContainer">
                 {education.map((skill:string, index: number) => (
-                    <BulletCard key={index} label={skill}/>
+                    <BulletCard 
+                    key={index} 
+                    label={skill} 
+                    onEdit={onEdit} 
+                    onClickDelete={(label: string) => handleRemoveItemOnArray("education", label)}/>
                 ))}
             </div>
 

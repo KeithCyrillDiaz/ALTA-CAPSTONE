@@ -1,4 +1,4 @@
-import { FormValue, JobApplicationFormTypes } from "../components/JobForm";
+import { FormValue, JobApplicationFormTypes } from "../components/client/JobForm";
 
 export const validatePhoneNumber = (value: FormValue) =>{
         // REGEX TO CHECK IF THE VALUE CONTAINES Regex to check if the value contains non-numeric characters

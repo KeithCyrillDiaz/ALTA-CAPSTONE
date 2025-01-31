@@ -4,7 +4,7 @@ import { HeroSection } from "../../components/admin/HeroSection";
 import { TopDataCard, TopDataTypes } from "../../components/admin/dashboard/TopDataCard";
 import { getDateToday, monthArray, MonthStringTypes } from "../../helper/date";
 import { fetchTopData } from "../../api/apiCalls/admin";
-import { fetchJobPositions } from "../../api/apiCalls/admin/dashboard/dashboard";
+import { fetchJobPositions } from "../../api/apiCalls/admin/dashboard";
 import { Loader } from "../../components";
 import { DropDownDataType } from "../../components/DropDown";
 import { DashboardInitialState} from "../../redux/slice/admin/dashboardSlice";

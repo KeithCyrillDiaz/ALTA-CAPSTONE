@@ -76,39 +76,48 @@ export const DropDown: React.FC<DropDownProps> = ({
 
     return (
         <div className="inputWithIconContainer">
-            <p className={`text-[.8rem] mobile-truncate ${!dropdownValue || dropdownValue === "" ? "text-gray-400" : ""}`}>{!dropdownValue || dropdownValue === '' ?  placeHolder : dropdownValue}</p>
-            {disabled !== true && (
-                <div className="dropdownButton" onClick={handleDropDownIconClick}>
-                    <DownArrowIcon/>
-                </div>
-            )}
-            {showOptions && dropdownData.length !== 0 && (
-                <div className="dropdownOption">
-                    {search && (
-                        <Search
-                        hideIcon
-                        onChangeText={(text) => handleSearch(text)}
-                        onClick={() => {}}
-                        />
+           {value !== "others" ? (
+            <>
+                 <p className={`text-[.8rem] mobile-truncate ${!dropdownValue || dropdownValue === "" ? "text-gray-400" : ""}`}>{!dropdownValue || dropdownValue === '' ?  placeHolder : dropdownValue}</p>
+                    {disabled !== true && (
+                        <div className="dropdownButton" onClick={handleDropDownIconClick}>
+                            <DownArrowIcon/>
+                        </div>
                     )}
-                    {dropdownData.map((item, index) => {
-                        const {value, label} = item;
-                        return(
-                            <OptionCard
-                            key={index}
-                            value={value}
-                            label={label}
-                            onClick={(value) => {
-                                setDropDownValue(value);
-                                onChange(value);
-                                setShowOptions(false);
-                            }}
-                            />
-                        )
-                    })}
-                </div>
-                
-            )}
+                    {showOptions && dropdownData.length !== 0 && (
+                        <div className="dropdownOption">
+                            {search && (
+                                <Search
+                                hideIcon
+                                onChangeText={(text) => handleSearch(text)}
+                                onClick={() => {}}
+                                />
+                            )}
+                            {dropdownData.map((item, index) => {
+                                const {value, label} = item;
+                                return(
+                                    <OptionCard
+                                    key={index}
+                                    value={value}
+                                    label={label}
+                                    onClick={(value) => {
+                                        setDropDownValue(value);
+                                        onChange(value);
+                                        setShowOptions(false);
+                                    }}
+                                    />
+                                )
+                            })}
+                        </div>
+                    )}
+            </>
+           ) : (    
+            <div>
+                <input
+                onChange={(e) => onChange(e.target.value)}
+                />
+            </div>
+           )}
         </div>
     )
 }

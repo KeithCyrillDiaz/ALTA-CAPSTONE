@@ -6,7 +6,7 @@ import { endpointAdmin } from "../endpoint";
 import errorHandler from "./errorhandler";
 
 
-import { fetchTopData } from "./admin/dashboard/dashboard";
+import { fetchTopData } from "./admin/dashboard";
 
 export {
     fetchTopData

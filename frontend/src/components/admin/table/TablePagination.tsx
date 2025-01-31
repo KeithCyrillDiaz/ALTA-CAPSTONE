@@ -12,27 +12,32 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
     handlePageChange
 }) => {
     return(
-        <div className="pagination">
-                <button 
-                    disabled={currentPage === 1} 
-                    onClick={() => handlePageChange(currentPage - 1)}>
-                    <PaginationLeftArrow/>
+        <>
+        {/* ONLY SHOW THE PAGINATION BUTTONS IF THE TOTAL PAGES IS 2 AND ABOVE */}
+        {totalPages !== 1 && (
+            <div className="pagination">
+            <button 
+                disabled={currentPage === 1} 
+                onClick={() => handlePageChange(currentPage - 1)}>
+                <PaginationLeftArrow/>
 
-                </button>
-                {[...Array(totalPages)].map((_, index) => (
-                <button
-                    key={index} 
-                    className={`pageNumber ${currentPage === index + 1 ? 'primary' : 'secondary'}`} 
-                    onClick={() => handlePageChange(index + 1)}>
-                    <strong>{index + 1}</strong>
-                </button>
-                ))}
-                <button 
-                    disabled={currentPage === totalPages} 
-                    onClick={() => handlePageChange(currentPage + 1)}>
-                    <PaginationRightArrow/>
+            </button>
+            {[...Array(totalPages)].map((_, index) => (
+            <button
+                key={index} 
+                className={`pageNumber ${currentPage === index + 1 ? 'primary' : 'secondary'}`} 
+                onClick={() => handlePageChange(index + 1)}>
+                <strong>{index + 1}</strong>
+            </button>
+            ))}
+            <button 
+                disabled={currentPage === totalPages} 
+                onClick={() => handlePageChange(currentPage + 1)}>
+                <PaginationRightArrow/>
 
-                </button>
-            </div>
+            </button>
+        </div>
+        )}
+        </>
     )
 }

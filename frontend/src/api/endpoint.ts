@@ -25,6 +25,10 @@ export const endpointAdmin = {
         FETCH_ALL_USER_APPLICANTS: '/admin/application/fetchAll',
         FETCH_USER_APPLICANTS: '/admin/applicantion/fetchOne',
         UPDATE_STATUS: '/admin/application/updateStatus'
+    },
+    job: {
+        FETCH_ALL_JOBS: '/admin/job/fetch',
+        FETCH_ONE_JOB: '/admim/job/fetchOne'
     }
  
 }

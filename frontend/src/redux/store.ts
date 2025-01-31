@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { 
+    adminJobReducer,
     applicationSReducer,
     dashBoardReducer, 
     jobReducer 
@@ -11,8 +12,9 @@ export const store = configureStore({
         job: jobReducer,
         
         // ADMIN
-        dashboard: dashBoardReducer,
-        applications: applicationSReducer
+        adminDashboard: dashBoardReducer,
+        adminApplications: applicationSReducer,
+        adminJob: adminJobReducer
     },
 })
 

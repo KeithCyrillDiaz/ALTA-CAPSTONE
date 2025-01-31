@@ -6,7 +6,7 @@ import { Search } from "./client/Search";
 //JOB
 import { FilterJob } from "./client/FilterJob";
 import { JobFeed } from "./client/JobFeed";
-import { JobForm } from "./JobForm";
+import { JobForm } from "./client/JobForm";
 
 //MODAL
 import { FilterJobModal } from "./modal/FilterJobModal";
