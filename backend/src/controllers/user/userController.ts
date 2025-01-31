@@ -72,10 +72,15 @@ export const createApplication = async (req: Request, res: Response, next: NextF
 
         logger.event("Sending Resume Accuarcy Prompt to Gemini");
 
-        const jobData = await JobModel.findById(jobId);
+        // GET THE JOB DESCRIPTION FOR GEMINI PROMPT AND UPDATE THE APPLICANTS COUNT AS WELL
+        const updatedJob = await JobModel.findByIdAndUpdate(
+            jobId,
+            { $inc: { applicants: 1 } }, //INCREMENT APPLICANTS BY 1 
+            { new: true } // RETURN THE UPDATED DOCUMENT AND STORE IT IN updatedJob
+        );
 
         //SET PROMPT FORMAT TO RESUME PROMPT
-        const prompt = resumePrompt(resumeString, jobData);
+        const prompt = resumePrompt(resumeString, updatedJob);
 
         //SEND PROMPT AND GET THE RESPONSE
         const response = await sendPromptToGemini(prompt);
