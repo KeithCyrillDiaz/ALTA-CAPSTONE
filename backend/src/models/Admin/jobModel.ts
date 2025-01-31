@@ -53,7 +53,11 @@
         employmentType: {type: String, required: true},
         shift: {type: String, required: true},
         schedule: {type: String, required: true},
-        
+        datePublished: {type: Date, default: new Date()},
+        slot: {type: Number, default: 2},
+        applicants: {type: Number, default: 0},
+       
+        workMode: {type: String, default: "Remote"},
         status: {type: String, default: 'Open'},
         month: {type: String, required: true},
         year: {type: Number, required: true},
