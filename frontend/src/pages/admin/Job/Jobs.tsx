@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { fetchAdminJobData } from "../../../api/apiCalls/admin/job";
-import { clearAdminJobFilter, searchAdminJobFilter, setJobData } from "../../../redux/slice/admin/jobSlice";
+import { clearAdminJobFilter, searchAdminJobFilter, setAdminJobData} from "../../../redux/slice/admin/jobSlice";
 import { JobTable } from "../../../components/admin/job/JobTable";
 import { AdminFilter } from "../../../components/admin/AdminFilterModal";
 import { TableDataTypes } from "../../../components/admin/table/Table";
@@ -27,7 +27,7 @@ const Jobs: React.FC = () => {
         const fetchData = async () => {
             setLoading(true);
             const data = await fetchAdminJobData();
-            dispatch((setJobData(data)));
+            dispatch((setAdminJobData(data)));
             setLoading(false);
         }
 

@@ -53,7 +53,7 @@ const JobsSlice = createSlice({
     name: "Jobs",
     initialState,
     reducers: {
-        setJobData: (state, action: PayloadAction<JobDataTypes[]>) => {
+        setAdminJobData: (state, action: PayloadAction<JobDataTypes[]>) => {
             // STORE THE DATA IN STATES
             const data = action.payload
             state.JobData = data; // THIS IS THE ORIG COPY THAT WE CAN USE TO RESTORE THE FILTERED / SHOWN DATA
@@ -79,8 +79,8 @@ const JobsSlice = createSlice({
             const skills = data.flatMap((item) => item.skills); //I USED FLAT MAP SINCE THE ITEM.SKILLS IS AN ARRAY, SO THE NESTED skills VARIABLE WILL BE FLATTED OR REMOVED THE NESTED
             const education = data.flatMap((item) => item.education);
 
-            state.skillsArray = formatDataToDropDownDataYpes(["others", ...skills]); //Added others incase the user wants to have other skills
-            state.educationArray = formatDataToDropDownDataYpes(["others", ...education]);
+            state.skillsArray = formatDataToDropDownDataYpes(skills); 
+            state.educationArray = formatDataToDropDownDataYpes(education);
 
         },
         filterAdminJobData: (state, action: PayloadAction<Partial<FilterJobOptionsTypes>>) => {
@@ -162,22 +162,99 @@ const JobsSlice = createSlice({
                 ...state.editableForm,
                 [field]: filteredArray
             }
+        },
 
-        }
+        addAdminJobdescription: (state, action: PayloadAction<JobDescription>) => {
+            if(!state.editableForm) {
+                console.log("Editable form is null");
+                return;
+            }
+            const newJobDescription = action.payload;
+            const prev =  state.editableForm.jobDescription;
+            state.editableForm.jobDescription = [
+                ...prev,
+                newJobDescription
+            ]
+        },
+
+        updateAdminJobDescription :(state, action: PayloadAction<{prev: JobDescription, field: keyof JobDescription, value: string | boolean}>) => {
+            if(!state.editableForm) {
+                console.log("Editable form is null");
+                return;
+            }
+
+           
+            const {field, value, prev} = action.payload;
+            console.log(`field: ${field}, value: ${value}, prev: ${prev}`)
+            const jobDescription = state.editableForm.jobDescription
+
+                const newJobDescription: JobDescription = {
+                    ...prev,
+                   [field]: field === "bulletData" 
+                   ?  [ ...prev.bulletData, value as string] //IF COMPARISON IS TRUE
+                   : value // IF COMPARISON IS FALSE
+                }
+
+                const newJobDescriptionArray = jobDescription.map((item) => {
+                    if(item.dummyId=== undefined && prev.dummyId === undefined) {
+                        if(item._id === prev._id){
+                            return newJobDescription;
+                        } else {
+                            return item
+                        }
+                    } else if(item.dummyId === prev.dummyId){
+                        return newJobDescription
+                    } else {
+                        return item
+                    }
+                })
+                state.editableForm.jobDescription = newJobDescriptionArray;
+        },
+
+        removeItemOnBulletData: (state, action: PayloadAction<{prev: JobDescription, value: string}>) => {
+            if(!state.editableForm) {
+                console.log("Editable form is null");
+                return;
+            }
+            const {prev, value} = action.payload;
+            const {jobDescription} = state.editableForm;
+            const {dummyId: prevDummyId, _id: prev_id} = prev;
+
+            const newJobDescription = jobDescription.map((item) => {
+                if(
+                    (prevDummyId === undefined && item.dummyId === undefined && prevDummyId === item.dummyId) || prev_id === item._id
+                ) {
+                    if(prev_id === item._id) {
+                        const {bulletData} = item;
+                        const newBulletData = bulletData.filter((str) => str.toLowerCase() !== value.toLowerCase())
+                        return {
+                            ...item,
+                            bulletData: newBulletData
+                        }
+                    } 
+                } 
+                return item;
+            });
+            state.editableForm.jobDescription = newJobDescription;
+        }   
 
     }
 })
 
 
 export const {
-    setJobData,
+    setAdminJobData,
     filterAdminJobData,
     clearAdminJobFilter,
     searchAdminJobFilter,
     setEditableForm,
     updateEditableForm,
     updateEducationOrSkillArray,
-    removeItemInEducationOrSkillArray
+    removeItemInEducationOrSkillArray,
+
+    addAdminJobdescription,
+    updateAdminJobDescription,
+    removeItemOnBulletData
 } = JobsSlice.actions;
 
 export default JobsSlice.reducer;
