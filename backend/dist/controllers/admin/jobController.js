@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateJobInformation = exports.updateJobStatus = exports.getJobApplications = exports.createJob = void 0;
+exports.updateJobInformation = exports.updateJobStatus = exports.getJobDetails = exports.getJobApplications = exports.createJob = void 0;
 const logger_1 = require("../../utils/logger");
 const date_1 = require("../../helper/date");
 const resultHandler_1 = require("../../utils/resultHandler");
@@ -56,19 +56,19 @@ const createJob = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         });
         const result = yield newJob.save();
         (0, resultHandler_1.createResultHandler)(res, result, "CJB_003", "creating job");
-        // if(!result) {
-        //     logger.error("error in CJB_003, Error Creating Job");
-        //     res.status(500).json({
-        //         code: 'CJB_003',
-        //         message: "Error Creating Job"
-        //     });
-        //     return;
-        // }
-        // logger.success("Successfully Created Job");
-        // res.status(201).json({
-        //     code: "CJB_000",
-        //     message: "Successfully Created Job"
-        // });
+        if (!result) {
+            logger_1.logger.error("error in CJB_003, Error Creating Job");
+            res.status(500).json({
+                code: 'CJB_003',
+                message: "Error Creating Job"
+            });
+            return;
+        }
+        logger_1.logger.success("Successfully Created Job");
+        res.status(201).json({
+            code: "CJB_000",
+            message: "Successfully Created Job"
+        });
         return;
     }
     catch (error) {
@@ -101,6 +101,47 @@ const getJobApplications = (req, res, next) => __awaiter(void 0, void 0, void 0,
     }
 });
 exports.getJobApplications = getJobApplications;
+const getJobDetails = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        logger_1.logger.event("Fetching Job Details");
+        const { id } = req.params;
+        if (!id) {
+            logger_1.logger.error("ID not found in Params");
+            res.status(400).json({
+                code: "GJD_001",
+                message: "ID not found in Params"
+            });
+            return;
+        }
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            logger_1.logger.error("Invalid ID format");
+            res.status(400).json({
+                code: 'GJD_002',
+                message: "Invalid ID format"
+            });
+            return;
+        }
+        const result = yield jobModel_1.JobModel.findById(id);
+        if (!result) {
+            logger_1.logger.error("Error in GJD_003, Job Record Not Found");
+            res.status(404).json({
+                code: "GJD_003",
+                message: "Job Record Not Found"
+            });
+            return;
+        }
+        logger_1.logger.success("Successfully Fetched Job Record");
+        res.status(200).json({
+            code: "GJD_000",
+            message: "Successfully Fetched Job Record",
+            data: result
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getJobDetails = getJobDetails;
 const validJobStatus = ['Open', 'Close'];
 const updateJobStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
