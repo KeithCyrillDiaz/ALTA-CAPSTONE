@@ -65,9 +65,12 @@ const createApplication = (req, res, next) => __awaiter(void 0, void 0, void 0, 
         }
         const { month, year } = (0, date_1.getDateToday)();
         logger_1.logger.event("Sending Resume Accuarcy Prompt to Gemini");
-        const jobData = yield jobModel_1.JobModel.findById(jobId);
+        // GET THE JOB DESCRIPTION FOR GEMINI PROMPT AND UPDATE THE APPLICANTS COUNT AS WELL
+        const updatedJob = yield jobModel_1.JobModel.findByIdAndUpdate(jobId, { $inc: { applicants: 1 } }, //INCREMENT APPLICANTS BY 1 
+        { new: true } // RETURN THE UPDATED DOCUMENT AND STORE IT IN updatedJob
+        );
         //SET PROMPT FORMAT TO RESUME PROMPT
-        const prompt = (0, resumePrompts_1.resumePrompt)(resumeString, jobData);
+        const prompt = (0, resumePrompts_1.resumePrompt)(resumeString, updatedJob);
         //SEND PROMPT AND GET THE RESPONSE
         const response = yield (0, sendMessage_1.sendPromptToGemini)(prompt);
         //DECLARE AN OBJECT ID VARIABLE AND RESUME RATING OF GEMINI RESPONSE TO STORE IT IN USER APPLICAITON
