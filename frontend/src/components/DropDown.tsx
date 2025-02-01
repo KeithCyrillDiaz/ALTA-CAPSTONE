@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { DownArrowIcon } from "./icons/DownArrowIcon";
 import { Search } from "./client/Search";
 
@@ -46,8 +46,10 @@ export const DropDown: React.FC<DropDownProps> = ({
 
     const [showOptions, setShowOptions] = useState<boolean>(false)
     const [dropdownValue, setDropDownValue] = useState<string | null>(value);
-
     const [dropdownData, setDropdownData] = useState<DropDownDataType[]>(data);
+
+    const dropdownRef = useRef<HTMLDivElement>(null); // Ref for dropdown container
+
     const handleSearch = (text: string) => {
         //CHECK IF TEXT IS AN EMPTY STRING
         if(text === ""){
@@ -72,10 +74,28 @@ export const DropDown: React.FC<DropDownProps> = ({
     //THIS WILL GET TRIGGER WHEN VALUE CHANGES
     useEffect(() => {
         setDropDownValue(value);
-    },[value, setDropDownValue])
+    },[value])
+
+    // DETECT CLICKS OUTSIDE THE DROPDOWN
+    useEffect(() => {
+        // THIS WILL CHECK IF THE CLICK IS OUTSIDE THE DIV WITH DROP DOWNREF
+        const handleClickOutside = (event: MouseEvent) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            setShowOptions(false); // Hide dropdown
+        }
+        };
+
+        // THIS EVENT LISTENER IS RESPONSIBLE FOR DETECTING MOUSE CLICK
+        document.addEventListener("mousedown", handleClickOutside);
+
+        // TO PREVENT UNWANTED CLICKS
+        return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
-        <div className="inputWithIconContainer">
+        <div className="inputWithIconContainer" ref={dropdownRef}>
            {value !== "others" ? (
             <>
                  <p className={`text-[.8rem] mobile-truncate ${!dropdownValue || dropdownValue === "" ? "text-gray-400" : ""}`}>{!dropdownValue || dropdownValue === '' ?  placeHolder : dropdownValue}</p>

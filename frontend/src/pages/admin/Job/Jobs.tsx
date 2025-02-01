@@ -42,12 +42,15 @@ const Jobs: React.FC = () => {
                         <Loader/>
                     ) : (
                         <div className="container flex flex-col gap-2">
-                            <Options
-                            onChangeSearchText={(text) => dispatch(searchAdminJobFilter(text))}
-                            onFilterClick={() => setShowFilterModal(!showFilterModal)}
-                            onSearchClick={() =>{}} //TO AVOID ERRORS
-                            onClickClearFilter={() => dispatch(clearAdminJobFilter())}
-                            />
+                            <div className="flex items-center justify-end gap-2">
+                                <Options
+                                onChangeSearchText={(text) => dispatch(searchAdminJobFilter(text))}
+                                onFilterClick={() => setShowFilterModal(!showFilterModal)}
+                                onSearchClick={() =>{}} //TO AVOID ERRORS
+                                onClickClearFilter={() => dispatch(clearAdminJobFilter())}
+                                />
+                                <button onClick = {() => navigate('/admin/jobs/add')} className="primary">+ Add Job</button>
+                            </div>
                             {jobs && <JobTable   
                             onClickView={(id) => navigate(`/admin/jobs/view/${id}`)} 
                             tableData={jobs as TableDataTypes[]}/>}

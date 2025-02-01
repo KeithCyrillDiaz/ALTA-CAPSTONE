@@ -42,16 +42,25 @@ const JobDescriptionCard: React.FC<{data: JobDescription, onEdit?: boolean}> = (
             {isBullet ? (
                 <>
                     <p>
-                        <strong>{title}</strong>
+                        <strong>{title || "[Title]"}</strong>
                     </p>
                     <div className="ml-4 flex flex-col gap-2">
-                        {bulletData.map((item, index) => (
-                            <BulletCard 
-                            key={index} 
-                            label={item} 
-                            onEdit={onEdit} 
-                            onClickDelete={(label) => handleDeleteBulletData(data, label)}/>
-                        ))}
+                       {bulletData.length === 0 ? (
+                        <>
+                            <BulletCard
+                            label="[Description will be added here after clicking the + button]"/>
+                        </>
+                       ) : (
+                        <>
+                             {bulletData.map((item, index) => (
+                                    <BulletCard 
+                                    key={index} 
+                                    label={item} 
+                                    onEdit={onEdit} 
+                                    onClickDelete={(label) => handleDeleteBulletData(data, label)}/>
+                                ))}
+                        </>
+                       )}
                     </div>
                    
                 </>
@@ -59,11 +68,10 @@ const JobDescriptionCard: React.FC<{data: JobDescription, onEdit?: boolean}> = (
                 //DISPLAY AS PARAGRAPH IF ITS NOT BULLET
                 <>
                     <p>
-                        <strong>{title}</strong>
+                        <strong>{title || "[Title]"}</strong>
                     </p>
-                    <div className="">
-                        <p>{paragraph}</p>
-                    </div>
+                    <p>{paragraph || "[Description]"}</p>
+        
                 </>
             )}
         </>
@@ -145,7 +153,7 @@ interface RenderJobDescriptionProps {
     }
     return(
         <div className="feedContentContainer renderJobDescriptionContainer ">
-            <h3><strong>{jobTitle}</strong></h3>
+            <h3><strong>{jobTitle || "[Title]"}</strong></h3>
 
             {/* SKILLS */}
             <IconWithLabel
@@ -153,14 +161,22 @@ interface RenderJobDescriptionProps {
             element={<SkillsIcon/>}
             />
             <div className="bulletContainer">
-                {skills.map((skill:string, index: number) => (
-                    <BulletCard 
-                    key={index} 
-                    label={skill} 
-                    onEdit={onEdit}
-                    onClickDelete={(label: string) => handleRemoveItemOnArray("skills", label)}
-                    />
-                ))}
+                {skills.length === 0 ? (
+                    <>
+                        No Skills Added
+                    </>
+                ) : (
+                    <>
+                        {skills.map((skill:string, index: number) => (
+                            <BulletCard 
+                            key={index} 
+                            label={skill} 
+                            onEdit={onEdit}
+                            onClickDelete={(label: string) => handleRemoveItemOnArray("skills", label)}
+                            />
+                        ))}
+                    </>
+                )}
             </div>
 
             {/* EDUCATION */}
@@ -169,13 +185,22 @@ interface RenderJobDescriptionProps {
             element={<EducationIcon/>}
             />
             <div className="bulletContainer">
-                {education.map((skill:string, index: number) => (
-                    <BulletCard 
-                    key={index} 
-                    label={skill} 
-                    onEdit={onEdit} 
-                    onClickDelete={(label: string) => handleRemoveItemOnArray("education", label)}/>
-                ))}
+            {education.length === 0 ? (
+                    <>
+                        No Education Added
+                    </>
+                ) : (
+                    <>
+                         {education.map((skill:string, index: number) => (
+                            <BulletCard 
+                            key={index} 
+                            label={skill} 
+                            onEdit={onEdit} 
+                            onClickDelete={(label: string) => handleRemoveItemOnArray("education", label)}/>
+                        ))}
+                    </>
+                )}
+               
             </div>
 
             {/* JOB DETAILS */}
@@ -217,20 +242,24 @@ interface RenderJobDescriptionProps {
 
 
             {/* JOB DESCRIPTION */}
-            <p><strong>Job Description</strong></p>
-            <div className="jobDescriptionContainer">
-                {jobDescription.map((item, index) => (
-                    <JobDescriptionCard key={index} data={item} onEdit={onEdit}/>
-                ))}
-            </div>
-            
-            {/* DISPLAY BUTTON IF MOBILE AND IF THE HIDE APPLY BUTTON IS NOT SET TO FALSE*/}
-            {(isMobile && hideApplyButton !== false) && (
-                <div className="flex justify-center">
-                    <button onClick={() => handleApply()} className="primary">Apply</button>
-                </div>
+            {jobDescription.length !== 0 && (
+                <>
+                    <p><strong>Job Description</strong></p>
+                    <div className="jobDescriptionContainer">
+                        {jobDescription.map((item, index) => (
+                            <JobDescriptionCard key={index} data={item} onEdit={onEdit}/>
+                        ))}
+                    </div>
+                    
+                    {/* DISPLAY BUTTON IF MOBILE AND IF THE HIDE APPLY BUTTON IS NOT SET TO FALSE*/}
+                    {(isMobile && hideApplyButton !== false) && (
+                        <div className="flex justify-center">
+                            <button onClick={() => handleApply()} className="primary">Apply</button>
+                        </div>
+                    )}
+                    
+                </>
             )}
-            
         </div>
     )
   }

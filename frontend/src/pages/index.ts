@@ -1,21 +1,16 @@
-// CLIENT
-import Home from "./client/Home";
-import ViewJob from "./client/ViewJob";
-import NotFoundPage from "./NotFoundPage";
+import { lazy } from "react";
 
-// ADMIN
-import Login from "./admin/Login";
-import Dashboard from "./admin/Dashboard";
-import Jobs from "./admin/Job/Jobs";
-export {
-    // CLIENT PAGES
-    Home,
-    ViewJob,
-    NotFoundPage,
+// CLIENT PAGES
+export const Home = lazy(() => import("./client/Home"));
+export const ApplyJob = lazy(() => import("./client/ApplyJob"));
+export const ViewJob = lazy(() => import("./client/ViewJob"));
+export const NotFoundPage = lazy(() => import("./NotFoundPage"));
 
-    //ADMIN
-    Login,
-    Dashboard,
-    Jobs
-
-}
+// ADMIN PAGES
+export const Login = lazy(() => import("./admin/Login"));
+export const Dashboard = lazy(() => import("./admin/Dashboard"));
+export const Jobs = lazy(() => import("../pages/admin/Job/Jobs"));
+export const Applicants = lazy(() => import("./admin/Applicants/Applicants"));
+export const ViewApplicantRecord = lazy(() => import("./admin/Applicants/ViewApplicantRecord"));
+export const ViewJobDetails = lazy(() => import("./admin/Job/ViewJobDetails"));
+export const AddJobDetails = lazy(() => import("./admin/Job/AddJobDetails"));
