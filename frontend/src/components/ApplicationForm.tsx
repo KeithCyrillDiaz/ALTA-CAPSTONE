@@ -533,7 +533,7 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
                         />
                     </div>
                     <div className="inputWithLabelContainer">
-                        <p className="secondary-text"><strong>Gender</strong></p>
+                        <p className="secondary-text"><strong>Birthday</strong></p>
                         <BirthdayField
                         disabled={admin === true}
                         onChange={(date) => handleUpdateForm("birthday", date)}
