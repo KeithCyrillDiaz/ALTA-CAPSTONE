@@ -68,7 +68,7 @@ const Tabs: React.FC = () => {
             </div>
 
             <div className="buttonContainer">
-                <button className="primary" onClick={() => navigate('/')}>Join us</button>
+                <button className="primary" onClick={() => {}}>Join us</button>
             </div>
         </div>
     );
