@@ -113,74 +113,72 @@ const Dashboard: React.FC = () => {
 
     },[dropDownValues.chosenJobPosition])
 
-    if(loading) {
-        return (
-            <Loader/>
-        )
-    }
-
-
     return (
         <AdminLayout title="DASHBOARD">
-            <div className="flex flex-col justify-center gap-4 relative pb-12">
-                <HeroSection/>
-                <main className="flex gap-2">
-                    <section className=" w-[68%] max-w-[700px] flex flex-col gap-2">
-                            <div className="h-[200px] w-full bg-white shadow">
-                                Line Graph
-                            </div>
-                            {/* TOP APPLICANTS */}
-                            <div className="flex justify-between">
-                                <div className="w-[49%]">
-                                    {jobPositionData && topApplicantsData && (
-                                        <TopDataCard 
-                                        title="Applicants"
-                                        month={month} 
-                                        year={year}
-                                        dropDownData={jobPositionData}
-                                        onChangeDropDown={(value) => handleUpdateDropDownValue("chosenJobPosition", value)}
-                                        dropDownValue={dropDownValues.chosenJobPosition}
-                                        topData={topApplicantsData}
-                                        onClickView={(id) => navigate(`/admin/applicant/view/${id}`)}
-                                        />
-                                    )}
+            {loading ? (
+                <Loader/>
+            ) : (
+                <div className="flex flex-col justify-center gap-4 relative pb-12">
+                    <HeroSection/>
+                    <main className="flex gap-2">
+                        <section className=" w-[68%] max-w-[700px] flex flex-col gap-2">
+                                <div className="h-[200px] w-full bg-white shadow">
+                                    Line Graph
                                 </div>
-                                <div className="w-[49%]">
-                                    {jobPositionData && topApplicantsData && (
-                                        <TopDataCard 
-                                        title="Clients"
-                                        month={month} 
-                                        year={year}
-                                        dropDownData={[]}
-                                        onChangeDropDown={() =>{}}
-                                        dropDownValue={""}
-                                        topData={[]}
-                                        onClickView={() => {}}
-                                        />
-                                    )}
+                                {/* TOP APPLICANTS */}
+                                <div className="flex justify-between">
+                                    <div className="w-[49%]">
+                                        {jobPositionData && topApplicantsData && (
+                                            <TopDataCard 
+                                            title="Applicants"
+                                            month={month} 
+                                            year={year}
+                                            dropDownData={jobPositionData}
+                                            onChangeDropDown={(value) => handleUpdateDropDownValue("chosenJobPosition", value)}
+                                            dropDownValue={dropDownValues.chosenJobPosition}
+                                            topData={topApplicantsData}
+                                            onClickView={(id) => navigate(`/admin/applicant/view/${id}`)}
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="w-[49%]">
+                                        {jobPositionData && topApplicantsData && (
+                                            <TopDataCard 
+                                            title="Clients"
+                                            month={month} 
+                                            year={year}
+                                            dropDownData={[]}
+                                            onChangeDropDown={() =>{}}
+                                            dropDownValue={""}
+                                            topData={[]}
+                                            onClickView={() => {}}
+                                            />
+                                        )}
+                                    </div>
+                                    
                                 </div>
-                                
+                        </section>
+                        <section className="w-[32%] max-w-[350px] flex flex-col gap-2 items-end">
+                            <div className="w-full h-[200px] bg-white shadow">
+                                PieGraph
                             </div>
-                    </section>
-                    <section className="w-[32%] max-w-[350px] flex flex-col gap-2 items-end">
-                        <div className="w-full h-[200px] bg-white shadow">
-                            PieGraph
-                        </div>
-                        {jobPositionData && topApplicantsData && (
-                            <TopDataCard 
-                            title="Projects"
-                            month={month} 
-                            year={year}
-                            dropDownData={[]}
-                            onChangeDropDown={() =>{}}
-                            dropDownValue={""}
-                            topData={[]}
-                            onClickView={() => {}}
-                            />
-                        )}
-                    </section>
-                </main>
-            </div>
+                            {jobPositionData && topApplicantsData && (
+                                <TopDataCard 
+                                title="Projects"
+                                month={month} 
+                                year={year}
+                                dropDownData={[]}
+                                onChangeDropDown={() =>{}}
+                                dropDownValue={""}
+                                topData={[]}
+                                onClickView={() => {}}
+                                />
+                            )}
+                        </section>
+                    </main>
+                </div>
+            )}
+           
         </AdminLayout>
     )
 }
