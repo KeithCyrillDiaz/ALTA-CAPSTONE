@@ -122,14 +122,27 @@ const JobsSlice = createSlice({
            }
 
            const {field, value} = action.payload;
-           const newForm: JobDataTypes = {
-               ...state.editableForm,
-               [field]: value
+           let newForm: JobDataTypes;
+           if(field === "isSalaryRange" && value === false) {
+            newForm = {
+                ...state.editableForm,
+                [field]: value as boolean,
+                maxSalary: state.editableForm.minSalary
+            }
+           } else {
+            newForm = {
+                ...state.editableForm,
+                [field]: value
+            }
            }
+           
         //    UPDATE BOTH MIN AND MAX SALARY IF IS SALARY RANGE IS SET TO TRUE
-           if((field === "minSalary" || field === "maxSalary") && state.editableForm.isSalaryRange) {
-                newForm.minSalary = parseInt(value as string);
-                newForm.maxSalary = parseInt(value as string);
+           const isSalarySetToRange = state.editableForm.isSalaryRange;
+           if((field === "minSalary" || field === "maxSalary") && isSalarySetToRange === false) {
+            // SINCE SALARY RANGE IS FALSE, MINIMUM AND MAXIMUM SALARY SHOULD HAS THE SAME VALUE
+                const salaryValue = parseInt(value as string);
+                newForm.minSalary = salaryValue;
+                newForm.maxSalary = salaryValue;
            }
 
            state.editableForm = newForm
@@ -175,6 +188,36 @@ const JobsSlice = createSlice({
                 ...prev,
                 newJobDescription
             ]
+        },
+
+        removeAdminJobDescriptionField: (state, action: PayloadAction<{id: string}>) => {
+            if(!state.editableForm) {
+                console.log("Editable form is null");
+                return;
+            }
+            const {id} = action.payload;
+      
+            const data = state.editableForm.jobDescription;
+            const chosenField = data.find((item) => item._id === id || item.dummyId === id);
+
+            if(!chosenField) {
+                console.log("Field Not Found");
+                return;
+            }
+            const {dummyId, _id} = chosenField;
+
+            const filteredData = data.filter((item) => {
+                if(item.dummyId === undefined && dummyId === undefined) {
+                    if(_id !== item._id) {
+                        return true;
+                    }
+                } else if (item.dummyId !== dummyId) {
+                    return true;
+                } else {
+                    return false
+                }
+            });
+            state.editableForm.jobDescription = filteredData;
         },
 
         updateAdminJobDescription :(state, action: PayloadAction<{prev: JobDescription, field: keyof JobDescription, value: string | boolean}>) => {
@@ -253,6 +296,7 @@ export const {
     removeItemInEducationOrSkillArray,
 
     addAdminJobdescription,
+    removeAdminJobDescriptionField,
     updateAdminJobDescription,
     removeItemOnBulletData
 } = JobsSlice.actions;

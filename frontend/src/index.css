@@ -277,7 +277,7 @@ table tbody tr:hover {
     }
 
     table p {
-        max-width: 70px;
+        max-width: 60px;
     }
 
 }
@@ -308,6 +308,10 @@ table tbody tr:hover {
 
     button {
         font-size: 1rem;  /* Increased for better accessibility */
+    }
+    table p {
+        max-width: 60px;
+        font-size: 0.8rem;
     }
 }
 

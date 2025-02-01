@@ -1,4 +1,5 @@
 import { TableDataTypesValue } from "../../../components/admin/table/Table";
+import { JobDataTypes } from "../../../components/client/JobFeed";
 import axiosInstance from "../../axiosInstance";
 import { endpointAdmin } from "../../endpoint";
 import errorHandler from "../errorhandler"
@@ -29,5 +30,22 @@ export const fetchJobDataById = async (id: TableDataTypesValue) => {
         return data;
     } catch (error) {
         return errorHandler(error)
+    }
+}
+
+
+export const updateJobDescriptionDetails = async (jobData: JobDataTypes) => {
+    try {
+        console.log("Updating Job Form");
+        // PREPARE THE URL
+        // EXTRACT OBJECT ID AND RENAME IT TO id
+        const {_id: id} = jobData;
+        const url = `${endpointAdmin.job.UPDATE_ALL}/${id}`;
+        const response = await axiosInstance.patch(url, jobData);
+        const {data} = response.data;
+        return data;
+
+    } catch (error) {
+        return errorHandler(error);
     }
 }

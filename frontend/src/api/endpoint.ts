@@ -23,12 +23,14 @@ export const endpointAdmin = {
     },
     applicants: {
         FETCH_ALL_USER_APPLICANTS: '/admin/application/fetchAll',
-        FETCH_USER_APPLICANTS: '/admin/applicantion/fetchOne',
-        UPDATE_STATUS: '/admin/application/updateStatus'
+        FETCH_USER_APPLICANTS: '/admin/applicantion/fetchOne',//NEED ID
+        UPDATE_STATUS: '/admin/application/updateStatus'//NEED ID
     },
     job: {
         FETCH_ALL_JOBS: '/admin/job/fetch',
-        FETCH_ONE_JOB: '/admim/job/fetchOne'
+        FETCH_ONE_JOB: '/admim/job/fetchOne',
+        UPDATE_ALL: '/admin/job/updateInformation', //NEED ID
+        UPDATE_STATUS: '/admin/job/updateStatus', //NEED ID
     }
  
 }

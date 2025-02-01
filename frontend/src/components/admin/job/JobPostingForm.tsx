@@ -1,20 +1,28 @@
-import React, { KeyboardEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Input } from "../../Input";
 import { JobDataTypes, JobDescription } from "../../client/JobFeed";
 import { useDispatch } from "react-redux";
-import { setAdminJobData, updateAdminJobDescription, updateEditableForm, updateEducationOrSkillArray } from "../../../redux/slice/admin/jobSlice";
+import { addAdminJobdescription, removeAdminJobDescriptionField, setAdminJobData, setEditableForm, updateAdminJobDescription, updateEditableForm, updateEducationOrSkillArray } from "../../../redux/slice/admin/jobSlice";
 import Loader from "../../Loader";
 import { DropDown, DropDownDataType } from "../../DropDown";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CheckBoxContainer } from "../../CheckBox";
-import { fetchAdminJobData } from "../../../api/apiCalls/admin/job";
+import { fetchAdminJobData, updateJobDescriptionDetails } from "../../../api/apiCalls/admin/job";
 import { TrashIcon } from "../../icons/TrashIcon";
+import { CustomModal } from "../../modal/CustomModal";
  
 interface JobPostingProps {
     data: JobDataTypes,
     onEdit?: boolean;
 }
+interface ConfirmationModalProps {
+    type?: "confirmation" | null
+    title: string;
+    message: string;
+    showModal: boolean
+}
+
 
 export const JobPostingForm: React.FC<JobPostingProps> = ({
     data
@@ -24,7 +32,16 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
     const skillsArray = useSelector((state: RootState) => state.adminJob.skillsArray);
     const educationArray = useSelector((state: RootState) => state.adminJob.educationArray);
     const jobData = useSelector((state: RootState) => state.adminJob.JobData);
+
+    type BulletStringArrayType = {index: number, value:string}
+    const [bulletString, setBulletString] = useState<BulletStringArrayType[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState<ConfirmationModalProps>({
+        type: null,
+        title: "",
+        message: "",
+        showModal: false
+    });
 
     const salaryTypeData: DropDownDataType[] = [
         { value: "Hourly", label: "Hourly" },
@@ -68,11 +85,6 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
         { value: "Fixed Shift", label: "Fixed Shift" },
     ];
 
-    type BulletStringArrayType = {index: number, value:string}
-    const [bulletString, setBulletString] = useState<BulletStringArrayType[]>([]);
-
-
-
     const handleUpdateForm = (field: keyof JobDataTypes, value: unknown | JobDescription) => {
         console.log("value: ", value)
         if(field === "education" || field === "skills") {
@@ -112,10 +124,8 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
 
     type AllowedFields = "education" | "skills";
 
-    const handleUpdateArray = (e: KeyboardEvent<HTMLInputElement>, field: AllowedFields, value: string) => {
-        if (e.key === "Enter") {
+    const handleUpdateArray = (field: AllowedFields, value: string) => {
             dispatch(updateEducationOrSkillArray({field, value}));
-        }
     }
 
     const handleUpdateArrayAddButton = (field: AllowedFields) => {
@@ -157,26 +167,72 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
         dispatch(updateAdminJobDescription({prev, field, value}));
     }
 
-    const handleUpdateJobDescritonBulletData = (e: KeyboardEvent<HTMLInputElement>, index: number, prev: JobDescription, field: "bulletData") => {
-        if (e.key === "Enter") {
-
-            if(bulletString.length === 0) {
-                return; //EARLY EXIT IF BULLET STRING IS UNDEFINED  
-            }
-            const bulletStringData = bulletString.find((item) => item.index === index);
-    
-            if(!bulletStringData) {
-                console.log("Bullet String Not Found"); //DEBUGGING
-                return;
-            }
-    
-            const {value} = bulletStringData;
-    
-            if(value === "") return; //DO NOTHING IF BULLET STRING IS EMPTY
-            console.log(e.key)
-    
-            dispatch(updateAdminJobDescription({prev, field, value}));
+    const handleUpdateJobDescritonBulletData = (index: number, prev: JobDescription, field: "bulletData") => {
+        if(bulletString.length === 0) {
+            return; //EARLY EXIT IF BULLET STRING IS UNDEFINED  
         }
+        const bulletStringData = bulletString.find((item) => item.index === index);
+
+        if(!bulletStringData) {
+            console.log("Bullet String Not Found"); //DEBUGGING
+            return;
+        }
+
+        const {value} = bulletStringData;
+
+        if(value === "") return; //DO NOTHING IF BULLET STRING IS EMPTY
+        dispatch(updateAdminJobDescription({prev, field, value}));
+    }
+
+    const handleAddNewField = () => {
+        const newField: JobDescription = {
+            dummyId: `${Date.now()}`,
+            title: "",
+            isBullet: false,
+            bulletData: [],
+            paragraph: ""
+        }
+        console.log("new field:", JSON.stringify(newField, null, 2));
+        dispatch(addAdminJobdescription(newField));
+        
+        //TO APPLY AUTO SCROLL
+        setTimeout(() => {
+            const element = document.getElementById(newField.dummyId as string);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        }, 100); // DELAY TO ENSURE RENDEREING 
+    }
+
+    const handleRemoveField = (id: string | undefined) => {
+        if(!id) {
+            console.log("id is undefined");
+            return;
+        }
+        dispatch(removeAdminJobDescriptionField({id}));
+    }
+    const submitConfirmation = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setShowConfirmationModal({
+            type: "confirmation",
+            title: "Confirm Update",
+            message: "Are you sure you want to update the job details?",
+            showModal: true
+        });
+    }
+    const handleSubmitForm = async () => {
+        // THIS WILL ONLY TRIGGER IF THE BUTTON TYPE IS SUBMIT
+        console.log("", JSON.stringify(data, null, 2));
+        setLoading(true) 
+        const responseData = await updateJobDescriptionDetails(data);
+        if(responseData) dispatch(setEditableForm(responseData));
+        setLoading(false)
+        setShowConfirmationModal({
+            type: null,
+            title: "Update Successful",
+            message: "The job details have been successfully updated.",
+            showModal: true
+        });
     }
 
    if(loading) {
@@ -187,262 +243,325 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
     
    return(
     <div className="feedContentContainer">
-        {/* TITLE AND AVAILABLE SLOTS */}
-        <div className="flex items-center gap-2">
-            <Input
-            label="Title"
-            onChange={(text) => handleUpdateForm("jobTitle", text)}
-            value={data.jobTitle}
-            type="text"
-            placeholder="e.g. Software Engineer"
-            maxLength={40}
-            />
-            <Input
-            label="Available Slots"
-            onChange={(text) => handleUpdateForm("slot", text)}
-            value={data.slot}
-            type="number"
-            placeholder="e.g. 2"
-            />
-        </div>
-
-        {/* SKILLS AND EDUCATION */}
-        <div className="flex gap-2 min-h-[90px]">
-            {/* SKILLS */}
-            <div className="w-full">
-                <div className="flex justify-between gap-2">
-                        <button 
-                        onClick={() => handleUpdateOnOthersField("skills", !onOthersField.skills)} 
-                        className="primary">
-                           {onOthersField.skills ? "Back to List": "Others"}
-                        </button>   
-                </div>
-                {onOthersField.skills? (
-                // THIS WILL ALLOW THE USER TO ADD OTHER SKILLS
+        <form onSubmit={submitConfirmation} className="flex flex-col gap-2">
+            {/* TITLE AND AVAILABLE SLOTS */}
+            <div className="flex items-center gap-2">
                 <Input
-                    label="Skills"
-                    onChange={(text) => handleUpdateForm("skills", text)}
-                    value={dropDownValues.skills}
-                    type="text"
-                    placeholder="e.g. React"
-                    onKeyDown={(e) => handleUpdateArray(e, "skills", dropDownValues.skills)}
-                />
-            ) : (
-                <div className="flex gap-2 items-end">
-                    <div className="inputContainer relative">
-                        <p className="secondary-text"><strong>Skills</strong></p>
-                        <DropDown 
-                            data={skillsArray}
-                            onChange={(value) => handleUpdateForm("skills", value)}
-                            placeHolder="Select Skill"
-                        />
-                    </div>
-                   <div>
-                   {!onOthersField.skills && (
-                        <button 
-                        onClick={() => handleUpdateArrayAddButton("skills")} 
-                        className="positive">
-                            +
-                        </button>
-                    )}
-                   </div>
-                </div>
-               
-            )}
-            </div>
-            {/* EDUCATION */}
-            <div className="w-full">
-                <div className="flex justify-end ">
-                        <button 
-                        onClick={() => handleUpdateOnOthersField("education", !onOthersField.education)} 
-                        className="primary">
-                           {onOthersField.education ? "Back to List": "Others"}
-                        </button>
-                </div>
-                {onOthersField.education ? (
-                    // THIS WILL ALLOW THE USER TO ADD OTHER EDUCATIONS
-                    <Input
-                        label="Education"
-                        onChange={(text) => handleUpdateForm("education", text)}
-                        value={dropDownValues.education}
-                        type="text"
-                        placeholder="e.g. Bachelor's"
-                        onKeyDown={(e) => handleUpdateArray(e, "education", dropDownValues.education)}
-                    />
-                ) : (
-                    <div className="flex gap-2 items-end">
-                        <div className="inputContainer">
-                            <p className="secondary-text"><strong>Education</strong></p>
-                            <DropDown 
-                                data={educationArray}
-                                onChange={(value) => handleUpdateForm("education", value)}
-                                placeHolder="Select Education"
-                            />
-                        </div>
-                        <div>
-                            {!onOthersField.education && (
-                                <button 
-                                onClick={() => handleUpdateArrayAddButton("education")} 
-                                className="positive">
-                                    +
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                   
-                )}
-            </div>
-        </div>
-
-        {/* SALARY */}
-        <div className="flex items-center gap-2 relative">
-            <p className="secondary-text absolute top-0"><strong>Salary</strong></p> 
-
-             {/* MININIMUM SALARY */}
-                <Input
-                label="Minimum"
-                onChange={(text) => handleUpdateForm("minSalary", text)}
-                value={data.minSalary}
-                type="number"
+                label="Title"
+                onChange={(text) => handleUpdateForm("jobTitle", text)}
+                value={data.jobTitle}
+                type="text"
                 placeholder="e.g. Software Engineer"
+                maxLength={40}
                 />
-
-             {/* MAXIMUM SALARY */}
-            <div className="w-full h-[110px]">
-                <div className="flex justify-end">
-                    <CheckBoxContainer
-                    onClick={(bool) => handleUpdateForm("isSalaryRange", bool)}
-                    value={data.isSalaryRange}
-                    label="Range"
-                    />
-                </div>
-                 <Input
-                label="Maximum"
-                onChange={(text) => handleUpdateForm("maxSalary", text)}
-                value={data.maxSalary}
+                <Input
+                label="Available Slots"
+                onChange={(text) => handleUpdateForm("slot", text)}
+                value={data.slot}
                 type="number"
                 placeholder="e.g. 2"
                 />
             </div>
-        </div>
 
-        {/* SALARY TYPE AND EMPLOYMENT TYPE */}
-        <div className="flex items-center gap-2 mt-[-24px]">
-            {/* SALARY TYPE */}
-            <div className="inputContainer">
-                <p className="secondary-text"><strong>Salary Type</strong></p>
-                    <DropDown 
-                        data={salaryTypeData}
-                        onChange={(value) => handleUpdateForm("salaryType", value)}
-                        placeHolder="Select Salary Type"
-                    />
-            </div>
-
-            {/* EMPLOYMENT TYPE */}
-            <div className="inputContainer">
-                <p className="secondary-text"><strong>Employment Type</strong></p>
-                    <DropDown 
-                        data={employmentTypeData}
-                        onChange={(value) => handleUpdateForm("employmentType", value)}
-                        placeHolder="Select Employment Type"
-                    />
-            </div>
-        </div>
-        
-        {/* SCHEDULE AND SHIFT */}
-        <div className="flex items-center gap-2">
-            {/* SCHEDULE */}
-            <div className="inputContainer">
-                <p className="secondary-text"><strong>Schedule</strong></p>
-                    <DropDown 
-                        data={scheduleTypeData}
-                        onChange={(value) => handleUpdateForm("schedule", value)}
-                        placeHolder="Select Salary Type"
-                    />
-            </div>
-
-            {/* SHIFT */}
-            <div className="inputContainer">
-                <p className="secondary-text"><strong>Shift</strong></p>
-                    <DropDown 
-                        data={shiftTypeData}
-                        onChange={(value) => handleUpdateForm("shift", value)}
-                        placeHolder="Select Employment Type"
-                    />
-            </div>
-        </div>
-
-
-        {/* JOB DESCRIPTION */}
-        <div className="w-full relative mt-2 flex flex-col gap-2">
-           <div className="flex justify-between items-center w-full">
-                <p className="secondary-text"><strong>Job Description</strong></p> 
-                <button className="primary">+ Add Field</button>
-           </div>
-           {data.jobDescription.length > 0 && (
-            <>
-                {data.jobDescription.map((item: JobDescription, index) => {
-                const {isBullet, paragraph, title} =  item;
-                    return (
-                        <div key={index} className="flex flex-col gap-2">
-                            <div className="flex justify-between items-center w-full">
-                                <button className="negative items-center flex gap-2"><TrashIcon/> Remove</button>
-                                <CheckBoxContainer
-                                value={isBullet}
-                                onClick={() => handleUpdateJobDescription(item, "isBullet", !isBullet)}  
-                                label="Bullet Form"
+            {/* SKILLS AND EDUCATION */}
+            <div className="flex gap-2 min-h-[90px]">
+                {/* SKILLS */}
+                <div className="w-full">
+                    <div className="flex justify-end gap-2">
+                            <button 
+                            type="button"
+                            onClick={() => handleUpdateOnOthersField("skills", !onOthersField.skills)} 
+                            className="primary">
+                            {onOthersField.skills ? "Back to List": "Others"}
+                            </button>   
+                    </div>
+                    {onOthersField.skills? (
+                    // THIS WILL ALLOW THE USER TO ADD OTHER SKILLS
+                    <div className="flex w-full gap-2 items-end">
+                        <Input
+                        label="Skills"
+                        onChange={(text) => handleUpdateForm("skills", text)}
+                        value={dropDownValues.skills}
+                        type="text"
+                        placeholder="e.g. React"
+                        />
+                        
+                        <button 
+                        type="button"
+                        onClick={() => handleUpdateArray("skills", dropDownValues.skills)} 
+                        className="positive h-[30px] flex items-center justify-center">
+                            +
+                        </button>
+                        
+                    </div>
+                ) : (
+                    <div className="flex gap-2 items-end">
+                        <div className="inputContainer relative">
+                            <p className="secondary-text"><strong>Skills</strong></p>
+                            <DropDown 
+                                data={skillsArray}
+                                onChange={(value) => handleUpdateForm("skills", value)}
+                                placeHolder="Skill"
+                            />
+                        </div>
+               
+                    {!onOthersField.skills && (
+                             <div>
+                                <button 
+                                type="button"
+                                onClick={() => handleUpdateArrayAddButton("skills")} 
+                                className="positive h-[30px] flex items-center justify-center">
+                                    +
+                                </button>
+                            </div>
+                        )}
+                   
+                    </div>
+                
+                )}
+                </div>
+                {/* EDUCATION */}
+                <div className="w-full">
+                    <div className="flex justify-end ">
+                            <button 
+                            type="button"
+                            onClick={() => handleUpdateOnOthersField("education", !onOthersField.education)} 
+                            className="primary">
+                            {onOthersField.education ? "Back to List": "Others"}
+                            </button>
+                    </div>
+                    {onOthersField.education ? (
+                        // THIS WILL ALLOW THE USER TO ADD OTHER EDUCATIONS
+                        <div className="flex w-full gap-2 items-end">
+                            <Input
+                            label="Education"
+                            onChange={(text) => handleUpdateForm("education", text)}
+                            value={dropDownValues.education}
+                            type="text"
+                            placeholder="e.g. Bachelor's"
+                            required
+                            />
+                            <button 
+                            type="button"
+                            onClick={() => handleUpdateArray("education", dropDownValues.education)} 
+                            className="positive h-[30px] flex items-center justify-center">
+                                +
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="flex gap-2 items-end">
+                            <div className="inputContainer">
+                                <p className="secondary-text"><strong>Education</strong></p>
+                                <DropDown 
+                                    data={educationArray}
+                                    onChange={(value) => handleUpdateForm("education", value)}
+                                    placeHolder="Education"
                                 />
                             </div>
-                            {isBullet ? (
-                                // THIS CODE WILL RENDER IF IS BULLET DATA IS SET TO TRUE
-                                <div className="flex flex-col">
-                                    <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
-                                        <p><strong>Title: </strong></p>
-                                        <input
-                                            className="text-[14px] font-bold"
-                                            placeholder="e.g. Position Overview"
-                                            value={title}
-                                            onChange={(e) => handleUpdateJobDescription(item, "title", e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
-                                        <input
-                                            className="text-[14px] w-full"
-                                            placeholder="e.g. Develop and execute test plans, test cases, and scripts for software validation."
-                                            onChange={(e) => handleUpdateBulletStringArray(index, e.target.value)}
-                                            onKeyDown={(e) => handleUpdateJobDescritonBulletData(e, index, item, "bulletData")}
-                                        />
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col">
-                                    <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
-                                        <p><strong>Title: </strong></p>
-                                        <input
-                                            className="text-[14px] font-bold"
-                                            placeholder="e.g. Position Overview"
-                                            value={title}
-                                            onChange={(e) => handleUpdateJobDescription(item, "title", e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
-                                        <textarea
-                                            value={paragraph}
-                                            className="text-[14px] w-full h-[100px]"
-                                            placeholder="e.g. As a Full Stack Software Engineer, you will be responsible for designing, developing, and maintaining both front-end and back-end components of our web and mobile applications. You will collaborate with cross-functional teams to deliver high-quality and scalable solutions."
-                                            onChange={(e) => handleUpdateJobDescription(item, "paragraph", e.target.value)}
-                                        />
-                                    </div>
-                                    
-                                </div>
-                            )}
+                            <div>
+                                {!onOthersField.education && (
+                                    <button 
+                                    type="button"
+                                    onClick={() => handleUpdateArrayAddButton("education")} 
+                                    className="positive h-[30px] flex items-center justify-center">
+                                        +
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                       
-                    )
-                })}
-            </>
-           )}
-        </div>
+                    
+                    )}
+                </div>
+            </div>
+
+            {/* SALARY */}
+            <div className="flex items-center gap-2 relative">
+                <p className="secondary-text absolute top-0"><strong>Salary</strong></p> 
+
+                {/* MININIMUM SALARY */}
+                    <Input
+                    label="Minimum"
+                    onChange={(text) => handleUpdateForm("minSalary", text)}
+                    value={data.minSalary}
+                    type="number"
+                    placeholder="e.g. Software Engineer"
+                    required
+                    />
+
+                {/* MAXIMUM SALARY */}
+                <div className="w-full h-[110px]">
+                    <div className="flex justify-end">
+                        <CheckBoxContainer
+                        onClick={(bool) => handleUpdateForm("isSalaryRange", bool)}
+                        value={data.isSalaryRange}
+                        label="Range"
+                        />
+                    </div>
+                    <Input
+                    label="Maximum"
+                    onChange={(text) => handleUpdateForm("maxSalary", text)}
+                    value={data.maxSalary}
+                    type="number"
+                    placeholder="e.g. 2"
+                    required
+                    />
+                </div>
+            </div>
+
+            {/* SALARY TYPE AND EMPLOYMENT TYPE */}
+            <div className="flex items-center gap-2 mt-[-24px]">
+                {/* SALARY TYPE */}
+                <div className="inputContainer">
+                    <p className="secondary-text"><strong>Salary Type</strong></p>
+                        <DropDown 
+                            data={salaryTypeData}
+                            onChange={(value) => handleUpdateForm("salaryType", value)}
+                            placeHolder="Salary Type"
+                        />
+                </div>
+
+                {/* EMPLOYMENT TYPE */}
+                <div className="inputContainer">
+                    <p className="secondary-text"><strong>Employment Type</strong></p>
+                        <DropDown 
+                            data={employmentTypeData}
+                            onChange={(value) => handleUpdateForm("employmentType", value)}
+                            placeHolder="Employment Type"
+                        />
+                </div>
+            </div>
+            
+            {/* SCHEDULE AND SHIFT */}
+            <div className="flex items-center gap-2">
+                {/* SCHEDULE */}
+                <div className="inputContainer">
+                    <p className="secondary-text"><strong>Schedule</strong></p>
+                        <DropDown 
+                            data={scheduleTypeData}
+                            onChange={(value) => handleUpdateForm("schedule", value)}
+                            placeHolder="Schedule"
+                        />
+                </div>
+
+                {/* SHIFT */}
+                <div className="inputContainer">
+                    <p className="secondary-text"><strong>Shift</strong></p>
+                        <DropDown 
+                            data={shiftTypeData}
+                            onChange={(value) => handleUpdateForm("shift", value)}
+                            placeHolder="Shift"
+                        />
+                </div>
+            </div>
+
+
+            {/* JOB DESCRIPTION */}
+            <div className="w-full relative mt-2 flex flex-col gap-2">
+            <div className="flex justify-between items-center w-full">
+                    <p className="secondary-text"><strong>Job Description</strong></p> 
+                    <button onClick={handleAddNewField} type="button" className="primary">+ Add Field</button>
+            </div>
+            {data.jobDescription.length > 0 && (
+                <>
+                    {data.jobDescription.map((item: JobDescription, index) => {
+                    const {isBullet, paragraph, title, dummyId, _id} =  item;
+                        return (
+                            <div id={dummyId} key={index} className="flex flex-col gap-2">
+
+                                <div className="flex justify-between items-center w-full">
+
+                                    <button 
+                                    type="button" onClick={() => handleRemoveField(dummyId ?? _id)} 
+                                    className="negative items-center flex gap-2">
+                                        <TrashIcon/> Remove
+                                    </button>
+
+                                    <CheckBoxContainer
+                                    value={isBullet}
+                                    onClick={() => handleUpdateJobDescription(item, "isBullet", !isBullet)}  
+                                    label="Bullet Form"
+                                    />
+
+                                </div>
+
+                                {isBullet ? (
+                                    // THIS CODE WILL RENDER IF IS BULLET DATA IS SET TO TRUE
+                                    <div className="flex flex-col">
+                                        <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
+                                            <p><strong>Title: </strong></p>
+                                            <input
+                                                className="text-[14px] font-bold"
+                                                placeholder="e.g. Position Overview"
+                                                value={title}
+                                                onChange={(e) => handleUpdateJobDescription(item, "title", e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
+                                            <input
+                                                className="text-[14px] w-full"
+                                                placeholder="e.g. Develop and execute test plans, test cases, and scripts for software validation."
+                                                onChange={(e) => handleUpdateBulletStringArray(index, e.target.value)}
+                                                required = {item.bulletData.length === 0}
+                                            />
+                                            <div>
+                                                <button
+                                                type="button"
+                                                onClick={() => handleUpdateJobDescritonBulletData(index, item, "bulletData")}
+                                                 className="positive h-[30px] flex items-center justify-center">
+                                                    +
+                                                </button>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col">
+                                        <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
+                                            <p><strong>Title: </strong></p>
+                                            <input
+                                                className="text-[14px] font-bold"
+                                                placeholder="e.g. Position Overview"
+                                                value={title}
+                                                onChange={(e) => handleUpdateJobDescription(item, "title", e.target.value)}
+                                                required
+                                            />
+                                        </div>
+                                        <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
+                                            <textarea
+                                                value={paragraph}
+                                                className="text-[14px] w-full h-[100px]"
+                                                placeholder="e.g. As a Full Stack Software Engineer, you will be responsible for designing, developing, and maintaining both front-end and back-end components of our web and mobile applications. You will collaborate with cross-functional teams to deliver high-quality and scalable solutions."
+                                                onChange={(e) => handleUpdateJobDescription(item, "paragraph", e.target.value)}
+                                                required
+                                           />
+                                        </div>
+                                        
+                                    </div>
+                                )}
+                            </div>
+                        
+                        )
+                    })}
+                </>
+            )}
+            </div>
+            <div className="flex justify-center my-4">
+                <button type="submit" className="primary">Submit</button>
+            </div>
+        </form>
+
+        <CustomModal
+        type={showConfirmationModal.type}
+        title={showConfirmationModal.title}
+        message={showConfirmationModal.message}
+        visible={showConfirmationModal.showModal}
+        onClickConfirm={handleSubmitForm}
+        onClose={() => setShowConfirmationModal((prev) => ({
+            ...prev,
+            showModal: false
+        }))}
+        />
     </div>
 )
  
