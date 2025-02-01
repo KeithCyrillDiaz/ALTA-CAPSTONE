@@ -1,30 +1,27 @@
-import React from "react";
+import React, { Suspense} from "react";
 import { Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
-import ApplyJob from "./pages/client/ApplyJob";
-
-
-import { 
-  
-  // CLIENT
-  Home, 
-  NotFoundPage, 
-  ViewJob,
-
-  //ADMIN
-  Login, 
-  Dashboard,
-  Jobs, 
-} from "./pages";
 import AdminProtectedRoute from "./components/admin/AdminProtectedRoute";
-import Applicants from "./pages/admin/Applicants/Applicants";
-import ViewApplicantRecord from "./pages/admin/Applicants/ViewApplicantRecord";
-import ViewJobDetails from "./pages/admin/Job/ViewJobDetails";
+
+import {
+  Home,
+  ApplyJob,
+  ViewJob,
+  NotFoundPage,
+  Login,
+  Dashboard,
+  Jobs,
+  Applicants,
+  ViewApplicantRecord,
+  ViewJobDetails,
+  AddJobDetails,
+} from "./pages";
 
 const App: React.FC = () => {
   return(
     <Provider store={store}>
+      <Suspense fallback={<div>Loading...</div>}></Suspense>
       <Routes>
         {/* CLIENT PAGES */}
         <Route path="/" element={<Home/>}/>
@@ -57,6 +54,7 @@ const App: React.FC = () => {
               <ViewApplicantRecord/>
             </AdminProtectedRoute>
           }/>
+          {/* ........ */}
 
 
           {/* JOBS */}
@@ -72,7 +70,12 @@ const App: React.FC = () => {
             </AdminProtectedRoute>
           }/>
         
-      
+          <Route path="/admin/jobs/add" element={
+            <AdminProtectedRoute>
+              <AddJobDetails/>
+            </AdminProtectedRoute>
+          }/>
+          {/* ........ */}
 
         {/* Catch-all 404 route */}
       <Route path="*" element={<NotFoundPage/>} />

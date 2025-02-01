@@ -31,6 +31,7 @@ export const endpointAdmin = {
         FETCH_ONE_JOB: '/admim/job/fetchOne',
         UPDATE_ALL: '/admin/job/updateInformation', //NEED ID
         UPDATE_STATUS: '/admin/job/updateStatus', //NEED ID
+        CREATE_JOB: '/admin/job/create'
     }
  
 }

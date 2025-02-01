@@ -49,3 +49,16 @@ export const updateJobDescriptionDetails = async (jobData: JobDataTypes) => {
         return errorHandler(error);
     }
 }
+
+export const saveNewJobForm = async (jobData: JobDataTypes) => {
+    try {
+        console.log("Saving New Job Post");
+        //PREPARE THE URL
+        const url = `${endpointAdmin.job.CREATE_JOB}`
+        const response = await axiosInstance.post(url, jobData);
+        const {data} = response.data;
+        return data;
+    } catch (error) {
+        return errorHandler(error);
+    }
+}

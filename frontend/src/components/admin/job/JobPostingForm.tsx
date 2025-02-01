@@ -8,15 +8,17 @@ import { DropDown, DropDownDataType } from "../../DropDown";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CheckBoxContainer } from "../../CheckBox";
-import { fetchAdminJobData, updateJobDescriptionDetails } from "../../../api/apiCalls/admin/job";
+import { fetchAdminJobData, saveNewJobForm, updateJobDescriptionDetails } from "../../../api/apiCalls/admin/job";
 import { TrashIcon } from "../../icons/TrashIcon";
 import { CustomModal } from "../../modal/CustomModal";
+import { useNavigate } from "react-router-dom";
  
 interface JobPostingProps {
     data: JobDataTypes,
-    onEdit?: boolean;
+    newJobPost?: boolean //THIS IS NEEDED FOR ADDING A NEW JOB POST. SET THIS TO ON TO SAVE THE JOB POSTING AS NEW
 }
 interface ConfirmationModalProps {
+    navigate?: string | null
     type?: "confirmation" | null
     title: string;
     message: string;
@@ -25,13 +27,15 @@ interface ConfirmationModalProps {
 
 
 export const JobPostingForm: React.FC<JobPostingProps> = ({
-    data
+    data,
+    newJobPost = false
 }) => {
     
     const dispatch = useDispatch();
     const skillsArray = useSelector((state: RootState) => state.adminJob.skillsArray);
     const educationArray = useSelector((state: RootState) => state.adminJob.educationArray);
     const jobData = useSelector((state: RootState) => state.adminJob.JobData);
+    const navigate = useNavigate();
 
     type BulletStringArrayType = {index: number, value:string}
     const [bulletString, setBulletString] = useState<BulletStringArrayType[]>([]);
@@ -40,7 +44,8 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
         type: null,
         title: "",
         message: "",
-        showModal: false
+        showModal: false,
+        navigate: null
     });
 
     const salaryTypeData: DropDownDataType[] = [
@@ -213,16 +218,28 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
     }
     const submitConfirmation = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setShowConfirmationModal({
-            type: "confirmation",
-            title: "Confirm Update",
-            message: "Are you sure you want to update the job details?",
-            showModal: true
-        });
+        if(newJobPost == false) {
+            // SHOW THE CONFIRM UPDATE MODAL 
+            setShowConfirmationModal({
+                type: "confirmation",
+                title: "Confirm Update",
+                message: "Are you sure you want to update the job details?",
+                showModal: true
+            });
+        } else {
+            // SHOW THE CONFIRM UPDATE MODAL SINCE THE FORM IS NEW
+            setShowConfirmationModal({
+                type: "confirmation",
+                title: "Confirm Submission",
+                message: "Are you sure you want to proceed with submitting this new job post?",
+                showModal: true
+            });
+        }
     }
     const handleSubmitForm = async () => {
         // THIS WILL ONLY TRIGGER IF THE BUTTON TYPE IS SUBMIT
         console.log("", JSON.stringify(data, null, 2));
+       if(newJobPost === false) {
         setLoading(true) 
         const responseData = await updateJobDescriptionDetails(data);
         if(responseData) dispatch(setEditableForm(responseData));
@@ -233,6 +250,17 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
             message: "The job details have been successfully updated.",
             showModal: true
         });
+       } else {
+        setLoading(true) 
+        await saveNewJobForm(data);
+        setLoading(false)
+        setShowConfirmationModal({
+            title: "Job Post Created",
+            message: "The new job listing has been successfully created and is now live.",
+            showModal: true,
+            navigate: "/admin/jobs"
+        });
+       }
     }
 
    if(loading) {
@@ -253,6 +281,7 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
                 type="text"
                 placeholder="e.g. Software Engineer"
                 maxLength={40}
+                required
                 />
                 <Input
                 label="Available Slots"
@@ -260,6 +289,7 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
                 value={data.slot}
                 type="number"
                 placeholder="e.g. 2"
+                required
                 />
             </div>
 
@@ -339,7 +369,6 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
                             value={dropDownValues.education}
                             type="text"
                             placeholder="e.g. Bachelor's"
-                            required
                             />
                             <button 
                             type="button"
@@ -498,7 +527,7 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
                                             />
                                         </div>
                                         <div className="bg-white shadow my-2 p-2 flex items-center gap-2">
-                                            <input
+                                            <textarea
                                                 className="text-[14px] w-full"
                                                 placeholder="e.g. Develop and execute test plans, test cases, and scripts for software validation."
                                                 onChange={(e) => handleUpdateBulletStringArray(index, e.target.value)}
@@ -557,10 +586,15 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
         message={showConfirmationModal.message}
         visible={showConfirmationModal.showModal}
         onClickConfirm={handleSubmitForm}
-        onClose={() => setShowConfirmationModal((prev) => ({
-            ...prev,
-            showModal: false
-        }))}
+        onClose={() => {
+            setShowConfirmationModal((prev) => ({
+                ...prev,
+                showModal: false
+            }))
+            if(showConfirmationModal.navigate) {
+                navigate(showConfirmationModal.navigate)
+            }
+        }}
         />
     </div>
 )

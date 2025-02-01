@@ -16,7 +16,7 @@ import CloseIcon from "./icons/CloseIcon";
         <div className={`${onEdit ? "highlight" : ""} bulletCardContainer` }>
             <div className="labelContainer">
               <div><BulletIcon/></div>
-              <p>{label}</p>
+              <p className="max-w-[380px]">{label}</p>
             </div>
            
            {onEdit && (
