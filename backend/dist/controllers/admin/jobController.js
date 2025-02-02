@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateJobInformation = exports.updateJobStatus = exports.getJobDetails = exports.getJobApplications = exports.createJob = void 0;
+exports.deleteJobDetailsById = exports.updateJobInformation = exports.updateJobStatus = exports.getJobDetails = exports.getJobApplications = exports.createJob = void 0;
 const logger_1 = require("../../utils/logger");
 const date_1 = require("../../helper/date");
 const resultHandler_1 = require("../../utils/resultHandler");
@@ -257,4 +257,44 @@ const updateJobInformation = (req, res, next) => __awaiter(void 0, void 0, void 
     }
 });
 exports.updateJobInformation = updateJobInformation;
+const deleteJobDetailsById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        logger_1.logger.event("Deleting Job Details");
+        const { id } = req.params;
+        if (!id) {
+            logger_1.logger.error("ID in params is not Found");
+            res.status(400).json({
+                code: 'DJD_001',
+                message: "ID in params is not Found"
+            });
+            return;
+        }
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+            logger_1.logger.error("Invalid ID format");
+            res.status(400).json({
+                code: 'DJD_002',
+                message: "Invalid ID format"
+            });
+            return;
+        }
+        const result = yield jobModel_1.JobModel.findByIdAndDelete(id);
+        if (!result) {
+            logger_1.logger.error("Error in DJD_003, Job Details Not Found");
+            res.status(404).json({
+                code: "DJD_003",
+                message: "Error in DJD_003, Job Details Not Found"
+            });
+            return;
+        }
+        logger_1.logger.success("Successfully Deleted Job Details");
+        res.status(200).json({
+            code: "DJD_000",
+            message: "Successfully Deleted Job Details"
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.deleteJobDetailsById = deleteJobDetailsById;
 //# sourceMappingURL=jobController.js.map
