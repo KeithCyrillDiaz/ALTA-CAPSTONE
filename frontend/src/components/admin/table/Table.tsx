@@ -3,6 +3,7 @@ import usePagination from "../../../hooks/usePagination";
 import { UserApplicationTypes } from "../../../pages/admin/Dashboard";
 import { TablePagination } from "./TablePagination";
 import { JobDataTypes } from "../../client/JobFeed";
+import { EmployeeDataTypes } from "../../../pages/admin/employees/Employees";
 
 
 export type TableDataTypesValue = string | number | ReactNode;
@@ -12,7 +13,7 @@ export type TableDataTypes = {
 
 export interface HeadTitlesTypes {
     title: string; // THIS WILL BE THE TABLE HEAD LABEL
-    field: keyof UserApplicationTypes | keyof JobDataTypes;
+    field: keyof UserApplicationTypes | keyof JobDataTypes | keyof EmployeeDataTypes;
 }
 
 interface TableProps {

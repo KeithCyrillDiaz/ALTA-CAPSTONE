@@ -33,6 +33,11 @@ export const endpointAdmin = {
         UPDATE_STATUS: '/admin/job/updateStatus', //NEED ID
         CREATE_JOB: '/admin/job/create',
         DELETE_JOB_ID: '/admin/job/deleteOne', //NEED ID
+    },
+    employees: {
+        FETCH_ALL: '/admin/employees/fetchAll',
+        CREATE: '/admin/employees/create',
+        UPDATE_DETAILS: '/admin/employees/update' //NEED ID
     }
  
 }
