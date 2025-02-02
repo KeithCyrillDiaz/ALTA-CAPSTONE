@@ -311,3 +311,52 @@ export const updateJobInformation = async (req: Request, res: Response, next: Ne
         next(error);
     }
 }
+
+export const deleteJobDetailsById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        logger.event("Deleting Job Details");
+
+        const {id} = req.params;
+
+        if(!id) {
+                logger.error("ID in params is not Found");
+                res.status(400).json({
+                    code: 'DJD_001',
+                    message: "ID in params is not Found"
+                });
+                return;
+            }
+            
+    
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            logger.error("Invalid ID format");
+            res.status(400).json({
+                code: 'DJD_002',
+                message: "Invalid ID format"
+            });
+            return;
+        }
+
+        const result = await JobModel.findByIdAndDelete(id);
+
+        if(!result) {
+            logger.error("Error in DJD_003, Job Details Not Found");
+            res.status(404).json({
+                code: "DJD_003",
+                message: "Error in DJD_003, Job Details Not Found"
+            });
+            return;
+        }
+
+        logger.success("Successfully Deleted Job Details");
+
+        res.status(200).json({
+            code: "DJD_000",
+            message: "Successfully Deleted Job Details"
+        })
+
+
+    } catch (error) {
+        next(error);
+    }
+}
