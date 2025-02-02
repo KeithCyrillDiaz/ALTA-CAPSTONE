@@ -4,7 +4,7 @@ import { useNavigate} from "react-router-dom";
 import {fetchChosenJob, FormDataTypes, submitApplicationForm } from "../api/apiCalls/client";
 
 import { Input, InputKeyboardTypes } from "./Input";
-import { DropDown, DropDownDataType } from "./DropDown";
+import { DropDown} from "./DropDown";
 import { BirthdayField } from "./BirthdayField";
 import { FileHandler } from "./FileHandler";
 import { extractTextFromPdf } from "../utils/extractTextFromPdf";
@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { UserApplicationTypes } from "../pages/admin/Dashboard";
 import { updateApplicantStatus } from "../api/apiCalls/admin/applicant";
+import { genderData } from "../constant/data";
 
 
 interface formFormatTypes {
@@ -237,10 +238,6 @@ export const ApplicationForm: React.FC<ApplicationFormProps> = ({jobId, userDeta
         },
     ]
 
-    const genderData:DropDownDataType[] = [
-        {label: "Female", value: "Female"},
-        {label: "Male", value: "Male"},
-    ]
 
     // CONST FETCH JOB DATA
     useEffect(() => {

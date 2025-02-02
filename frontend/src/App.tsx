@@ -17,7 +17,7 @@ import {
   ViewJobDetails,
   AddJobDetails,
 } from "./pages";
-import Employees from "./pages/admin/employees/Employees";
+import Employees from "./pages/admin/Employees/Employees";
 
 const App: React.FC = () => {
   return(

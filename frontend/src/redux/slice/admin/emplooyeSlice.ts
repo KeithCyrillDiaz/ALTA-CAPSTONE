@@ -3,7 +3,8 @@
 
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TableDataTypes } from "../../../components/admin/table/Table";
-import { EmployeeDataTypes } from "../../../pages/admin/employees/Employees";
+import { EmployeeDataTypes } from "../../../pages/admin/Employees/Employees";
+import { FormValue } from "../../../components/client/JobForm";
 
 export type FilterJobOptionsTypes = {
     [key in keyof EmployeeDataTypes]: string | number;
@@ -48,7 +49,7 @@ const EmployeesSlice = createSlice({
             state.editableForm = action.payload;
         },
 
-        updateEmployeeEditableForm: (state, action: PayloadAction<{field: keyof EmployeeDataTypes, value: number | string | boolean}>) => { 
+        updateEmployeeEditableForm: (state, action: PayloadAction<{field: keyof EmployeeDataTypes, value: FormValue}>) => { 
             if(!state.editableForm) {
                 console.log("Editable Employee Form is Null");
                 return;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -11,16 +11,17 @@ import { TableDataTypes } from "../../../components/admin/table/Table";
 import { AdminFilter } from "../../../components/admin/AdminFilterModal";
 
 import { RootState } from "../../../redux/store";
-import { getEmployees } from "../../../api/apiCalls/admin/employees";
+import { getEmployees} from "../../../api/apiCalls/admin/employees";
 import { setAdminEmployeesData, setEmployeeEditableForm} from "../../../redux/slice/admin/emplooyeSlice";
 import { EmployeeTable } from "../../../components/admin/employees/EmployeeTable";
 import AddEmployeeModal from "../../../components/admin/employees/AddEmployeeModal";
 
 
+
 export interface EmployeeDataTypes {
     givenName: string;
     lastName: string;
-    birthday: string; 
+    birthday: Date | null;
     gender: string; 
     email: string;
     phoneNumber: string; 
@@ -39,27 +40,32 @@ const Employees: React.FC = () => {
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     const [showAddEmployeeModal, setShowAddEmployeeModal] = useState<boolean>(false);
 
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const employees = useSelector((state: RootState) => state.adminEmployee.filteredEmployeesData);
 
+    const newForm: EmployeeDataTypes = useMemo(() => ({
+        givenName: "",
+        lastName: "",
+        birthday: null,
+        gender: "",
+        email: "",
+        companyEmail: "",
+        phoneNumber: "",
+        currentCity: "",
+        salary: 0,
+        position: "",
+        workOnsite: false,
+    }),[])
 
+          
+    const handleAddEmployeeModalClose = () => {
+        dispatch(setEmployeeEditableForm(newForm));
+        setShowAddEmployeeModal(false)
+    }
+   
     useEffect(() => {
-
-        const newForm: EmployeeDataTypes = {
-            givenName: "",
-            lastName: "",
-            birthday: "",
-            gender: "",
-            email: "",
-            companyEmail: "",
-            phoneNumber: "",
-            currentCity: "",
-            salary: 0,
-            position: "",
-            workOnsite: false,
-        }
-
         const fetchData = async () => {
             setLoading(true);
             const data = await getEmployees();
@@ -67,9 +73,10 @@ const Employees: React.FC = () => {
             dispatch(setEmployeeEditableForm(newForm));
             setLoading(false);
         }
-
         fetchData();
-    },[dispatch]);
+    },[dispatch, newForm]);
+
+
     return (
         <AdminLayout title="EMPLOYEES">
              <div className="flex flex-col justify-center gap-4 relative pb-12">
@@ -103,6 +110,7 @@ const Employees: React.FC = () => {
 
             <AddEmployeeModal
             visible = {showAddEmployeeModal}
+            onClose = {handleAddEmployeeModalClose}
             />
         </AdminLayout>
     )
