@@ -62,3 +62,15 @@ export const saveNewJobForm = async (jobData: JobDataTypes) => {
         return errorHandler(error);
     }
 }
+
+export const deleteJobPostById = async (id: string) => {
+    try {
+        console.log("Deleting Job Post");
+        //PREPARE URL
+        const url = `${endpointAdmin.job.DELETE_JOB_ID}/${id}`
+        await axiosInstance.delete(url);
+        return;
+    } catch (error) {
+        return errorHandler(error);
+    }
+}

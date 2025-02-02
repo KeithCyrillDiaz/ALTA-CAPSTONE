@@ -17,6 +17,7 @@ import {
   ViewJobDetails,
   AddJobDetails,
 } from "./pages";
+import Employees from "./pages/employees/Employees";
 
 const App: React.FC = () => {
   return(
@@ -76,6 +77,18 @@ const App: React.FC = () => {
             </AdminProtectedRoute>
           }/>
           {/* ........ */}
+
+          {/* JOBS */}
+          <Route path="/admin/employees" element={
+            <AdminProtectedRoute>
+              <Employees/>
+            </AdminProtectedRoute>
+          }/>
+          
+          {/* ........ */}
+
+
+
 
         {/* Catch-all 404 route */}
       <Route path="*" element={<NotFoundPage/>} />

@@ -8,7 +8,7 @@ import { DropDown, DropDownDataType } from "../../DropDown";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
 import { CheckBoxContainer } from "../../CheckBox";
-import { fetchAdminJobData, saveNewJobForm, updateJobDescriptionDetails } from "../../../api/apiCalls/admin/job";
+import { deleteJobPostById, fetchAdminJobData, saveNewJobForm, updateJobDescriptionDetails } from "../../../api/apiCalls/admin/job";
 import { TrashIcon } from "../../icons/TrashIcon";
 import { CustomModal } from "../../modal/CustomModal";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +22,8 @@ interface ConfirmationModalProps {
     type?: "confirmation" | null
     title: string;
     message: string;
-    showModal: boolean
+    showModal: boolean;
+    showDeletionModal?: boolean;
 }
 
 
@@ -45,6 +46,7 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
         title: "",
         message: "",
         showModal: false,
+        showDeletionModal: false,
         navigate: null
     });
 
@@ -261,6 +263,29 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
             navigate: "/admin/jobs"
         });
        }
+    }
+
+    const deleteConfirmation = () => {
+        setShowConfirmationModal({
+            type: "confirmation",
+            title: "Confirm Deletion",
+            message: "Are you sure you want to delete this job post?",
+            showModal: false,
+            showDeletionModal: true
+        });
+    }
+
+    const handleDeleteJob = async () => {
+        setLoading(true);
+        await deleteJobPostById(data._id);
+        setLoading(false);
+        setShowConfirmationModal({
+            title: "Job Post Deleted",
+            message: "The job post has been successfully removed.",
+            showModal: true,
+            navigate: "/admin/jobs"
+        });
+
     }
 
    if(loading) {
@@ -575,8 +600,9 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
                 </>
             )}
             </div>
-            <div className="flex justify-center my-4">
+            <div className="flex justify-center my-4 gap-2">
                 <button type="submit" className="primary">Submit</button>
+                {newJobPost === false && (<button type="button" onClick={deleteConfirmation} className="negative">Delete Job Post</button>)}
             </div>
         </form>
 
@@ -590,6 +616,22 @@ export const JobPostingForm: React.FC<JobPostingProps> = ({
             setShowConfirmationModal((prev) => ({
                 ...prev,
                 showModal: false
+            }))
+            if(showConfirmationModal.navigate) {
+                navigate(showConfirmationModal.navigate)
+            }
+        }}
+        />
+        <CustomModal
+        type={showConfirmationModal.type}
+        title={showConfirmationModal.title}
+        message={showConfirmationModal.message}
+        visible={showConfirmationModal.showDeletionModal || false}
+        onClickConfirm={handleDeleteJob}
+        onClose={() => {
+            setShowConfirmationModal((prev) => ({
+                ...prev,
+                showDeletionModal: false
             }))
             if(showConfirmationModal.navigate) {
                 navigate(showConfirmationModal.navigate)
