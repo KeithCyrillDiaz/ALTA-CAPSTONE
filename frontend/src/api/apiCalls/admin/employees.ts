@@ -1,4 +1,4 @@
-import { EmployeeDataTypes } from "../../../pages/admin/employees/Employees";
+import { EmployeeDataTypes } from "../../../pages/admin/Employees/Employees";
 import axiosInstance from "../../axiosInstance";
 import { endpointAdmin } from "../../endpoint";
 import errorHandler from "../errorhandler"

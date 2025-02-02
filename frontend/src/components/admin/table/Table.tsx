@@ -3,7 +3,7 @@ import usePagination from "../../../hooks/usePagination";
 import { UserApplicationTypes } from "../../../pages/admin/Dashboard";
 import { TablePagination } from "./TablePagination";
 import { JobDataTypes } from "../../client/JobFeed";
-import { EmployeeDataTypes } from "../../../pages/admin/employees/Employees";
+import { EmployeeDataTypes } from "../../../pages/admin/Employees/Employees";
 
 
 export type TableDataTypesValue = string | number | ReactNode;
