@@ -1,6 +1,5 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import {fetchTotalCounts } from "../../api/apiCalls/admin";
-import Loader from "../Loader";
 import { HeroCard } from "./HeroCard";
 import { ApplicantIconHero } from "../icons/admin/ApplicantsIcon";
 import { JobIconHero } from "../icons/admin/JobIcon";
@@ -39,25 +38,17 @@ const titleMap: { [key in keyof TotalDataType]: string } = {
 export const HeroSection:React.FC = () => {
 
     const [data, setData] = useState<TotalDataType | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
   
       useEffect(() => {
         const fetchData = async () => {
-            setLoading(true);
             const result = await fetchTotalCounts(); // Pass `prevData` here
             setData(result);
-            setLoading(false);
         };
     
         fetchData();
     }, []); 
 
-    if(loading){
-       return <div className="h-[50px]">
-         <Loader/>
-       </div>
-    }
-    
+
     if(data)
     return (    
         <div className="flex items-center justify-center gap-12 w-[100%]">
